@@ -5,8 +5,12 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
 
+#include "Player.h"  
+
 using namespace std;
 using namespace sf;
+
+enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT};
 
 int main()
 {
@@ -23,6 +27,8 @@ int main()
 
 	b2Vec2 Gravity(0.f, 0.f);
 	b2World World(Gravity);
+	 
+	Player player = Player(&World, &window, Vector2f(20, 20));
 
 	while (window.isOpen())
 	{
@@ -30,9 +36,12 @@ int main()
 		int32 velocityIterations = 8;   //how strongly to correct velocity
 		int32 positionIterations = 3;   //how strongly to correct position
 
-		World.Step(timeStep, velocityIterations, positionIterations);
+		World.Step(timeStep, velocityIterations, positionIterations); 
+
+		player.Update();
 		
 		window.clear();
+		player.Draw();
 		window.display();
 
 	}
