@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
 #include "Box2D\Box2D.h" 
+#include "InputManager.h"
 
 using namespace sf;
 
@@ -28,12 +29,13 @@ private:
 	b2Body* body;
 	b2FixtureDef fixtureDef;
 	RenderWindow* window; 
+	InputManager* inputManager;
 	Vector2f m_pos;
 	float orientation;
 	float speed;
 
 public:
-	Player(b2World*, RenderWindow*, Vector2f);
+	Player(b2World*, RenderWindow*, InputManager*, Vector2f);
 	void LoadAssets();
 	void LoadBinds();
 	void Draw();

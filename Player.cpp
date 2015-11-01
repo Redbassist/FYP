@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(b2World* b2world, RenderWindow* w, Vector2f pos) : world(b2world), window(w), m_pos(pos)
+Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
 {
 	LoadAssets();
 	LoadBinds();
@@ -25,7 +25,12 @@ void Player::LoadAssets() {
 	m_bodySprite.setPosition(m_pos);
 }
 
-void Player::LoadBinds() { 
+void Player::LoadBinds() {
+	//binding the keys for the player
+	inputManager->Bind(&actions.walkUp, Keyboard::Key::W);
+	inputManager->Bind(&actions.walkDown, Keyboard::Key::S);
+	inputManager->Bind(&actions.walkLeft, Keyboard::Key::A);
+	inputManager->Bind(&actions.walkRight, Keyboard::Key::D);
 }
 
 void Player::Draw() {
