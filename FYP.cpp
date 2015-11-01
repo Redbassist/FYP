@@ -7,7 +7,8 @@
 
 #include "InputManager.h"
 
-#include "Player.h"  
+#include "Player.h" 
+#include "Item.h" 
 
 using namespace std;
 using namespace sf;
