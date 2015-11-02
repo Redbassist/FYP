@@ -5,7 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
 #include "Box2D\Box2D.h" 
-#include "InputManager.h"
+#include "InputManager.h" 
 
 using namespace sf;
 
