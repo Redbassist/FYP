@@ -2,11 +2,12 @@
 
 Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
 {
+	inventory = new Inventory(w, im);
+	speed = 0.045f;
+
 	LoadAssets();
 	LoadBinds();
 	createBox2dBody();
-
-	speed = 0.045f;
 }
 
 void Player::LoadAssets() {
@@ -23,6 +24,15 @@ void Player::LoadAssets() {
 	m_bodySprite.setTextureRect(sf::IntRect(0, 0, m_bodyTexture.getSize().x, m_bodyTexture.getSize().y));
 	m_bodySprite.setOrigin(m_bodyTexture.getSize().x / 2, m_bodyTexture.getSize().y / 2);
 	m_bodySprite.setPosition(m_pos);
+
+	inventory->AddItem(new Item(world, window, FOOD1, 1));
+	inventory->AddItem(new Item(world, window, WATER1, 1));
+	inventory->AddItem(new Item(world, window, WATER2, 2));
+	inventory->AddItem(new Item(world, window, WATER1, 2));
+	inventory->AddItem(new Item(world, window, WATER2, 1));
+	inventory->AddItem(new Item(world, window, FOOD1, 1));
+	inventory->AddItem(new Item(world, window, WATER1, 2));
+	inventory->AddItem(new Item(world, window, WATER2, 1));
 }
 
 void Player::LoadBinds() {
@@ -36,6 +46,7 @@ void Player::LoadBinds() {
 void Player::Draw() {
 	window->draw(m_legSprite);
 	window->draw(m_bodySprite);
+	inventory->Draw();
 }
 
 void Player::Update() {
@@ -43,7 +54,16 @@ void Player::Update() {
 	SetRotation();
 	m_legSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	m_bodySprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	float poop = body->GetPosition().x;
 	m_pos = m_bodySprite.getPosition();
+	CenterCamera();
+}
+
+void Player::CenterCamera()
+{
+	View view = window->getView();
+	view.setCenter(m_pos);
+	window->setView(view);
 }
 
 void Player::Movement() {
@@ -51,25 +71,23 @@ void Player::Movement() {
 
 	if (actions.walkUp) {
 		position.y -= speed;
-		m_legSprite.setRotation(90);
 	}
 	if (actions.walkDown) {
 		position.y += speed;
-		m_legSprite.setRotation(270);
 	}
 	if (actions.walkLeft) {
 		position.x -= speed;
-		m_legSprite.setRotation(0);
 	}
 	if (actions.walkRight) {
 		position.x += speed;
-		m_legSprite.setRotation(0);
 	}
+
 	body->SetTransform(position, 0);
 }
 
 void Player::SetRotation() {
 	m_bodySprite.setRotation(getRotationAngle());
+	m_legSprite.setRotation(getRotationAngle());
 }
 
 void Player::createBox2dBody() {
@@ -98,14 +116,15 @@ b2Vec2 Player::Normalize(b2Vec2 vector) {
 		vector.x /= length;
 		vector.y /= length;
 	}
-
 	return vector;
 }
 
 float Player::getRotationAngle() {
-	Vector2f mousePos = (Vector2f)Mouse::getPosition(*window);
-	float dx = mousePos.x - m_pos.x;
-	float dy = mousePos.y - m_pos.y;
+	Vector2i mousePos = Mouse::getPosition(*window);
+	//used to convert to view coordinates
+	sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+	float dx = worldMousePos.x - m_pos.x;
+	float dy = worldMousePos.y - m_pos.y;
 	float radian = atan2f(dy, dx);
 	return (radian * 180 / 3.14159265359);
 }

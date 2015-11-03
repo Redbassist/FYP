@@ -6,6 +6,7 @@
 #include "SFML/OpenGL.hpp"
 #include "Box2D\Box2D.h" 
 #include "InputManager.h" 
+#include "Inventory.h"
 
 using namespace sf;
 
@@ -33,6 +34,7 @@ private:
 	Vector2f m_pos;
 	float orientation;
 	float speed;
+	Inventory* inventory;
 
 public:
 	Player(b2World*, RenderWindow*, InputManager*, Vector2f);
@@ -41,6 +43,7 @@ public:
 	void Draw();
 	void Update();
 	void Movement();
+	void CenterCamera();
 	void SetRotation();
 	float getRotationAngle();
 	void createBox2dBody();

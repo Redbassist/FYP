@@ -25,7 +25,7 @@ int main()
 	RenderWindow window(VideoMode(screenWidth, screenHeight, 32), "FYP");
 	window.setFramerateLimit(60);
 	View view = View(FloatRect(0, 0, screenWidth, screenHeight));
-	view.zoom(1);
+	view.zoom(0.7);
 	window.setView(view);
 
 	b2Vec2 Gravity(0.f, 0.f);
