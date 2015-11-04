@@ -11,6 +11,10 @@ void World::CreateAssets() {
 void World::CreateLevel() {
 	player = new Player(world, window, inputManager, Vector2f(20, 20));
 	items.push_back(new Item(world, window, WATER2, 1, true, Vector2f(100, 100)));
+	items.push_back(new Item(world, window, WATER1, 1, true, Vector2f(150, 100)));
+	items.push_back(new Item(world, window, FOOD1, 2, true, Vector2f(100, 150)));
+	items.push_back(new Item(world, window, WATER2, 1, true, Vector2f(150, 150)));
+	items.push_back(new Item(world, window, WATER2, 1, true, Vector2f(250, 150)));
 } 
 
 void World::Update() {

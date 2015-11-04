@@ -107,7 +107,10 @@ void Player::Interaction() {
 	}
 
 	if (actions.drop && inventory->CheckOpen()) {
-		inventory->DropItem(m_pos);
+		Vector2i mousePos = Mouse::getPosition(*window);
+		//used to convert to view coordinates
+		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+		inventory->DropItem((Vector2f)worldMousePos, m_pos);
 		actions.drop = false;
 	}
 }

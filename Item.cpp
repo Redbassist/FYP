@@ -62,8 +62,20 @@ void Item::PickedUp() {
 	onGround = false;
 }
 
+bool Item::CheckSprite(Vector2f mouseClick) {
+	//checking if the mouse position is inside the sprite
+	float height = m_sprite.getGlobalBounds().height;
+	float width = m_sprite.getGlobalBounds().width;
+	Vector2f spritePos = Vector2f(m_sprite.getPosition().x - width / 2, m_sprite.getPosition().y - height / 2);
+
+	if (mouseClick.x > spritePos.x && mouseClick.x < spritePos.x + width &&
+		mouseClick.y > spritePos.y && mouseClick.y < spritePos.y + height)
+		return true;
+
+	return false;
+}
+
 void Item::Dropped(Vector2f pos) {
-	//REMINDER: ADD ITEM TO WORLD LIST!!!
 	onGround = true;
 	m_sprite.setScale(Vector2f(0.2, 0.2));
 	m_sprite.setPosition(pos);

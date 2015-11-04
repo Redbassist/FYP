@@ -71,11 +71,25 @@ void Inventory::AddItem(Item* item) {
 	}
 }
 
-void Inventory::DropItem(Vector2f pos) {
+void Inventory::DropItem(Vector2f clickPos, Vector2f playerPos) {
+	int size = slots.size();
 
-	if (slots.size() > 0) {
-		slots[0].item->Dropped(pos);
-		slots[0].item = NULL; 
+	for (int i = 0; i < size; i++) {
+		if (slots[i].full == true && slots[i].item != NULL) {
+			if (slots[i].item->CheckSprite(clickPos)) {
+				slots[i].item->Dropped(playerPos);
+				if (slots[i].item->GetSize() == 1) {
+					slots[i].full = false;
+					slots[i].item = NULL;
+				}
+				else {
+					slots[i].full = false;
+					slots[i + 1].full = false;
+					slots[i].item = NULL;
+				}
+				break;
+			}
+		}
 	}
 }
 

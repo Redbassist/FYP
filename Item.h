@@ -50,6 +50,7 @@ public:
 	void Draw();
 	void DrawInInventory(Vector2f, FloatRect, int, int);
 	void PickedUp();
+	bool CheckSprite(Vector2f);
 	void Dropped(Vector2f);
 	std::string getTextForEnum(int enumVal);
 	void Item::createBox2dBody();

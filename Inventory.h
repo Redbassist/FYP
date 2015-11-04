@@ -38,9 +38,8 @@ public:
 	Inventory(RenderWindow*, InputManager*);
 	void LoadAssets();
 	void SetupSlots();
-	void AddItem(Item*);
-	void DropItem(Vector2f);
-	Item* RemoveItem(Vector2f);
+	void AddItem(Item*); 
+	void DropItem(Vector2f, Vector2f);
 	void Open();
 	void Close();
 	bool CheckOpen();
