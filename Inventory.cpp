@@ -4,7 +4,9 @@ Inventory::Inventory(RenderWindow* w, InputManager* im) : window(w), inputManage
 	open = false;
 	invCols = 4;
 	invRows = 3;
+	invSize = 12;
 	LoadAssets();
+	SetupSlots();
 }
 
 void Inventory::LoadAssets()
@@ -17,16 +19,63 @@ void Inventory::LoadAssets()
 	offset.x = m_sprite.getTextureRect().width;
 }
 
+void Inventory::SetupSlots() {
+	int slotNumber = 1;
+	int currentCol = 1;
+	int currentRow = 1;
+
+	for (int i = 0; i < invSize; i++) {
+		Slot tempSlot;
+		tempSlot.number = slotNumber++;
+		if (currentCol > invCols) {
+			currentCol = 1;
+			currentRow++;
+		}
+		tempSlot.col = currentCol;
+		tempSlot.row = currentRow;
+		currentCol++;
+		tempSlot.item = NULL;
+		tempSlot.full = false;
+		slots.push_back(tempSlot);
+	}
+}
 
 void Inventory::AddItem(Item* item) {
-	inventory.push_back(item);
+	int size = slots.size();
+
+	for (int i = 0; i < size; i++) {
+		if (item->GetSize() == 1 && !slots[i].full) {
+			slots[i].item = item;
+			slots[i].full = true;
+			break;
+		}
+		else if (item->GetSize() == 2 && !slots[i].full && !slots[i + 1].full && slots[i].col != 4) {
+			slots[i].item = item;
+			slots[i].full = true;
+			slots[i + 1].full = true;
+			break;
+		}
+		else if (item->GetSize() == 2) {
+			bool loop = true;
+			while (loop) {
+				if (!slots[i].full && !slots[i + 1].full && slots[i].col != 4) {
+					slots[i].item = item;
+					slots[i].full = true;
+					slots[i + 1].full = true;
+					loop = false;
+				}
+				i++;
+			}
+			break;
+		}
+	}
 }
 
 void Inventory::DropItem(Vector2f pos) {
 
-	if (inventory.size() > 0) {
-		inventory[0]->Dropped(pos);
-		inventory.clear();
+	if (slots.size() > 0) {
+		slots[0].item->Dropped(pos);
+		slots[0].item = NULL; 
 	}
 }
 
@@ -69,17 +118,19 @@ void Inventory::Draw() {
 
 void Inventory::DrawItems() {
 	//putting the inventory items in the right slots and then drawing them
-	int size = inventory.size();
+	int size = slots.size();
 	int invSlot = 1;
 	int currentRow = 1;
 	for (int i = 0; i < size; i++) {
-		inventory[i]->DrawInInventory(m_sprite.getPosition(), m_sprite.getGlobalBounds(), invSlot, currentRow);
+		if (slots[i].item != NULL && slots[i].full == true)
+			slots[i].item->DrawInInventory(m_sprite.getPosition(), m_sprite.getGlobalBounds(), slots[i].col, slots[i].row);
+		/*
 		if (invSlot + inventory[i]->GetSize() > invCols) {
 			invSlot = 1;
 			currentRow++;
 		}
 		else {
 			invSlot += inventory[i]->GetSize();
-		}
+		}*/
 	}
 }

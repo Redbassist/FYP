@@ -7,8 +7,17 @@
 #include "Box2D\Box2D.h" 
 #include "InputManager.h" 
 #include "Item.h"
+#include <math.h>
 
 using namespace sf; 
+
+struct Slot {
+	Item* item;
+	int number;
+	int row;
+	int col;
+	bool full;
+};
 
 class Inventory {
 private:
@@ -21,11 +30,14 @@ private:
 	Vector2f offset;
 	int invCols;
 	int invRows;
+	int invSize;
 	bool open;
+	std::vector<Slot> slots;
 
 public:
 	Inventory(RenderWindow*, InputManager*);
 	void LoadAssets();
+	void SetupSlots();
 	void AddItem(Item*);
 	void DropItem(Vector2f);
 	Item* RemoveItem(Vector2f);

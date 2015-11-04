@@ -63,9 +63,11 @@ void Item::PickedUp() {
 }
 
 void Item::Dropped(Vector2f pos) {
+	//REMINDER: ADD ITEM TO WORLD LIST!!!
 	onGround = true;
 	m_sprite.setScale(Vector2f(0.2, 0.2));
 	m_sprite.setPosition(pos);
+	createBox2dBody();
 	body->SetTransform(b2Vec2(m_sprite.getPosition().x / SCALE, m_sprite.getPosition().y / SCALE), 0);
 }
 
