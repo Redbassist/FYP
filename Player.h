@@ -10,13 +10,14 @@
 
 using namespace sf;
 
-static const float SCALE = 30.f;
-
 struct keyActions {
 	bool walkLeft = false;
 	bool walkRight = false;
 	bool walkUp = false;
 	bool walkDown = false;
+	bool pickup = false;
+	bool drop = false;
+	bool inventory = false;
 };
 
 class Player {
@@ -29,6 +30,7 @@ private:
 	b2World* world; 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
+	Item* touchedItem;
 	RenderWindow* window; 
 	InputManager* inputManager;
 	Vector2f m_pos;
@@ -43,6 +45,9 @@ public:
 	void Draw();
 	void Update();
 	void Movement();
+	void Interaction();
+	void TouchingItem(Item*);
+	void NotTouchingItem();
 	void CenterCamera();
 	void SetRotation();
 	float getRotationAngle();

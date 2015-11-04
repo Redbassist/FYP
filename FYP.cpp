@@ -4,16 +4,16 @@
 #include <Box2D/Box2D.h>
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
+#include "ContactListener.h"
+
+enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT };
 
 #include "InputManager.h"
-
 #include "Player.h" 
 #include "Item.h" 
 
 using namespace std;
 using namespace sf;
-
-enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT};
 
 int main()
 {
@@ -29,11 +29,15 @@ int main()
 	window.setView(view);
 
 	b2Vec2 Gravity(0.f, 0.f);
-	b2World World(Gravity);
+	b2World World(Gravity); 
+	World.SetAllowSleeping(false);
+	ContactListener contactListener = ContactListener();
+	World.SetContactListener(&contactListener);
 
-	InputManager inputManager = InputManager();
+	InputManager inputManager = InputManager(&window);
 
 	Player player = Player(&World, &window, &inputManager, Vector2f(20, 20));
+	Item* item = new Item(&World, &window, WATER2, 1, true, Vector2f(100, 100));
 
 	while (window.isOpen())
 	{
@@ -48,8 +52,8 @@ int main()
 		
 		window.clear();
 		player.Draw();
+		item->Draw();
 		window.display();
-
 	}
 }
 

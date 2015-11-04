@@ -1,7 +1,7 @@
 #include "Inventory.h"
 
-Inventory::Inventory(RenderWindow* w, InputManager* im) : window(w), inputManager(im) { 
-	open = true;
+Inventory::Inventory(RenderWindow* w, InputManager* im) : window(w), inputManager(im) {
+	open = false;
 	invCols = 4;
 	invRows = 3;
 	LoadAssets();
@@ -12,7 +12,7 @@ void Inventory::LoadAssets()
 	m_texture.loadFromFile("Sprites/backpack.png");
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
-	m_sprite.setTextureRect(sf::IntRect(0, 0, m_texture.getSize().x, m_texture.getSize().y)); 
+	m_sprite.setTextureRect(sf::IntRect(0, 0, m_texture.getSize().x, m_texture.getSize().y));
 	m_sprite.setScale(Vector2f(0.45, 0.45));
 	offset.x = m_sprite.getTextureRect().width;
 }
@@ -22,9 +22,17 @@ void Inventory::AddItem(Item* item) {
 	inventory.push_back(item);
 }
 
+void Inventory::DropItem(Vector2f pos) {
+
+	if (inventory.size() > 0) {
+		inventory[0]->Dropped(pos);
+		inventory.clear();
+	}
+}
+
 /*
 Item* Inventory::RemoveItem(Vector2f pos) {
-	
+
 }*/
 
 void Inventory::Open() {
@@ -33,6 +41,10 @@ void Inventory::Open() {
 
 void Inventory::Close() {
 	open = false;
+}
+
+bool Inventory::CheckOpen() {
+	return open;
 }
 
 void Inventory::Draw() {
@@ -51,7 +63,7 @@ void Inventory::Draw() {
 
 	else {
 		if (offset.x < m_sprite.getTextureRect().width)
-			offset.x -= 40;
+			offset.x += 40;
 	}
 }
 

@@ -1,9 +1,15 @@
 #include "Player.h"
 
+enum _entityCategory {
+	PLAYER = 0x0004,
+	ITEM = 0x0008
+};
+
 Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
 {
 	inventory = new Inventory(w, im);
 	speed = 0.045f;
+	touchedItem = NULL;
 
 	LoadAssets();
 	LoadBinds();
@@ -24,15 +30,6 @@ void Player::LoadAssets() {
 	m_bodySprite.setTextureRect(sf::IntRect(0, 0, m_bodyTexture.getSize().x, m_bodyTexture.getSize().y));
 	m_bodySprite.setOrigin(m_bodyTexture.getSize().x / 2, m_bodyTexture.getSize().y / 2);
 	m_bodySprite.setPosition(m_pos);
-
-	inventory->AddItem(new Item(world, window, FOOD1, 1));
-	inventory->AddItem(new Item(world, window, WATER1, 1));
-	inventory->AddItem(new Item(world, window, WATER2, 2));
-	inventory->AddItem(new Item(world, window, WATER1, 2));
-	inventory->AddItem(new Item(world, window, WATER2, 1));
-	inventory->AddItem(new Item(world, window, FOOD1, 1));
-	inventory->AddItem(new Item(world, window, WATER1, 2));
-	inventory->AddItem(new Item(world, window, WATER2, 1));
 }
 
 void Player::LoadBinds() {
@@ -41,6 +38,9 @@ void Player::LoadBinds() {
 	inputManager->Bind(&actions.walkDown, Keyboard::Key::S);
 	inputManager->Bind(&actions.walkLeft, Keyboard::Key::A);
 	inputManager->Bind(&actions.walkRight, Keyboard::Key::D);
+	inputManager->BindSingleKeyPress(&actions.pickup, Keyboard::Key::E);
+	inputManager->BindSingleKeyPress(&actions.inventory, Keyboard::Key::G);
+	inputManager->BindSingleMousePress(&actions.drop, Mouse::Button::Right);
 }
 
 void Player::Draw() {
@@ -50,8 +50,11 @@ void Player::Draw() {
 }
 
 void Player::Update() {
+	if (!inventory->CheckOpen()) {
+		SetRotation();
+	}
 	Movement();
-	SetRotation();
+	Interaction();
 	m_legSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	m_bodySprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	float poop = body->GetPosition().x;
@@ -82,7 +85,39 @@ void Player::Movement() {
 		position.x += speed;
 	}
 
+	//DEGREE TO RADIAN <--- ADD THIS!!!
 	body->SetTransform(position, 0);
+}
+
+void Player::Interaction() {
+	if (actions.inventory && inventory->CheckOpen()) {
+		inventory->Close();
+		actions.inventory = false;
+	}
+	else if (actions.inventory && !inventory->CheckOpen()) {
+		inventory->Open();
+		actions.inventory = false;
+	}
+
+	if (actions.pickup && touchedItem != NULL) {
+		inventory->AddItem(touchedItem);
+		touchedItem->PickedUp();
+		touchedItem = NULL; 
+		actions.pickup = false;
+	}
+
+	if (actions.drop && inventory->CheckOpen()) {
+		inventory->DropItem(m_pos);
+		actions.drop = false;
+	}
+}
+
+void Player::TouchingItem(Item* item) { 
+	touchedItem = item;
+}
+
+void Player::NotTouchingItem() {
+	touchedItem = NULL;
 }
 
 void Player::SetRotation() {
@@ -105,6 +140,9 @@ void Player::createBox2dBody() {
 	fixtureDef.friction = 0.3f;
 	fixtureDef.userData = "Player";
 	fixtureDef.restitution = b2MixRestitution(0, 0);
+
+	fixtureDef.filter.categoryBits = PLAYER;
+	fixtureDef.filter.maskBits = ITEM;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);

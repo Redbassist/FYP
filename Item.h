@@ -8,7 +8,7 @@
 
 using namespace sf;
 
-static const float SCALE = 30.f;
+const float SCALE = 30.f;
 
 enum ItemType { 
 	FOOD1, FOOD2, FOOD3,
@@ -43,11 +43,14 @@ private:
 
 public:
 	Item(b2World*, RenderWindow*, ItemType, int);
+	Item(b2World*, RenderWindow*, ItemType, int, bool, Vector2f);
 	void LoadAssets(); 
 	void LoadSprites(std::string type);
 	int GetSize();
 	void Draw();
 	void DrawInInventory(Vector2f, FloatRect, int, int);
+	void PickedUp();
+	void Dropped(Vector2f);
 	std::string getTextForEnum(int enumVal);
 	void Item::createBox2dBody();
 };

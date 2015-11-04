@@ -1,9 +1,22 @@
 #pragma once
 #include "Item.h"
 
+enum _entityCategory {
+	PLAYER = 0x0004,
+	ITEM = 0x0008
+};
+
 Item::Item(b2World* w, RenderWindow* rw, ItemType t, int s) : world(w), window(rw), type(t), size(s) {
 	onGround = false;
 	LoadAssets();
+}
+
+//debugging constructor
+Item::Item(b2World* w, RenderWindow* rw, ItemType t, int s, bool g, Vector2f pos) : world(w), window(rw), type(t), size(s) {
+	onGround = g;
+	m_pos = pos;
+	LoadAssets();
+	createBox2dBody();
 }
 
 void Item::LoadAssets()
@@ -43,7 +56,17 @@ void Item::DrawInInventory(Vector2f pos, FloatRect rect, int slotCol, int slotRo
 	float posY = pos.y + (rect.height / 100 * 52) + m_sprite.getTextureRect().height * (slotRow - 1) + (yOffset * (slotRow - 1));
 	m_sprite.setPosition(Vector2f(posX, posY));
 	window->draw(m_sprite);
+}
 
+void Item::PickedUp() {
+	onGround = false;
+}
+
+void Item::Dropped(Vector2f pos) {
+	onGround = true;
+	m_sprite.setScale(Vector2f(0.2, 0.2));
+	m_sprite.setPosition(pos);
+	body->SetTransform(b2Vec2(m_sprite.getPosition().x / SCALE, m_sprite.getPosition().y / SCALE), 0);
 }
 
 std::string Item::getTextForEnum(int enumVal) {
@@ -54,17 +77,17 @@ void Item::createBox2dBody() {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_staticBody;
 	bodyDef.position.Set(m_pos.x / SCALE, m_pos.y / SCALE);
-	bodyDef.userData = this; 
+	bodyDef.userData = this;
 	body = world->CreateBody(&bodyDef);
-	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox((m_sprite.getGlobalBounds().width / 2.0f) / SCALE, (m_sprite.getGlobalBounds().height / 2.0f) / SCALE);
-	fixtureDef.shape = &dynamicBox;
+	b2PolygonShape box;
+	box.SetAsBox((m_sprite.getGlobalBounds().width / 2.0f) / SCALE, (m_sprite.getGlobalBounds().height / 2.0f) / SCALE);
+	fixtureDef.shape = &box;
 	fixtureDef.isSensor = true;
 	fixtureDef.density = 1;
-	fixtureDef.friction = 0.3f;
-	fixtureDef.userData = "Player";
-	fixtureDef.restitution = b2MixRestitution(0, 0);
+	fixtureDef.userData = "Item";
+
+	fixtureDef.filter.categoryBits = ITEM;
+	fixtureDef.filter.maskBits = PLAYER;
 
 	body->CreateFixture(&fixtureDef);
-	body->SetFixedRotation(false);
 }
