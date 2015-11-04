@@ -30,15 +30,6 @@ void Player::LoadAssets() {
 	m_bodySprite.setTextureRect(sf::IntRect(0, 0, m_bodyTexture.getSize().x, m_bodyTexture.getSize().y));
 	m_bodySprite.setOrigin(m_bodyTexture.getSize().x / 2, m_bodyTexture.getSize().y / 2);
 	m_bodySprite.setPosition(m_pos);
-
-	inventory->AddItem(new Item(world, window, WATER2, 1));
-	inventory->AddItem(new Item(world, window, WATER2, 1));
-	inventory->AddItem(new Item(world, window, WATER2, 1));
-	inventory->AddItem(new Item(world, window, WATER2, 2));
-	inventory->AddItem(new Item(world, window, WATER2, 1));
-	inventory->AddItem(new Item(world, window, WATER2, 1));
-	inventory->AddItem(new Item(world, window, WATER2, 1));
-	inventory->AddItem(new Item(world, window, WATER2, 2));
 }
 
 void Player::LoadBinds() {

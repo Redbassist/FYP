@@ -9,6 +9,7 @@
 enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT };
 
 #include "InputManager.h"
+#include "World.h"
 #include "Player.h" 
 #include "Item.h" 
 
@@ -29,15 +30,14 @@ int main()
 	window.setView(view);
 
 	b2Vec2 Gravity(0.f, 0.f);
-	b2World World(Gravity); 
-	World.SetAllowSleeping(false);
+	b2World world(Gravity); 
+	world.SetAllowSleeping(false);
 	ContactListener contactListener = ContactListener();
-	World.SetContactListener(&contactListener);
+	world.SetContactListener(&contactListener);
 
 	InputManager inputManager = InputManager(&window);
 
-	Player player = Player(&World, &window, &inputManager, Vector2f(20, 20));
-	Item* item = new Item(&World, &window, WATER2, 1, true, Vector2f(100, 100));
+	World* gameWorld = new World(&window, &world, &inputManager);
 
 	while (window.isOpen())
 	{
@@ -45,14 +45,14 @@ int main()
 		int32 velocityIterations = 8;   //how strongly to correct velocity
 		int32 positionIterations = 3;   //how strongly to correct position
 
-		World.Step(timeStep, velocityIterations, positionIterations);
+		world.Step(timeStep, velocityIterations, positionIterations);
 
-		inputManager.Update();
-		player.Update();
+		inputManager.Update(); 
+
+		gameWorld->Update();
 		
-		window.clear();
-		player.Draw();
-		item->Draw();
+		window.clear(); 
+		gameWorld->Draw();
 		window.display();
 	}
 }
