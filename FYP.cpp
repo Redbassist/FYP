@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include <iostream>
+#include <stdlib.h>     
+#include <time.h>       
 #include <math.h>
 #include <Box2D/Box2D.h>
 #include "SFML/Graphics.hpp"
@@ -18,6 +20,8 @@ using namespace sf;
 
 int main()
 {
+	srand(time(NULL));
+
 	/** Prepare the window */
 	//int screenWidth = VideoMode::getDesktopMode().width;
 	//int screenHeight = VideoMode::getDesktopMode().height;	

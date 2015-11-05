@@ -1,9 +1,11 @@
 #pragma once
 #include "Item.h"
 
+//For the handling of collision filtering
 enum _entityCategory {
 	PLAYER = 0x0004,
-	ITEM = 0x0008
+	ITEM = 0x0008,
+	CONTAINER = 0x0016
 };
 
 Item::Item(b2World* w, RenderWindow* rw, ItemType t, int s) : world(w), window(rw), type(t), size(s) {
@@ -45,15 +47,33 @@ void Item::Draw() {
 }
 
 void Item::DrawInInventory(Vector2f pos, FloatRect rect, int slotCol, int slotRow) {
-	//SetScale(newSize / oldSize) 
+	/*SetScale(newSize / oldSize)
 	float oldScaleX = m_sprite.getScale().x;
-	float oldScaleY = m_sprite.getScale().y;
+	float oldScaleY = m_sprite.getScale().y;*/
 	m_sprite.setScale(0.6, 0.6);
+	float startX = 30.5;
+	float startY = 52;
 
 	float xOffset = -(rect.width / 100 * 1);
 	float yOffset = -(rect.height / 100 * 1.2);
-	float posX = pos.x + (rect.width / 100 * 30.5) + (m_sprite.getTextureRect().width * (slotCol - 1)) + (xOffset * (slotCol - 1));
-	float posY = pos.y + (rect.height / 100 * 52) + m_sprite.getTextureRect().height * (slotRow - 1) + (yOffset * (slotRow - 1));
+	float posX = pos.x + (rect.width / 100 * startX) + (m_sprite.getTextureRect().width * (slotCol - 1)) + (xOffset * (slotCol - 1));
+	float posY = pos.y + (rect.height / 100 * startY) + m_sprite.getTextureRect().height * (slotRow - 1) + (yOffset * (slotRow - 1));
+	m_sprite.setPosition(Vector2f(posX, posY));
+	window->draw(m_sprite);
+}
+
+void Item::DrawInContainer(Vector2f pos, FloatRect rect, int slotCol, int slotRow) {
+	/*SetScale(newSize / oldSize)
+	float oldScaleX = m_sprite.getScale().x;
+	float oldScaleY = m_sprite.getScale().y;*/
+	m_sprite.setScale(0.6, 0.6);
+	float startX = 24;
+	float startY = 16;
+
+	float xOffset = (rect.width / 100 * 1.5);
+	float yOffset = (rect.height / 100 * 1);
+	float posX = pos.x + (rect.width / 100 * startX) + (m_sprite.getTextureRect().width * (slotCol - 1)) + (xOffset * (slotCol - 1));
+	float posY = pos.y + (rect.height / 100 * startY) + (m_sprite.getTextureRect().height * (slotRow - 1)) + (yOffset * (slotRow - 1));
 	m_sprite.setPosition(Vector2f(posX, posY));
 	window->draw(m_sprite);
 }

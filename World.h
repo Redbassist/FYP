@@ -6,6 +6,7 @@
 #include "SFML/OpenGL.hpp"
 #include "Box2D\Box2D.h" 
 #include "Player.h"
+#include "Container.h"
 #include "Item.h"
 #include "InputManager.h"  
 
@@ -14,7 +15,8 @@ using namespace sf;
 class World {
 private:
 	Player* player;
-	std::vector<Item*> items;
+	std::vector<Container*> containers;
+	std::vector<Item*> items; 
 	b2World* world;
 	RenderWindow* window;
 	InputManager* inputManager;
@@ -24,8 +26,7 @@ public:
 	void CreateAssets();
 	void CreateLevel();
 	void Update();
-	void Draw();
-	void DropItem(Item*); 
+	void Draw(); 
 };
 
 #endif

@@ -20,6 +20,7 @@ void Inventory::LoadAssets()
 }
 
 void Inventory::SetupSlots() {
+	//creates the number of slots desired in the arrangement specified in the constuctor
 	int slotNumber = 1;
 	int currentCol = 1;
 	int currentRow = 1;
@@ -41,6 +42,7 @@ void Inventory::SetupSlots() {
 }
 
 void Inventory::AddItem(Item* item) {
+	//this method will look through the slots in the inventory and find one that is free for the item
 	int size = slots.size();
 
 	for (int i = 0; i < size; i++) {
@@ -49,7 +51,7 @@ void Inventory::AddItem(Item* item) {
 			slots[i].full = true;
 			break;
 		}
-		else if (item->GetSize() == 2 && !slots[i].full && !slots[i + 1].full && slots[i].col != 4) {
+		else if (item->GetSize() == 2 && !slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
 			slots[i].item = item;
 			slots[i].full = true;
 			slots[i + 1].full = true;
@@ -58,7 +60,7 @@ void Inventory::AddItem(Item* item) {
 		else if (item->GetSize() == 2) {
 			bool loop = true;
 			while (loop) {
-				if (!slots[i].full && !slots[i + 1].full && slots[i].col != 4) {
+				if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
 					slots[i].item = item;
 					slots[i].full = true;
 					slots[i + 1].full = true;
@@ -71,26 +73,28 @@ void Inventory::AddItem(Item* item) {
 	}
 }
 
-void Inventory::DropItem(Vector2f clickPos, Vector2f playerPos) {
+Item* Inventory::DropItem(Vector2f clickPos, Vector2f playerPos) {
 	int size = slots.size();
 
 	for (int i = 0; i < size; i++) {
 		if (slots[i].full == true && slots[i].item != NULL) {
 			if (slots[i].item->CheckSprite(clickPos)) {
-				slots[i].item->Dropped(playerPos);
-				if (slots[i].item->GetSize() == 1) {
+				Item* tempItem = slots[i].item;
+				if (slots[i].item->GetSize() == 1) { 
 					slots[i].full = false;
 					slots[i].item = NULL;
 				}
-				else {
+				else { 
 					slots[i].full = false;
 					slots[i + 1].full = false;
 					slots[i].item = NULL;
 				}
-				break;
+				return tempItem;
 			}
 		}
 	}
+
+	return NULL;
 }
 
 /*
@@ -111,6 +115,7 @@ bool Inventory::CheckOpen() {
 }
 
 void Inventory::Draw() {
+	//opening and closing the inventory onto the screen. SLIDES.
 	Vector2f center = window->getView().getCenter();
 	Vector2f size = window->getView().getSize();
 
@@ -137,14 +142,6 @@ void Inventory::DrawItems() {
 	int currentRow = 1;
 	for (int i = 0; i < size; i++) {
 		if (slots[i].item != NULL && slots[i].full == true)
-			slots[i].item->DrawInInventory(m_sprite.getPosition(), m_sprite.getGlobalBounds(), slots[i].col, slots[i].row);
-		/*
-		if (invSlot + inventory[i]->GetSize() > invCols) {
-			invSlot = 1;
-			currentRow++;
-		}
-		else {
-			invSlot += inventory[i]->GetSize();
-		}*/
+			slots[i].item->DrawInInventory(m_sprite.getPosition(), m_sprite.getGlobalBounds(), slots[i].col, slots[i].row); 
 	}
 }

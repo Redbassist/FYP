@@ -7,6 +7,7 @@
 #include "Box2D\Box2D.h" 
 #include "InputManager.h" 
 #include "Inventory.h"
+#include "Container.h"
 
 using namespace sf;
 
@@ -15,8 +16,9 @@ struct keyActions {
 	bool walkRight = false;
 	bool walkUp = false;
 	bool walkDown = false;
-	bool pickup = false;
+	bool interact = false;
 	bool drop = false;
+	bool take = false;
 	bool inventory = false;
 };
 
@@ -30,6 +32,7 @@ private:
 	b2World* world; 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
+	Container* touchedContainer;
 	std::vector<Item*> touchedItems;
 	RenderWindow* window; 
 	InputManager* inputManager;
@@ -46,6 +49,8 @@ public:
 	void Update();
 	void Movement();
 	void Interaction();
+	void TouchingContainer(Container*);
+	void NotTouchingContainer();
 	void TouchingItem(Item*);
 	void NotTouchingItem(Item*);
 	void CenterCamera();

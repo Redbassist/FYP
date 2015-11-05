@@ -49,11 +49,12 @@ public:
 	int GetSize();
 	void Draw();
 	void DrawInInventory(Vector2f, FloatRect, int, int);
+	void DrawInContainer(Vector2f, FloatRect, int, int);
 	void PickedUp();
 	bool CheckSprite(Vector2f);
 	void Dropped(Vector2f);
 	std::string getTextForEnum(int enumVal);
-	void Item::createBox2dBody();
+	void createBox2dBody();
 };
 
 #endif

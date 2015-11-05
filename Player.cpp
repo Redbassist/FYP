@@ -1,14 +1,17 @@
 #include "Player.h"
 
+//For the handling of collision filtering
 enum _entityCategory {
 	PLAYER = 0x0004,
-	ITEM = 0x0008
+	ITEM = 0x0008,
+	CONTAINER = 0x0016
 };
 
 Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
 {
 	inventory = new Inventory(w, im);
-	speed = 0.045f;  
+	speed = 0.045f;
+	touchedContainer = NULL;
 
 	LoadAssets();
 	LoadBinds();
@@ -37,9 +40,10 @@ void Player::LoadBinds() {
 	inputManager->Bind(&actions.walkDown, Keyboard::Key::S);
 	inputManager->Bind(&actions.walkLeft, Keyboard::Key::A);
 	inputManager->Bind(&actions.walkRight, Keyboard::Key::D);
-	inputManager->BindSingleKeyPress(&actions.pickup, Keyboard::Key::E);
+	inputManager->BindSingleKeyPress(&actions.interact, Keyboard::Key::E);
 	inputManager->BindSingleKeyPress(&actions.inventory, Keyboard::Key::G);
 	inputManager->BindSingleMousePress(&actions.drop, Mouse::Button::Right);
+	inputManager->BindSingleMousePress(&actions.take, Mouse::Button::Right);
 }
 
 void Player::Draw() {
@@ -89,6 +93,7 @@ void Player::Movement() {
 }
 
 void Player::Interaction() {
+	//opening and closing the inventory
 	if (actions.inventory && inventory->CheckOpen()) {
 		inventory->Close();
 		actions.inventory = false;
@@ -98,23 +103,78 @@ void Player::Interaction() {
 		actions.inventory = false;
 	}
 
-	if (actions.pickup && !touchedItems.empty()) {
-		inventory->AddItem(touchedItems[0]);
-		touchedItems[0]->PickedUp();
-		touchedItems.erase(touchedItems.begin());
-		actions.pickup = false;
+	if (actions.interact) {
+		//opening and closing a touched container
+		if (touchedContainer != NULL) {
+			if (!touchedContainer->CheckOpen()) {
+				touchedContainer->Open();
+				actions.interact = false;
+			}
+			else {
+				touchedContainer->Close();
+				actions.interact = false;
+			}
+		}
+		//picking up a close item
+		else if (!touchedItems.empty()){
+			inventory->AddItem(touchedItems[0]);
+			touchedItems[0]->PickedUp();
+			touchedItems.erase(touchedItems.begin());
+			actions.interact = false;
+		}
 	}
 
-	if (actions.drop && inventory->CheckOpen()) {
+	//dropping items from the inventory
+	/*if (actions.drop && touchedContainer != NULL && touchedContainer->CheckOpen()) {
 		Vector2i mousePos = Mouse::getPosition(*window);
 		//used to convert to view coordinates
 		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
 		inventory->DropItem((Vector2f)worldMousePos, m_pos);
 		actions.drop = false;
+	}*/
+
+	//dropping items from the inventory
+	if (actions.drop && touchedContainer != NULL && touchedContainer->CheckOpen()) {
+		Vector2i mousePos = Mouse::getPosition(*window);
+		//used to convert to view coordinates
+		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+		Item* item = inventory->DropItem((Vector2f)worldMousePos, m_pos);
+		if (item != NULL)
+			touchedContainer->AddItem(item);
+		actions.drop = false;
+	}
+
+	else if (actions.drop && inventory->CheckOpen()) {
+		Vector2i mousePos = Mouse::getPosition(*window);
+		//used to convert to view coordinates
+		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+		Item* item = inventory->DropItem((Vector2f)worldMousePos, m_pos);
+		if (item != NULL)
+			item->Dropped(m_pos);
+		actions.drop = false;
+	}
+
+	//dropping items from the inventory
+	if (actions.take && touchedContainer != NULL && touchedContainer->CheckOpen()) {
+		Vector2i mousePos = Mouse::getPosition(*window);
+		//used to convert to view coordinates
+		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos); 
+		Item* tempItem = touchedContainer->TakeItem(worldMousePos);
+		if (tempItem != NULL)
+			inventory->AddItem(tempItem);
+		actions.take = false;
 	}
 }
 
-void Player::TouchingItem(Item* item) { 
+void Player::TouchingContainer(Container* container) {
+	touchedContainer = container;
+}
+
+void Player::NotTouchingContainer() {
+	touchedContainer = NULL;
+}
+
+void Player::TouchingItem(Item* item) {
 	touchedItems.push_back(item);
 }
 
@@ -152,7 +212,7 @@ void Player::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
-	fixtureDef.filter.maskBits = ITEM;
+	fixtureDef.filter.maskBits = ITEM | CONTAINER;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);
