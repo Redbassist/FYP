@@ -39,12 +39,12 @@ public:
 			if (fixAType == "Player") {
 				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
-				static_cast<Player*>(bodyUserData1)->NotTouchingItem();
+				static_cast<Player*>(bodyUserData1)->NotTouchingItem(static_cast<Item*>(bodyUserData2));
 			}
 			else if (fixBType == "Player") {
 				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
-				static_cast<Player*>(bodyUserData1)->NotTouchingItem();
+				static_cast<Player*>(bodyUserData1)->NotTouchingItem(static_cast<Item*>(bodyUserData2));
 			}
 		}
 	}

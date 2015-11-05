@@ -8,8 +8,7 @@ enum _entityCategory {
 Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
 {
 	inventory = new Inventory(w, im);
-	speed = 0.045f;
-	touchedItem = NULL;
+	speed = 0.045f;  
 
 	LoadAssets();
 	LoadBinds();
@@ -99,10 +98,10 @@ void Player::Interaction() {
 		actions.inventory = false;
 	}
 
-	if (actions.pickup && touchedItem != NULL) {
-		inventory->AddItem(touchedItem);
-		touchedItem->PickedUp();
-		touchedItem = NULL; 
+	if (actions.pickup && !touchedItems.empty()) {
+		inventory->AddItem(touchedItems[0]);
+		touchedItems[0]->PickedUp();
+		touchedItems.erase(touchedItems.begin());
 		actions.pickup = false;
 	}
 
@@ -116,11 +115,19 @@ void Player::Interaction() {
 }
 
 void Player::TouchingItem(Item* item) { 
-	touchedItem = item;
+	touchedItems.push_back(item);
 }
 
-void Player::NotTouchingItem() {
-	touchedItem = NULL;
+void Player::NotTouchingItem(Item* item) {
+	std::vector<Item*>::iterator iter = touchedItems.begin();
+	std::vector<Item*>::iterator end = touchedItems.end();
+
+	for (; iter != end; ++iter) {
+		if (item == (*iter)) {
+			touchedItems.erase(iter);
+			break;
+		}
+	}
 }
 
 void Player::SetRotation() {

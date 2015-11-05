@@ -60,6 +60,7 @@ void Item::DrawInInventory(Vector2f pos, FloatRect rect, int slotCol, int slotRo
 
 void Item::PickedUp() {
 	onGround = false;
+	body->GetFixtureList()->SetUserData("Destroy");
 }
 
 bool Item::CheckSprite(Vector2f mouseClick) {

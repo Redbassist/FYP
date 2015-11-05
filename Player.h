@@ -30,7 +30,7 @@ private:
 	b2World* world; 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
-	Item* touchedItem;
+	std::vector<Item*> touchedItems;
 	RenderWindow* window; 
 	InputManager* inputManager;
 	Vector2f m_pos;
@@ -47,7 +47,7 @@ public:
 	void Movement();
 	void Interaction();
 	void TouchingItem(Item*);
-	void NotTouchingItem();
+	void NotTouchingItem(Item*);
 	void CenterCamera();
 	void SetRotation();
 	float getRotationAngle();

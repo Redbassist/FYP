@@ -47,8 +47,18 @@ int main()
 
 		world.Step(timeStep, velocityIterations, positionIterations);
 
-		inputManager.Update(); 
+		//checking for bodies that need to be destroyed (Using their user data)
+		//Consider threading this operation 
+		b2Body* bodyList = world.GetBodyList();
 
+		for (; bodyList != NULL; bodyList = bodyList->GetNext()) {
+			if (bodyList->GetFixtureList()->GetUserData() == "Destroy") {
+				world.DestroyBody(bodyList);
+				break;
+			}
+		}
+
+		inputManager.Update(); 
 		gameWorld->Update();
 		
 		window.clear(); 
