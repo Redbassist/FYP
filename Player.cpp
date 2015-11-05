@@ -43,7 +43,7 @@ void Player::LoadBinds() {
 	inputManager->BindSingleKeyPress(&actions.interact, Keyboard::Key::E);
 	inputManager->BindSingleKeyPress(&actions.inventory, Keyboard::Key::G);
 	inputManager->BindSingleMousePress(&actions.drop, Mouse::Button::Right);
-	inputManager->BindSingleMousePress(&actions.take, Mouse::Button::Right);
+	inputManager->BindSingleMousePress(&actions.take, Mouse::Button::Left);
 }
 
 void Player::Draw() {

@@ -64,7 +64,7 @@ void Container::GenerateItems() {
 	int size = slots.size();
 
 	for (int i = 0; i < size; i++) {
-		if ((rand() % 10 + 1) == 5) {
+		if ((rand() % 5 + 1) == 5) {
 			int item = rand() % 4 + 0;
 			if (item == 0) {
 				slots[i].item = new Item(world, window, FOOD1, 1);
