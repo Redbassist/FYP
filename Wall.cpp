@@ -5,7 +5,8 @@ enum _entityCategory {
 	PLAYER = 0x0004,
 	ITEM = 0x0008,
 	CONTAINER = 0x0016,
-	WALL = 0x0020
+	WALL = 0x0020,
+	DOOR = 0x0024,
 };
 
 Wall::Wall(b2World* w, RenderWindow* rw, Vector2f pos, Vector2f s) : world(w), window(rw), m_pos(pos), size(s) {

@@ -28,7 +28,7 @@ int main()
 	int screenWidth = 1280;
 	int screenHeight = 720;
 	RenderWindow window(VideoMode(screenWidth, screenHeight, 32), "FYP");
-	window.setFramerateLimit(120);
+	window.setFramerateLimit(60);
 	View view = View(FloatRect(0, 0, screenWidth, screenHeight));
 	view.zoom(0.7);
 	window.setView(view); 

@@ -4,7 +4,9 @@
 enum _entityCategory {
 	PLAYER = 0x0004,
 	ITEM = 0x0008,
-	CONTAINER = 0x0016
+	CONTAINER = 0x0016,
+	WALL = 0x0020,
+	DOOR = 0x0024,
 };
 
 Container::Container(b2World* w, RenderWindow* rw, Vector2f pos, float rot, std::vector<Item*>* i) : 
@@ -210,6 +212,4 @@ void Container::createBox2dBody() {
 	fixtureDef.filter.maskBits = PLAYER;
 
 	body->CreateFixture(&fixtureDef);
-	//setting rotation to the rotation of the sprite
-	body->SetTransform(body->GetPosition(), rotation);
 }

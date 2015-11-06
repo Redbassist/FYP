@@ -6,6 +6,7 @@
 #include "SFML/OpenGL.hpp"
 #include "Box2D\Box2D.h" 
 #include "Wall.h"
+#include "Door.h"
 #include "Container.h"
 
 using namespace sf;
@@ -21,6 +22,7 @@ private:
 	std::vector<Wall*> walls;
 	std::vector<Item*>* items;
 	std::vector<Container*> containers;
+	std::vector<Door*> doors;
 
 public:
 	House(b2World*, RenderWindow*, Vector2f, std::vector<Item*>*);

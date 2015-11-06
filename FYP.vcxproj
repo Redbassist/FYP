@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="ContactListener.h" />
     <ClInclude Include="Container.h" />
+    <ClInclude Include="Door.h" />
     <ClInclude Include="House.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Inventory.h" />
@@ -173,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Container.cpp" />
+    <ClCompile Include="Door.cpp" />
     <ClCompile Include="FYP.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="InputManager.cpp" />

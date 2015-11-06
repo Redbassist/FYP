@@ -42,6 +42,20 @@ public:
 			}
 		}
 
+		else if (fixAType == "Player" && fixBType == "Door"
+			|| fixAType == "Door" && fixBType == "Player") {
+			if (fixAType == "Player") {
+				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
+				static_cast<Player*>(bodyUserData1)->TouchingDoor(static_cast<Door*>(bodyUserData2));
+			}
+			else if (fixBType == "Player") {
+				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
+				static_cast<Player*>(bodyUserData1)->TouchingDoor(static_cast<Door*>(bodyUserData2));
+			}
+		}
+
 
 	}
 
@@ -77,6 +91,20 @@ public:
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
 				static_cast<Player*>(bodyUserData1)->NotTouchingContainer();
 				static_cast<Container*>(bodyUserData2)->Close();
+			}
+		}
+
+		else if (fixAType == "Player" && fixBType == "Door"
+			|| fixAType == "Door" && fixBType == "Player") {
+			if (fixAType == "Player") {
+				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
+				static_cast<Player*>(bodyUserData1)->NotTouchingDoor(); 
+			}
+			else if (fixBType == "Player") {
+				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
+				static_cast<Player*>(bodyUserData1)->NotTouchingDoor(); 
 			}
 		}
 	}

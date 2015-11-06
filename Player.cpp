@@ -5,7 +5,8 @@ enum _entityCategory {
 	PLAYER = 0x0004,
 	ITEM = 0x0008,
 	CONTAINER = 0x0016,
-	WALL = 0x0020
+	WALL = 0x0020,
+	DOOR = 0x0024,
 };
 
 Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
@@ -13,6 +14,7 @@ Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos
 	inventory = new Inventory(w, im);
 	speed = 0.045f;
 	touchedContainer = NULL;
+	touchedDoor = NULL;
 
 	LoadAssets();
 	LoadBinds();
@@ -123,16 +125,7 @@ void Player::Interaction() {
 			touchedItems.erase(touchedItems.begin());
 			actions.interact = false;
 		}
-	}
-
-	//dropping items from the inventory
-	/*if (actions.drop && touchedContainer != NULL && touchedContainer->CheckOpen()) {
-		Vector2i mousePos = Mouse::getPosition(*window);
-		//used to convert to view coordinates
-		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
-		inventory->DropItem((Vector2f)worldMousePos, m_pos);
-		actions.drop = false;
-	}*/
+	} 
 
 	//dropping items from the inventory
 	if (actions.drop && touchedContainer != NULL && touchedContainer->CheckOpen()) {
@@ -165,6 +158,11 @@ void Player::Interaction() {
 			inventory->AddItem(tempItem);
 		actions.take = false;
 	}
+
+	if (actions.interact && touchedDoor != NULL) {
+		touchedDoor->OpenClose();
+		actions.interact = false;
+	}
 }
 
 void Player::TouchingContainer(Container* container) {
@@ -173,6 +171,14 @@ void Player::TouchingContainer(Container* container) {
 
 void Player::NotTouchingContainer() {
 	touchedContainer = NULL;
+}
+
+void Player::TouchingDoor(Door* door) {
+	touchedDoor = door;
+}
+
+void Player::NotTouchingDoor() {
+	touchedDoor = NULL;
 }
 
 void Player::TouchingItem(Item* item) {
@@ -214,7 +220,7 @@ void Player::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
-	fixtureDef.filter.maskBits = ITEM | CONTAINER | WALL;
+	fixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);

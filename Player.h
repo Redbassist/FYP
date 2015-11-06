@@ -8,6 +8,7 @@
 #include "InputManager.h" 
 #include "Inventory.h"
 #include "Container.h"
+#include "Door.h"
 
 using namespace sf;
 
@@ -34,6 +35,7 @@ private:
 	b2FixtureDef fixtureDef;
 	Container* touchedContainer;
 	std::vector<Item*> touchedItems;
+	Door* touchedDoor;
 	RenderWindow* window; 
 	InputManager* inputManager;
 	Vector2f m_pos;
@@ -53,6 +55,8 @@ public:
 	void NotTouchingContainer();
 	void TouchingItem(Item*);
 	void NotTouchingItem(Item*);
+	void TouchingDoor(Door*);
+	void NotTouchingDoor();
 	void CenterCamera();
 	void SetRotation();
 	float getRotationAngle();
