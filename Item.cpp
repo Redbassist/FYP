@@ -5,7 +5,8 @@
 enum _entityCategory {
 	PLAYER = 0x0004,
 	ITEM = 0x0008,
-	CONTAINER = 0x0016
+	CONTAINER = 0x0016,
+	WALL = 0x0020
 };
 
 Item::Item(b2World* w, RenderWindow* rw, ItemType t, int s) : world(w), window(rw), type(t), size(s) {

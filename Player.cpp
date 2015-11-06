@@ -4,7 +4,8 @@
 enum _entityCategory {
 	PLAYER = 0x0004,
 	ITEM = 0x0008,
-	CONTAINER = 0x0016
+	CONTAINER = 0x0016,
+	WALL = 0x0020
 };
 
 Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
@@ -46,7 +47,7 @@ void Player::LoadBinds() {
 	inputManager->BindSingleMousePress(&actions.take, Mouse::Button::Left);
 }
 
-void Player::Draw() {
+void Player::Draw() { 
 	window->draw(m_legSprite);
 	window->draw(m_bodySprite);
 	inventory->Draw();
@@ -88,8 +89,8 @@ void Player::Movement() {
 		position.x += speed;
 	}
 
-	//DEGREE TO RADIAN <--- ADD THIS!!!
 	body->SetTransform(position, 0);
+	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
 }
 
 void Player::Interaction() {
@@ -191,8 +192,9 @@ void Player::NotTouchingItem(Item* item) {
 }
 
 void Player::SetRotation() {
-	m_bodySprite.setRotation(getRotationAngle());
-	m_legSprite.setRotation(getRotationAngle());
+	orientation = getRotationAngle();
+	m_bodySprite.setRotation(orientation);
+	m_legSprite.setRotation(orientation); 
 }
 
 void Player::createBox2dBody() {
@@ -212,7 +214,7 @@ void Player::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
-	fixtureDef.filter.maskBits = ITEM | CONTAINER;
+	fixtureDef.filter.maskBits = ITEM | CONTAINER | WALL;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);

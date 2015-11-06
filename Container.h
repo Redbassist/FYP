@@ -4,8 +4,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
-#include "Box2D\Box2D.h" 
-#include "InputManager.h" 
+#include "Box2D\Box2D.h"  
 #include "Item.h"
 #include <math.h>
 
@@ -26,8 +25,7 @@ private:
 	Sprite m_sprite;
 	Texture m_shapeTexture;
 	Sprite m_shapeSprite;
-	RenderWindow* window;
-	InputManager* inputManager;
+	RenderWindow* window; 
 	b2World* world;
 	b2Body* body;
 	b2FixtureDef fixtureDef;
@@ -42,7 +40,7 @@ private:
 	std::vector<Item*>* items;
 
 public:
-	Container(b2World*, RenderWindow*, InputManager*, Vector2f, float, std::vector<Item*>*);
+	Container(b2World*, RenderWindow*, Vector2f, float, std::vector<Item*>*);
 	void LoadAssets();
 	void SetupSlots();
 	void GenerateItems();

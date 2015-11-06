@@ -7,8 +7,8 @@ enum _entityCategory {
 	CONTAINER = 0x0016
 };
 
-Container::Container(b2World* w, RenderWindow* rw, InputManager* im, Vector2f pos, float rot, std::vector<Item*>* i) : 
-	world(w), window(rw), inputManager(im), m_pos(pos), rotation(rot), items(i)
+Container::Container(b2World* w, RenderWindow* rw, Vector2f pos, float rot, std::vector<Item*>* i) : 
+	world(w), window(rw), m_pos(pos), rotation(rot), items(i)
 {
 	open = false;
 	invCols = 4;

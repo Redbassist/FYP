@@ -5,21 +5,25 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
 #include "Box2D\Box2D.h" 
+#include "InputManager.h"  
 #include "Player.h"
 #include "Container.h"
 #include "Item.h"
-#include "InputManager.h"  
+#include "House.h" 
 
 using namespace sf;
 
 class World {
 private:
 	Player* player;
-	std::vector<Container*> containers;
-	std::vector<Item*> items; 
+	Texture m_texture;
+	Sprite m_sprite;
 	b2World* world;
 	RenderWindow* window;
 	InputManager* inputManager;
+	std::vector<House*> houses;
+	std::vector<Container*> containers;
+	std::vector<Item*> items;	
 		
 public:
 	World(RenderWindow*, b2World*, InputManager*);

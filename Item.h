@@ -8,7 +8,7 @@
 
 using namespace sf;
 
-const float SCALE = 30.f;
+const static float SCALE = 30.f;
 
 enum ItemType { 
 	FOOD1, FOOD2, FOOD3,

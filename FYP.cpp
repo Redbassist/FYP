@@ -28,13 +28,13 @@ int main()
 	int screenWidth = 1280;
 	int screenHeight = 720;
 	RenderWindow window(VideoMode(screenWidth, screenHeight, 32), "FYP");
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(120);
 	View view = View(FloatRect(0, 0, screenWidth, screenHeight));
 	view.zoom(0.7);
-	window.setView(view);
+	window.setView(view); 
 
 	b2Vec2 Gravity(0.f, 0.f);
-	b2World world(Gravity); 
+	b2World world(Gravity);
 	world.SetAllowSleeping(false);
 	ContactListener contactListener = ContactListener();
 	world.SetContactListener(&contactListener);
@@ -62,10 +62,10 @@ int main()
 			}
 		}
 
-		inputManager.Update(); 
+		inputManager.Update();
 		gameWorld->Update();
-		
-		window.clear(); 
+
+		window.clear();
 		gameWorld->Draw();
 		window.display();
 	}
