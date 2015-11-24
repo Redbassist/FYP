@@ -11,6 +11,7 @@ enum _entityCategory {
 
 Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
 {
+	m_pos = pos;
 	inventory = new Inventory(w, im);
 	speed = 0.045f;
 	touchedContainer = NULL;
@@ -22,13 +23,21 @@ Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos
 }
 
 void Player::LoadAssets() {
-	m_legTexture.loadFromFile("Sprites/legs.png");
-	m_legTexture.setSmooth(false);
-	m_legSprite.setTexture(m_legTexture);
-	m_legSprite.setTextureRect(sf::IntRect(0, 0, m_legTexture.getSize().x, m_legTexture.getSize().y));
-	m_legSprite.setOrigin(m_legTexture.getSize().x / 2, m_legTexture.getSize().y / 2);
-	m_legSprite.setPosition(m_pos);
+	m_legsMovingTexture.loadFromFile("Sprites/legs.png");
+	m_legsMovingTexture.setSmooth(false);
 
+	legsIdle.setSpriteSheet(m_legsMovingTexture);
+	legsIdle.addFrames(1, 1, 1, 32, 32);
+
+	legsMoving.setSpriteSheet(m_legsMovingTexture);
+	legsMoving.addFrames(12, 4, 3, 32, 32);
+
+	currentAnimation = &legsIdle;
+
+	animatedSprite = AnimatedSprite(sf::seconds(0.2), true, false);
+	animatedSprite.setOrigin(16, 16);
+	animatedSprite.setPosition(m_pos); 
+	
 	m_bodyTexture.loadFromFile("Sprites/player.png");
 	m_bodyTexture.setSmooth(false);
 	m_bodySprite.setTexture(m_bodyTexture);

@@ -12,7 +12,7 @@ public:
 	Animation();
 
 	void addFrame(sf::IntRect rect);
-	void addFrames(int, int, int, int, int);
+	void addFrames(int frames, int columns, int rows, int individualWidth, int individualHeight);
 	void setSpriteSheet(const sf::Texture& texture);
 	const sf::Texture* getSpriteSheet() const;
 	std::size_t getSize() const;

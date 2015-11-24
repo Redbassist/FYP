@@ -28,11 +28,11 @@ struct keyActions {
 class Player {
 private:
 	keyActions actions;
-	Texture m_legsMovingTexture;
-	Texture m_legsIdleTexture; 
+	Texture m_legsMovingTexture; 
 	Texture m_bodyTexture;
 	Animation legsIdle;
 	Animation legsMoving;
+	Animation* currentAnimation;
 	AnimatedSprite animatedSprite;
 	Sprite m_bodySprite;
 	b2World* world; 
