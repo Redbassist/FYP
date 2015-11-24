@@ -5,6 +5,8 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
 #include "Box2D\Box2D.h" 
+#include "Animation.h"
+#include "AnimatedSprite.h"
 #include "InputManager.h" 
 #include "Inventory.h"
 #include "Container.h"
@@ -26,9 +28,12 @@ struct keyActions {
 class Player {
 private:
 	keyActions actions;
-	Texture m_legTexture;
-	Sprite m_legSprite;
+	Texture m_legsMovingTexture;
+	Texture m_legsIdleTexture; 
 	Texture m_bodyTexture;
+	Animation legsIdle;
+	Animation legsMoving;
+	AnimatedSprite animatedSprite;
 	Sprite m_bodySprite;
 	b2World* world; 
 	b2Body* body;

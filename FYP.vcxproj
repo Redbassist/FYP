@@ -160,6 +160,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimatedSprite.h" />
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="ContactListener.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Door.h" />
@@ -174,6 +176,8 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimatedSprite.cpp" />
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Container.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="FYP.cpp" />
