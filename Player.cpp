@@ -23,6 +23,7 @@ Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos
 }
 
 void Player::LoadAssets() {
+	//loading the animations for the player
 	m_legsMovingTexture.loadFromFile("Sprites/legs.png");
 	m_legsMovingTexture.setSmooth(false);
 
@@ -34,10 +35,12 @@ void Player::LoadAssets() {
 
 	currentAnimation = &legsIdle;
 
-	animatedSprite = AnimatedSprite(sf::seconds(0.2), true, false);
+	animatedSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedSprite.setOrigin(16, 16);
-	animatedSprite.setPosition(m_pos); 
-	
+	animatedSprite.setPosition(m_pos);
+	animatedSprite.setScale(1.8, 1.3);
+
+	//loading the body sprite for the player
 	m_bodyTexture.loadFromFile("Sprites/player.png");
 	m_bodyTexture.setSmooth(false);
 	m_bodySprite.setTexture(m_bodyTexture);
@@ -58,8 +61,21 @@ void Player::LoadBinds() {
 	inputManager->BindSingleMousePress(&actions.take, Mouse::Button::Left);
 }
 
-void Player::Draw() { 
-	window->draw(m_legSprite);
+void Player::Draw() {
+	//frame time which is used for updating the animation
+	sf::Time frameTime = frameClock.restart();
+
+	//Setting the animation of the player legs depending on if is moving or not
+	if (actions.walkUp || actions.walkDown || actions.walkLeft || actions.walkRight) {
+		currentAnimation = &legsMoving;
+	}
+	else {
+		currentAnimation = &legsIdle;
+	}
+	animatedSprite.play(*currentAnimation);
+	animatedSprite.update(frameTime);
+
+	window->draw(animatedSprite);
 	window->draw(m_bodySprite);
 	inventory->Draw();
 }
@@ -70,10 +86,13 @@ void Player::Update() {
 	}
 	Movement();
 	Interaction();
-	m_legSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+
+	//setting the position of the sprite to the physics body
+	animatedSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	m_bodySprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
-	float poop = body->GetPosition().x;
 	m_pos = m_bodySprite.getPosition();
+
+	//setting camera to the player
 	CenterCamera();
 }
 
@@ -128,13 +147,13 @@ void Player::Interaction() {
 			}
 		}
 		//picking up a close item
-		else if (!touchedItems.empty()){
+		else if (!touchedItems.empty()) {
 			inventory->AddItem(touchedItems[0]);
 			touchedItems[0]->PickedUp();
 			touchedItems.erase(touchedItems.begin());
 			actions.interact = false;
 		}
-	} 
+	}
 
 	//dropping items from the inventory
 	if (actions.drop && touchedContainer != NULL && touchedContainer->CheckOpen()) {
@@ -161,7 +180,7 @@ void Player::Interaction() {
 	if (actions.take && touchedContainer != NULL && touchedContainer->CheckOpen()) {
 		Vector2i mousePos = Mouse::getPosition(*window);
 		//used to convert to view coordinates
-		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos); 
+		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
 		Item* tempItem = touchedContainer->TakeItem(worldMousePos);
 		if (tempItem != NULL)
 			inventory->AddItem(tempItem);
@@ -209,7 +228,7 @@ void Player::NotTouchingItem(Item* item) {
 void Player::SetRotation() {
 	orientation = getRotationAngle();
 	m_bodySprite.setRotation(orientation);
-	m_legSprite.setRotation(orientation); 
+	animatedSprite.setRotation(orientation);
 }
 
 void Player::createBox2dBody() {

@@ -27,6 +27,9 @@ struct keyActions {
 
 class Player {
 private:
+	RenderWindow* window;
+	InputManager* inputManager;
+
 	keyActions actions;
 	Texture m_legsMovingTexture; 
 	Texture m_bodyTexture;
@@ -35,18 +38,21 @@ private:
 	Animation* currentAnimation;
 	AnimatedSprite animatedSprite;
 	Sprite m_bodySprite;
+
 	b2World* world; 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
+
 	Container* touchedContainer;
 	std::vector<Item*> touchedItems;
 	Door* touchedDoor;
-	RenderWindow* window; 
-	InputManager* inputManager;
+
 	Vector2f m_pos;
 	float orientation;
 	float speed;
 	Inventory* inventory;
+
+	sf::Clock frameClock;
 
 public:
 	Player(b2World*, RenderWindow*, InputManager*, Vector2f);

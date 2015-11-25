@@ -11,15 +11,18 @@ void Animation::addFrame(sf::IntRect rect)
 }
 
 void Animation::addFrames(int frames, int columns, int rows, int individualWidth, int individualHeight)
+//add all frames for the animation using number of frames and the arrangment of the images in the spritesheet
 {
 	int currentCol = 1;
 	int currentRow = 1;
 	for (int i = 0; i < frames; i++) {
 		addFrame(sf::IntRect(individualWidth * (currentCol - 1), individualHeight * (currentRow - 1), individualWidth, individualHeight));
 		currentCol++;
-		if (currentCol > columns) { currentCol = 0; }
-		currentRow++;
-		if (currentRow > rows) { currentRow = 0; }
+		if (currentCol > columns) {
+			currentCol = 1;
+			currentRow++;
+		}
+		if (currentRow > rows) { currentRow = 1; }
 	}
 }
 
