@@ -13,7 +13,7 @@ Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos
 {
 	m_pos = pos;
 	inventory = new Inventory(w, im);
-	speed = 0.045f;
+	speed = 0.06f;
 	touchedContainer = NULL;
 	touchedDoor = NULL;
 
@@ -34,7 +34,7 @@ void Player::LoadAssets() {
 	legsMoving.addFrames(12, 4, 3, 32, 32);
 
 	currentAnimation = &legsIdle;
-
+	
 	animatedSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedSprite.setOrigin(16, 16);
 	animatedSprite.setPosition(m_pos);
@@ -45,7 +45,7 @@ void Player::LoadAssets() {
 	m_bodyTexture.setSmooth(false);
 	m_bodySprite.setTexture(m_bodyTexture);
 	m_bodySprite.setTextureRect(sf::IntRect(0, 0, m_bodyTexture.getSize().x, m_bodyTexture.getSize().y));
-	m_bodySprite.setOrigin(m_bodyTexture.getSize().x / 2, m_bodyTexture.getSize().y / 2);
+	m_bodySprite.setOrigin(m_bodyTexture.getSize().x / 2 -3, m_bodyTexture.getSize().y / 2);
 	m_bodySprite.setPosition(m_pos);
 }
 
