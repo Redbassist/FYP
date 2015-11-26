@@ -31,13 +31,16 @@ private:
 	InputManager* inputManager;
 
 	keyActions actions;
-	Texture m_legsMovingTexture; 
-	Texture m_bodyTexture;
+	Texture m_AnimationLegsTexture;
+	Texture m_AnimationTopTexture;
 	Animation legsIdle;
 	Animation legsMoving;
-	Animation* currentAnimation;
-	AnimatedSprite animatedSprite;
-	Sprite m_bodySprite;
+	Animation playerTopIdle;
+	Animation playerTopMoving;
+	Animation* currentLegAnimation;
+	Animation* currentTopAnimation;
+	AnimatedSprite animatedLegSprite;
+	AnimatedSprite animatedTopSprite;
 
 	b2World* world; 
 	b2Body* body;

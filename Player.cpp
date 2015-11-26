@@ -24,29 +24,31 @@ Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos
 
 void Player::LoadAssets() {
 	//loading the animations for the player
-	m_legsMovingTexture.loadFromFile("Sprites/legs.png");
-	m_legsMovingTexture.setSmooth(false);
-
-	legsIdle.setSpriteSheet(m_legsMovingTexture);
+	m_AnimationLegsTexture.loadFromFile("Sprites/legs.png");
+	m_AnimationLegsTexture.setSmooth(false);
+	legsIdle.setSpriteSheet(m_AnimationLegsTexture);
 	legsIdle.addFrames(1, 1, 1, 32, 32);
-
-	legsMoving.setSpriteSheet(m_legsMovingTexture);
+	legsMoving.setSpriteSheet(m_AnimationLegsTexture);
 	legsMoving.addFrames(12, 4, 3, 32, 32);
-
-	currentAnimation = &legsIdle;
+	currentLegAnimation = &legsIdle;
+	 
+	m_AnimationTopTexture.loadFromFile("Sprites/playerTop.png");
+	m_AnimationTopTexture.setSmooth(false);
+	playerTopIdle.setSpriteSheet(m_AnimationTopTexture);
+	playerTopIdle.addFrames(1, 1, 1, 31, 27);
+	playerTopMoving.setSpriteSheet(m_AnimationTopTexture);
+	playerTopMoving.addFrames(12, 4, 3, 31, 27);
+	currentTopAnimation = &playerTopIdle;
 	
-	animatedSprite = AnimatedSprite(sf::seconds(0.08), true, false);
-	animatedSprite.setOrigin(16, 16);
-	animatedSprite.setPosition(m_pos);
-	animatedSprite.setScale(1.8, 1.3);
+	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
+	animatedLegSprite.setOrigin(16, 16);
+	animatedLegSprite.setPosition(m_pos);
+	animatedLegSprite.setScale(1.8, 1.3);
 
-	//loading the body sprite for the player
-	m_bodyTexture.loadFromFile("Sprites/player.png");
-	m_bodyTexture.setSmooth(false);
-	m_bodySprite.setTexture(m_bodyTexture);
-	m_bodySprite.setTextureRect(sf::IntRect(0, 0, m_bodyTexture.getSize().x, m_bodyTexture.getSize().y));
-	m_bodySprite.setOrigin(m_bodyTexture.getSize().x / 2 -3, m_bodyTexture.getSize().y / 2);
-	m_bodySprite.setPosition(m_pos);
+	animatedTopSprite = AnimatedSprite(sf::seconds(0.08), true, false);
+	animatedTopSprite.setOrigin(12, 13.5);
+	animatedTopSprite.setPosition(m_pos);
+	animatedTopSprite.setScale(1, 1);
 }
 
 void Player::LoadBinds() {
@@ -67,16 +69,21 @@ void Player::Draw() {
 
 	//Setting the animation of the player legs depending on if is moving or not
 	if (actions.walkUp || actions.walkDown || actions.walkLeft || actions.walkRight) {
-		currentAnimation = &legsMoving;
+		currentTopAnimation = &playerTopMoving;
+		currentLegAnimation = &legsMoving;
 	}
 	else {
-		currentAnimation = &legsIdle;
+		currentTopAnimation = &playerTopIdle;
+		currentLegAnimation = &legsIdle;
 	}
-	animatedSprite.play(*currentAnimation);
-	animatedSprite.update(frameTime);
+	animatedTopSprite.play(*currentTopAnimation);
+	animatedTopSprite.update(frameTime);
 
-	window->draw(animatedSprite);
-	window->draw(m_bodySprite);
+	animatedLegSprite.play(*currentLegAnimation);
+	animatedLegSprite.update(frameTime);
+
+	window->draw(animatedLegSprite);
+	window->draw(animatedTopSprite);
 	inventory->Draw();
 }
 
@@ -88,9 +95,9 @@ void Player::Update() {
 	Interaction();
 
 	//setting the position of the sprite to the physics body
-	animatedSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
-	m_bodySprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
-	m_pos = m_bodySprite.getPosition();
+	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE); 
+	m_pos = animatedTopSprite.getPosition();
 
 	//setting camera to the player
 	CenterCamera();
@@ -227,8 +234,8 @@ void Player::NotTouchingItem(Item* item) {
 
 void Player::SetRotation() {
 	orientation = getRotationAngle();
-	m_bodySprite.setRotation(orientation);
-	animatedSprite.setRotation(orientation);
+	animatedLegSprite.setRotation(orientation);
+	animatedTopSprite.setRotation(orientation);
 }
 
 void Player::createBox2dBody() {
@@ -239,7 +246,7 @@ void Player::createBox2dBody() {
 	bodyDef.gravityScale = 1;
 	body = world->CreateBody(&bodyDef);
 	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox((m_bodySprite.getGlobalBounds().width / 2.0f) / SCALE, (m_bodySprite.getGlobalBounds().height / 2.0f) / SCALE);
+	dynamicBox.SetAsBox((31 / 2.0f) / SCALE, (27 / 2.0f) / SCALE);
 	fixtureDef.shape = &dynamicBox;
 
 	fixtureDef.density = 1;
