@@ -6,6 +6,7 @@
 #include <Box2D/Box2D.h>
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
+#include "SFML/Audio.hpp"
 #include "ContactListener.h"
 
 enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT };
