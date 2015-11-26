@@ -1,20 +1,6 @@
 #include "stdafx.h"
-#include <iostream>
-#include <stdlib.h>     
-#include <time.h>       
-#include <math.h>
-#include <Box2D/Box2D.h>
-#include "SFML/Graphics.hpp"
-#include "SFML/OpenGL.hpp"
-#include "SFML/Audio.hpp"
-#include "ContactListener.h"
 
 enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT };
-
-#include "InputManager.h"
-#include "World.h"
-#include "Player.h" 
-#include "Item.h" 
 
 using namespace std;
 using namespace sf;

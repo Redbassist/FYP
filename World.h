@@ -2,14 +2,7 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "SFML/Graphics.hpp"
-#include "SFML/OpenGL.hpp"
-#include "Box2D\Box2D.h" 
-#include "InputManager.h"  
-#include "Player.h"
-#include "Container.h"
-#include "Item.h"
-#include "House.h" 
+#include "stdafx.h" 
 
 using namespace sf;
 
