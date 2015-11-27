@@ -2,9 +2,7 @@
 #ifndef WALL_H
 #define WALL_H
 
-#include "SFML/Graphics.hpp"
-#include "SFML/OpenGL.hpp"
-#include "Box2D\Box2D.h" 
+#include "stdafx.h"
 
 using namespace sf;
 

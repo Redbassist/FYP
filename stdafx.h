@@ -12,13 +12,7 @@
 #include <Box2D/Box2D.h>
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
-#include "SFML/Audio.hpp"
-#include "ContactListener.h"
+#include "SFML/Audio.hpp" 
 #include "InputManager.h"
-#include "World.h"
-#include "Player.h" 
-#include "Item.h"
-#include "Container.h"
-#include "House.h" 
 
 // TODO: reference additional headers your program requires here

@@ -2,12 +2,9 @@
 #ifndef Player_H
 #define Player_H
 
-#include "SFML/Graphics.hpp"
-#include "SFML/OpenGL.hpp"
-#include "Box2D\Box2D.h" 
+#include "stdafx.h"
 #include "Animation.h"
-#include "AnimatedSprite.h"
-#include "InputManager.h" 
+#include "AnimatedSprite.h" 
 #include "Inventory.h"
 #include "Container.h" 
 #include "Door.h"

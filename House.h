@@ -2,9 +2,7 @@
 #ifndef HOUSE_H
 #define HOUSE_H
 
-#include "SFML/Graphics.hpp"
-#include "SFML/OpenGL.hpp"
-#include "Box2D\Box2D.h" 
+#include "stdafx.h"
 #include "Wall.h"
 #include "Door.h"
 #include "Container.h"

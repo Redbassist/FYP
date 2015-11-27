@@ -2,8 +2,8 @@
 #ifndef INPUT_MANAGER_H
 #define INPUT_MANAGER_h
 
-#include <vector>
-#include "SFML\Graphics.hpp"
+#include "stdafx.h"
+
 using namespace sf;
 
 class InputManager {

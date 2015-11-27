@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "ContactListener.h"
+#include "World.h"
 
 enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT };
 

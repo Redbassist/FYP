@@ -3,6 +3,10 @@
 #define WORLD_H
 
 #include "stdafx.h" 
+#include "House.h"
+#include "Container.h"
+#include "Item.h"
+#include "Player.h"
 
 using namespace sf;
 
