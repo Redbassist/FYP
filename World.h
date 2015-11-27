@@ -15,15 +15,13 @@ class World {
 private:
 	Player* player;
 	Texture m_texture;
-	Sprite m_sprite; 
-	RenderWindow* window;
-	InputManager* inputManager;
+	Sprite m_sprite;  
 	std::vector<House*> houses;
 	std::vector<Container*> containers;
 	std::vector<Item*> items;	
 		
 public:
-	World(RenderWindow*, InputManager*);
+	World();
 	void CreateAssets();
 	void CreateLevel();
 	void Update();

@@ -14,12 +14,11 @@ private:
 	Sprite m_sprite; 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
-	RenderWindow* window; 
 	Vector2f m_pos; 
 	Vector2f size;
 
 public:
-	Wall(RenderWindow*, Vector2f, Vector2f); 
+	Wall(Vector2f, Vector2f); 
 	void LoadAssets();  
 	void Draw();  
 	void createBox2dBody();

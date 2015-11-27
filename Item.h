@@ -32,7 +32,6 @@ private:
 	Sprite m_sprite; 
 	b2Body* body; 
 	b2FixtureDef fixtureDef;
-	RenderWindow* window;
 	ItemType type;
 	Vector2f m_pos;
 	bool onGround;
@@ -40,8 +39,8 @@ private:
 	int size;
 
 public:
-	Item(RenderWindow*, ItemType, int);
-	Item(RenderWindow*, ItemType, int, bool, Vector2f);
+	Item(ItemType, int);
+	Item(ItemType, int, bool, Vector2f);
 	void LoadAssets(); 
 	void LoadSprites(std::string type);
 	int GetSize();

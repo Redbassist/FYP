@@ -25,9 +25,6 @@ struct keyActions {
 
 class Player {
 private:
-	RenderWindow* window;
-	InputManager* inputManager;
-
 	keyActions actions;
 	Texture m_AnimationLegsTexture;
 	Texture m_AnimationTopTexture;
@@ -55,7 +52,7 @@ private:
 	sf::Clock frameClock;
 
 public:
-	Player(RenderWindow*, InputManager*, Vector2f);
+	Player(Vector2f);
 	void LoadAssets();
 	void LoadBinds();
 	void Draw();

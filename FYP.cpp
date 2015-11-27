@@ -17,11 +17,11 @@ int main()
 	//int screenHeight = VideoMode::getDesktopMode().height;	
 	int screenWidth = 1280;
 	int screenHeight = 720;
-	RenderWindow window(VideoMode(screenWidth, screenHeight, 32), "FYP");
-	window.setFramerateLimit(60);
+	window = new RenderWindow(VideoMode(screenWidth, screenHeight, 32), "FYP");
+	window->setFramerateLimit(60);
 	View view = View(FloatRect(0, 0, screenWidth, screenHeight));
 	view.zoom(0.7);
-	window.setView(view); 
+	window->setView(view); 
 
 	b2Vec2 Gravity(0.f, 0.f);
 	world = new b2World(Gravity); 
@@ -29,11 +29,11 @@ int main()
 	ContactListener contactListener = ContactListener();
 	world->SetContactListener(&contactListener);
 
-	InputManager inputManager = InputManager(&window);
+	inputManager = new InputManager();
 
-	World* gameWorld = new World(&window, &inputManager);
+	World* gameWorld = new World();
 
-	while (window.isOpen())
+	while (window->isOpen())
 	{
 		float32 timeStep = 1 / 20.0;      //the length of time passed to simulate (seconds)
 		int32 velocityIterations = 8;   //how strongly to correct velocity
@@ -51,13 +51,12 @@ int main()
 				break;
 			}
 		}
-
-		inputManager.Update();
+		inputManager->Update();
 		gameWorld->Update();
 
-		window.clear();
+		window->clear();
 		gameWorld->Draw();
-		window.display();
+		window->display();
 	}
 }
 

@@ -15,7 +15,6 @@ private:
 	const float SCALE = 30.f;
 	Texture m_texture;
 	Sprite m_sprite; 
-	RenderWindow* window;
 	Vector2f m_pos; 
 	std::vector<Wall*> walls;
 	std::vector<Item*>* items;
@@ -23,7 +22,7 @@ private:
 	std::vector<Door*> doors;
 
 public:
-	House(RenderWindow*, Vector2f, std::vector<Item*>*);
+	House(Vector2f, std::vector<Item*>*);
 	void LoadAssets();
 	void CreateWalls();
 	void Draw(); 

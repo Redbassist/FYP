@@ -9,7 +9,7 @@ enum _entityCategory {
 	DOOR = 0x0024,
 };
 
-Door::Door(RenderWindow* rw, Vector2f pos, float r) : window(rw), m_pos(pos), rotation(r)  { 
+Door::Door(Vector2f pos, float r) : m_pos(pos), rotation(r)  { 
 	int random = rand() % 2;
 	if (random == 1)
 		open = true;

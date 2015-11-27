@@ -9,10 +9,10 @@ enum _entityCategory {
 	DOOR = 0x0024,
 };
 
-Player::Player(RenderWindow* w, InputManager* im, Vector2f pos) : window(w), inputManager(im), m_pos(pos)
+Player::Player(Vector2f pos) : m_pos(pos)
 {
 	m_pos = pos;
-	inventory = new Inventory(w, im);
+	inventory = new Inventory();
 	speed = 0.06f;
 	touchedContainer = NULL;
 	touchedDoor = NULL;

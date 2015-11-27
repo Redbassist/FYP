@@ -3,6 +3,7 @@
 #define INPUT_MANAGER_h
 
 #include "stdafx.h"
+#include "Globals.h"
 
 using namespace sf;
 
@@ -14,10 +15,9 @@ private:
 	std::vector<std::pair<bool*, Mouse::Button>> mouseBinds;
 	std::vector<std::pair<bool*, Mouse::Button>> singlePressMouseBinds;
 	std::vector<std::pair<bool*, Mouse::Button>> pressedSinglePressMouseBinds;
-	RenderWindow* window;
 	
 public:
-	InputManager(RenderWindow*);
+	InputManager();
 	void Bind(bool*, Keyboard::Key);
 	void Bind(bool*, Mouse::Button);
 	void BindSingleKeyPress(bool*, Keyboard::Key);

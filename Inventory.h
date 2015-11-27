@@ -19,9 +19,7 @@ class Inventory {
 private:
 	std::vector<Item*> inventory;
 	Texture m_texture;
-	Sprite m_sprite;
-	RenderWindow* window;
-	InputManager* inputManager;
+	Sprite m_sprite; 
 	Vector2f m_pos;
 	Vector2f offset;
 	int invCols;
@@ -31,7 +29,7 @@ private:
 	std::vector<Slot> slots;
 
 public:
-	Inventory(RenderWindow*, InputManager*);
+	Inventory();
 	void LoadAssets();
 	void SetupSlots();
 	void AddItem(Item*); 

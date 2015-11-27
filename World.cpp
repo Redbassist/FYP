@@ -1,6 +1,6 @@
 #include "World.h"
 
-World::World(RenderWindow * rw, InputManager* im) : window(rw), inputManager(im) {
+World::World() {
 	CreateAssets();
 	CreateLevel();
 }
@@ -16,8 +16,8 @@ void World::CreateAssets() {
 }
 
 void World::CreateLevel() {
-	player = new Player(window, inputManager, Vector2f(0, 0));
-	houses.push_back(new House(window, Vector2f(0, 0), &items));
+	player = new Player(Vector2f(0, 0));
+	houses.push_back(new House(Vector2f(0, 0), &items));
 } 
 
 void World::Update() {

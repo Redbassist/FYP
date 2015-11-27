@@ -1,6 +1,6 @@
 #include "Inventory.h"
 
-Inventory::Inventory(RenderWindow* w, InputManager* im) : window(w), inputManager(im) {
+Inventory::Inventory() {
 	open = false;
 	invCols = 4;
 	invRows = 3;

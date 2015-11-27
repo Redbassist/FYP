@@ -1,7 +1,6 @@
 #include "InputManager.h"
 
-InputManager::InputManager(RenderWindow* w) : window(w) {
-
+InputManager::InputManager() {
 }
 
 void InputManager::Bind(bool* action, Keyboard::Key key)

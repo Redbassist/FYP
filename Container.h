@@ -22,9 +22,7 @@ private:
 	Texture m_texture;
 	Sprite m_sprite;
 	Texture m_shapeTexture;
-	Sprite m_shapeSprite;
-	RenderWindow* window; 
-	//b2World* world;
+	Sprite m_shapeSprite; 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
 	Vector2f m_pos;
@@ -38,7 +36,7 @@ private:
 	std::vector<Item*>* items;
 
 public:
-	Container(RenderWindow*, Vector2f, float, std::vector<Item*>*);
+	Container(Vector2f, float, std::vector<Item*>*);
 	void LoadAssets();
 	void SetupSlots();
 	void GenerateItems();

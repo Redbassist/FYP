@@ -14,13 +14,12 @@ private:
 	Sprite m_sprite; 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
-	RenderWindow* window;
 	Vector2f m_pos;
 	float rotation;
 	bool open;
 
 public:
-	Door(RenderWindow*, Vector2f, float);
+	Door(Vector2f, float);
 	void LoadAssets();
 	void Draw();
 	void OpenClose();
