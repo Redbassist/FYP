@@ -3,6 +3,7 @@
 #define Player_H
 
 #include "stdafx.h"
+#include "Globals.h"
 #include "Animation.h"
 #include "AnimatedSprite.h" 
 #include "Inventory.h"
@@ -38,8 +39,7 @@ private:
 	Animation* currentTopAnimation;
 	AnimatedSprite animatedLegSprite;
 	AnimatedSprite animatedTopSprite;
-
-	b2World* world; 
+	 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
 
@@ -55,7 +55,7 @@ private:
 	sf::Clock frameClock;
 
 public:
-	Player(b2World*, RenderWindow*, InputManager*, Vector2f);
+	Player(RenderWindow*, InputManager*, Vector2f);
 	void LoadAssets();
 	void LoadBinds();
 	void Draw();

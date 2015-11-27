@@ -3,6 +3,7 @@
 #define WALL_H
 
 #include "stdafx.h"
+#include "Globals.h"
 
 using namespace sf;
 
@@ -10,8 +11,7 @@ class Wall {
 private:
 	const float SCALE = 30.f;
 	Texture m_texture;
-	Sprite m_sprite;
-	b2World* world;
+	Sprite m_sprite; 
 	b2Body* body;
 	b2FixtureDef fixtureDef;
 	RenderWindow* window; 
@@ -19,7 +19,7 @@ private:
 	Vector2f size;
 
 public:
-	Wall(b2World*, RenderWindow*, Vector2f, Vector2f); 
+	Wall(RenderWindow*, Vector2f, Vector2f); 
 	void LoadAssets();  
 	void Draw();  
 	void createBox2dBody();

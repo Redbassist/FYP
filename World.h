@@ -3,6 +3,7 @@
 #define WORLD_H
 
 #include "stdafx.h" 
+#include "Globals.h"
 #include "House.h"
 #include "Container.h"
 #include "Item.h"
@@ -14,8 +15,7 @@ class World {
 private:
 	Player* player;
 	Texture m_texture;
-	Sprite m_sprite;
-	b2World* world;
+	Sprite m_sprite; 
 	RenderWindow* window;
 	InputManager* inputManager;
 	std::vector<House*> houses;
@@ -23,7 +23,7 @@ private:
 	std::vector<Item*> items;	
 		
 public:
-	World(RenderWindow*, b2World*, InputManager*);
+	World(RenderWindow*, InputManager*);
 	void CreateAssets();
 	void CreateLevel();
 	void Update();

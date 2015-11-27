@@ -9,8 +9,8 @@ enum _entityCategory {
 	DOOR = 0x0024,
 };
 
-Container::Container(b2World* w, RenderWindow* rw, Vector2f pos, float rot, std::vector<Item*>* i) : 
-	world(w), window(rw), m_pos(pos), rotation(rot), items(i)
+Container::Container(RenderWindow* rw, Vector2f pos, float rot, std::vector<Item*>* i) : 
+	window(rw), m_pos(pos), rotation(rot), items(i)
 {
 	open = false;
 	invCols = 4;
@@ -69,17 +69,17 @@ void Container::GenerateItems() {
 		if ((rand() % 5 + 1) == 5) {
 			int item = rand() % 4 + 0;
 			if (item == 0) {
-				slots[i].item = new Item(world, window, FOOD1, 1);
+				slots[i].item = new Item(window, FOOD1, 1);
 				slots[i].full = true;
 				items->push_back(slots[i].item);
 			}
 			else if (item == 3) {
-				slots[i].item = new Item(world, window, WATER1, 1);
+				slots[i].item = new Item(window, WATER1, 1);
 				slots[i].full = true;
 				items->push_back(slots[i].item);
 			}
 			else if (item == 4) {
-				slots[i].item = new Item(world, window, WATER2, 1);
+				slots[i].item = new Item(window, WATER2, 1);
 				slots[i].full = true;
 				items->push_back(slots[i].item);
 			}

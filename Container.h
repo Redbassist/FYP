@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "Item.h"
+#include "Globals.h"
 
 using namespace sf;
 
@@ -23,7 +24,7 @@ private:
 	Texture m_shapeTexture;
 	Sprite m_shapeSprite;
 	RenderWindow* window; 
-	b2World* world;
+	//b2World* world;
 	b2Body* body;
 	b2FixtureDef fixtureDef;
 	Vector2f m_pos;
@@ -37,7 +38,7 @@ private:
 	std::vector<Item*>* items;
 
 public:
-	Container(b2World*, RenderWindow*, Vector2f, float, std::vector<Item*>*);
+	Container(RenderWindow*, Vector2f, float, std::vector<Item*>*);
 	void LoadAssets();
 	void SetupSlots();
 	void GenerateItems();

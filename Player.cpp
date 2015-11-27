@@ -9,7 +9,7 @@ enum _entityCategory {
 	DOOR = 0x0024,
 };
 
-Player::Player(b2World* b2world, RenderWindow* w, InputManager* im, Vector2f pos) : world(b2world), window(w), inputManager(im), m_pos(pos)
+Player::Player(RenderWindow* w, InputManager* im, Vector2f pos) : window(w), inputManager(im), m_pos(pos)
 {
 	m_pos = pos;
 	inventory = new Inventory(w, im);

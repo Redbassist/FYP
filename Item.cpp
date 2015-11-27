@@ -10,13 +10,13 @@ enum _entityCategory {
 	DOOR = 0x0024,
 };
 
-Item::Item(b2World* w, RenderWindow* rw, ItemType t, int s) : world(w), window(rw), type(t), size(s) {
+Item::Item(RenderWindow* rw, ItemType t, int s) : window(rw), type(t), size(s) {
 	onGround = false;
 	LoadAssets();
 }
 
 //debugging constructor
-Item::Item(b2World* w, RenderWindow* rw, ItemType t, int s, bool g, Vector2f pos) : world(w), window(rw), type(t), size(s) {
+Item::Item(RenderWindow* rw, ItemType t, int s, bool g, Vector2f pos) : window(rw), type(t), size(s) {
 	onGround = g;
 	m_pos = pos;
 	LoadAssets();

@@ -3,6 +3,7 @@
 #define ITEM_H
 
 #include "stdafx.h"
+#include "Globals.h"
 
 using namespace sf;
 
@@ -28,8 +29,7 @@ static const std::string ItemTypeStrings[] =
 class Item {
 private:
 	Texture m_texture;
-	Sprite m_sprite;
-	b2World* world;
+	Sprite m_sprite; 
 	b2Body* body; 
 	b2FixtureDef fixtureDef;
 	RenderWindow* window;
@@ -40,8 +40,8 @@ private:
 	int size;
 
 public:
-	Item(b2World*, RenderWindow*, ItemType, int);
-	Item(b2World*, RenderWindow*, ItemType, int, bool, Vector2f);
+	Item(RenderWindow*, ItemType, int);
+	Item(RenderWindow*, ItemType, int, bool, Vector2f);
 	void LoadAssets(); 
 	void LoadSprites(std::string type);
 	int GetSize();

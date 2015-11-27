@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ContactListener.h"
 #include "World.h"
+#include "Globals.h"
 
 enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT };
 
@@ -23,14 +24,14 @@ int main()
 	window.setView(view); 
 
 	b2Vec2 Gravity(0.f, 0.f);
-	b2World world(Gravity);
-	world.SetAllowSleeping(false);
+	world = new b2World(Gravity); 
+	world->SetAllowSleeping(false);
 	ContactListener contactListener = ContactListener();
-	world.SetContactListener(&contactListener);
+	world->SetContactListener(&contactListener);
 
 	InputManager inputManager = InputManager(&window);
 
-	World* gameWorld = new World(&window, &world, &inputManager);
+	World* gameWorld = new World(&window, &inputManager);
 
 	while (window.isOpen())
 	{
@@ -38,15 +39,15 @@ int main()
 		int32 velocityIterations = 8;   //how strongly to correct velocity
 		int32 positionIterations = 3;   //how strongly to correct position
 
-		world.Step(timeStep, velocityIterations, positionIterations);
+		world->Step(timeStep, velocityIterations, positionIterations);
 
 		//checking for bodies that need to be destroyed (Using their user data)
 		//Consider threading this operation 
-		b2Body* bodyList = world.GetBodyList();
+		b2Body* bodyList = world->GetBodyList();
 
 		for (; bodyList != NULL; bodyList = bodyList->GetNext()) {
 			if (bodyList->GetFixtureList()->GetUserData() == "Destroy") {
-				world.DestroyBody(bodyList);
+				world->DestroyBody(bodyList);
 				break;
 			}
 		}

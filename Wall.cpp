@@ -9,7 +9,7 @@ enum _entityCategory {
 	DOOR = 0x0024,
 };
 
-Wall::Wall(b2World* w, RenderWindow* rw, Vector2f pos, Vector2f s) : world(w), window(rw), m_pos(pos), size(s) {
+Wall::Wall(RenderWindow* rw, Vector2f pos, Vector2f s) : window(rw), m_pos(pos), size(s) {
 	LoadAssets();
 	createBox2dBody();
 }

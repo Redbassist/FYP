@@ -3,6 +3,7 @@
 #define HOUSE_H
 
 #include "stdafx.h"
+#include "Globals.h"
 #include "Wall.h"
 #include "Door.h"
 #include "Container.h"
@@ -13,8 +14,7 @@ class House {
 private:
 	const float SCALE = 30.f;
 	Texture m_texture;
-	Sprite m_sprite;
-	b2World* world; 
+	Sprite m_sprite; 
 	RenderWindow* window;
 	Vector2f m_pos; 
 	std::vector<Wall*> walls;
@@ -23,7 +23,7 @@ private:
 	std::vector<Door*> doors;
 
 public:
-	House(b2World*, RenderWindow*, Vector2f, std::vector<Item*>*);
+	House(RenderWindow*, Vector2f, std::vector<Item*>*);
 	void LoadAssets();
 	void CreateWalls();
 	void Draw(); 
