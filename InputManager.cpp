@@ -1,5 +1,16 @@
 #include "InputManager.h"
 
+static bool instanceFlag = false;
+static InputManager* instance = NULL;
+
+InputManager* InputManager::GetInstance() {
+	if (!instanceFlag) {
+		instance = new InputManager();
+		instanceFlag = true;
+	}
+	return instance;
+}
+
 InputManager::InputManager() {
 }
 

@@ -29,7 +29,7 @@ int main()
 	ContactListener contactListener = ContactListener();
 	world->SetContactListener(&contactListener);
 
-	inputManager = new InputManager();
+	InputManager* inputManager = InputManager::GetInstance();
 
 	World* gameWorld = new World();
 
@@ -51,7 +51,7 @@ int main()
 				break;
 			}
 		}
-		inputManager->Update();
+		InputManager::GetInstance()->Update();
 		gameWorld->Update();
 
 		window->clear();

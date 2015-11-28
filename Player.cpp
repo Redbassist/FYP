@@ -53,14 +53,14 @@ void Player::LoadAssets() {
 
 void Player::LoadBinds() {
 	//binding the keys for the player
-	inputManager->Bind(&actions.walkUp, Keyboard::Key::W);
-	inputManager->Bind(&actions.walkDown, Keyboard::Key::S);
-	inputManager->Bind(&actions.walkLeft, Keyboard::Key::A);
-	inputManager->Bind(&actions.walkRight, Keyboard::Key::D);
-	inputManager->BindSingleKeyPress(&actions.interact, Keyboard::Key::E);
-	inputManager->BindSingleKeyPress(&actions.inventory, Keyboard::Key::G);
-	inputManager->BindSingleMousePress(&actions.drop, Mouse::Button::Right);
-	inputManager->BindSingleMousePress(&actions.take, Mouse::Button::Left);
+	InputManager::GetInstance()->Bind(&actions.walkUp, Keyboard::Key::W);
+	InputManager::GetInstance()->Bind(&actions.walkDown, Keyboard::Key::S);
+	InputManager::GetInstance()->Bind(&actions.walkLeft, Keyboard::Key::A);
+	InputManager::GetInstance()->Bind(&actions.walkRight, Keyboard::Key::D);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.interact, Keyboard::Key::E);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.inventory, Keyboard::Key::G);
+	InputManager::GetInstance()->BindSingleMousePress(&actions.drop, Mouse::Button::Right);
+	InputManager::GetInstance()->BindSingleMousePress(&actions.take, Mouse::Button::Left);
 }
 
 void Player::Draw() {

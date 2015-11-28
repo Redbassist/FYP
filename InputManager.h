@@ -8,7 +8,7 @@
 using namespace sf;
 
 class InputManager {
-private: 
+private:
 	std::vector<std::pair<bool*, Keyboard::Key>> keyboardBinds;
 	std::vector<std::pair<bool*, Keyboard::Key>> singlePressKeyboardBinds;
 	std::vector<std::pair<bool*, Keyboard::Key>> pressedSinglePressKeyboardBinds;
@@ -18,6 +18,7 @@ private:
 	
 public:
 	InputManager();
+	static InputManager* GetInstance();
 	void Bind(bool*, Keyboard::Key);
 	void Bind(bool*, Mouse::Button);
 	void BindSingleKeyPress(bool*, Keyboard::Key);
