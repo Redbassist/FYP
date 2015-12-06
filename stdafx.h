@@ -6,6 +6,7 @@
 #pragma once 
 
 #include <iostream>
+#include <chrono>
 #include <stdlib.h>     
 #include <time.h>       
 #include <math.h>

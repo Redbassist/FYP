@@ -11,14 +11,16 @@ using namespace sf;
 int main()
 {
 	srand(time(NULL));
+	std::chrono::steady_clock myClock;
+	const auto timePerTick = std::chrono::milliseconds(16);
+	auto timeOfLastTick = myClock.now();
 
 	/** Prepare the window */
 	//int screenWidth = VideoMode::getDesktopMode().width;
 	//int screenHeight = VideoMode::getDesktopMode().height;	
 	int screenWidth = 1280;
 	int screenHeight = 720;
-	window = new RenderWindow(VideoMode(screenWidth, screenHeight, 32), "FYP");
-	window->setFramerateLimit(60);
+	window = new RenderWindow(VideoMode(screenWidth, screenHeight, 32), "FYP"); 
 	View view = View(FloatRect(0, 0, screenWidth, screenHeight));
 	view.zoom(0.7);
 	window->setView(view); 
@@ -36,27 +38,30 @@ int main()
 
 	while (window->isOpen())
 	{
-		float32 timeStep = 1 / 20.0;      //the length of time passed to simulate (seconds)
-		int32 velocityIterations = 8;   //how strongly to correct velocity
-		int32 positionIterations = 3;   //how strongly to correct position
+		while (myClock.now() - timeOfLastTick >= timePerTick) {
+			timeOfLastTick = myClock.now();
 
-		world->Step(timeStep, velocityIterations, positionIterations);
+			float32 timeStep = 1 / 20.0;      //the length of time passed to simulate (seconds)
+			int32 velocityIterations = 8;   //how strongly to correct velocity
+			int32 positionIterations = 3;   //how strongly to correct position
 
-		//checking for bodies that need to be destroyed (Using their user data)
-		//Consider threading this operation 
-		b2Body* bodyList = world->GetBodyList();
+			world->Step(timeStep, velocityIterations, positionIterations);
 
-		for (; bodyList != NULL; bodyList = bodyList->GetNext()) {
-			if (bodyList->GetFixtureList()->GetUserData() == "Destroy") {
-				world->DestroyBody(bodyList);
-				break;
+			//checking for bodies that need to be destroyed (Using their user data)
+			//Consider threading this operation 
+			b2Body* bodyList = world->GetBodyList();
+
+			for (; bodyList != NULL; bodyList = bodyList->GetNext()) {
+				if (bodyList->GetFixtureList()->GetUserData() == "Destroy") {
+					world->DestroyBody(bodyList);
+					break;
+				}
 			}
+
+			InputManager::GetInstance()->Update();
+			AudioManager::GetInstance()->update();
+			gameWorld->Update();
 		}
-
-		InputManager::GetInstance()->Update();
-		AudioManager::GetInstance()->update();
-		gameWorld->Update();
-
 		window->clear();
 		gameWorld->Draw();
 		window->display();
