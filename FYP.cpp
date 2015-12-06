@@ -30,6 +30,7 @@ int main()
 	world->SetContactListener(&contactListener);
 
 	InputManager* inputManager = InputManager::GetInstance();
+	AudioManager* audioManager = AudioManager::GetInstance();  
 
 	World* gameWorld = new World();
 
@@ -51,7 +52,9 @@ int main()
 				break;
 			}
 		}
+
 		InputManager::GetInstance()->Update();
+		AudioManager::GetInstance()->update();
 		gameWorld->Update();
 
 		window->clear();

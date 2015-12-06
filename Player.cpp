@@ -128,6 +128,9 @@ void Player::Movement() {
 
 	body->SetTransform(position, 0);
 	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
+
+	//updating the player listener to the position of the player
+	AudioManager::GetInstance()->setListener(m_pos, orientation);
 }
 
 void Player::Interaction() {
@@ -194,7 +197,9 @@ void Player::Interaction() {
 		actions.take = false;
 	}
 
+	//opening a door
 	if (actions.interact && touchedDoor != NULL) {
+		AudioManager::GetInstance()->playSound("coin", sf::Vector2f(0,5));
 		touchedDoor->OpenClose();
 		actions.interact = false;
 	}
