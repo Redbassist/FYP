@@ -198,8 +198,7 @@ void Player::Interaction() {
 	}
 
 	//opening a door
-	if (actions.interact && touchedDoor != NULL) {
-		AudioManager::GetInstance()->playSound("coin", sf::Vector2f(0,5));
+	if (actions.interact && touchedDoor != NULL) { 
 		touchedDoor->OpenClose();
 		actions.interact = false;
 	}
