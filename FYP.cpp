@@ -29,8 +29,10 @@ int main()
 	world->SetContactListener(&contactListener);
 
 	//setting up the managers
-	InputManager* inputManager = InputManager::GetInstance();
-	AudioManager* audioManager = AudioManager::GetInstance(); 
+	InputManager::GetInstance();
+	AudioManager::GetInstance(); 
+	SceneChanger::GetInstance();
+	
 	SceneManager* sceneManager = new SceneManager();
 
 	while (window->isOpen())

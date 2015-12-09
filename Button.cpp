@@ -42,7 +42,7 @@ void Button::Draw() {
 	}
 	else {
 		m_sprite.setScale(Vector2f(1, 1));
-		m_sprite.setColor(Color::White);
+		m_sprite.setColor(Color::Blue);
 		window->draw(m_sprite);
 		window->draw(text);
 	}
@@ -68,7 +68,8 @@ void Button::CheckHover() {
 void Button::CheckClick() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && hovering)
 	{
-		cout << "Button Clicked" << endl;
+		//signaling that the scene is changing
+		SceneChanger::GetInstance()->NextScene();
 	}
 }
 

@@ -15,18 +15,17 @@ using namespace std;
 
 class SceneManager {
 private:
-	Menu* currentMenu;
+	std::pair<int, Menu*> currentMenu;
 	World* gameWorld;
 	GameState state;
-	vector<Menu*> menus;
+	vector<std::pair<int, Menu*>> menus;
 
 public:
 	SceneManager(); 
 	void CreateMenus();
 	void Update();
-	void Draw();
-	void LastMenu();
-	void NextMenu();
+	void Draw(); 
+	void ChangeScene();
 };
 
 #endif  

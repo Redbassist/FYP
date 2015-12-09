@@ -18,5 +18,6 @@
 #include "SFML/Audio.hpp"   
 #include "InputManager.h"
 #include "AudioManager.h"
+#include "SceneChanger.h"
 
 // TODO: reference additional headers your program requires here
