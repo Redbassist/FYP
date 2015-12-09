@@ -1,9 +1,7 @@
 #include "stdafx.h"
-#include "ContactListener.h"
-#include "World.h"
+#include "ContactListener.h" 
 #include "Globals.h"
-
-enum class GameState { MENU, OPTIONS, LOBBY, GAME, EXIT };
+#include "SceneManager.h"
 
 using namespace std;
 using namespace sf;
@@ -22,7 +20,6 @@ int main()
 	int screenHeight = 720;
 	window = new RenderWindow(VideoMode(screenWidth, screenHeight, 32), "FYP"); 
 	View view = View(FloatRect(0, 0, screenWidth, screenHeight));
-	view.zoom(0.7);
 	window->setView(view); 
 
 	b2Vec2 Gravity(0.f, 0.f);
@@ -31,10 +28,10 @@ int main()
 	ContactListener contactListener = ContactListener();
 	world->SetContactListener(&contactListener);
 
+	//setting up the managers
 	InputManager* inputManager = InputManager::GetInstance();
-	AudioManager* audioManager = AudioManager::GetInstance();  
-
-	World* gameWorld = new World();
+	AudioManager* audioManager = AudioManager::GetInstance(); 
+	SceneManager* sceneManager = new SceneManager();
 
 	while (window->isOpen())
 	{
@@ -59,11 +56,11 @@ int main()
 			}
 
 			InputManager::GetInstance()->Update();
-			AudioManager::GetInstance()->update();
-			gameWorld->Update();
+			AudioManager::GetInstance()->update(); 
+			sceneManager->Update();
 		}
 		window->clear();
-		gameWorld->Draw();
+		sceneManager->Draw();
 		window->display();
 	}
 }

@@ -16,6 +16,9 @@ void World::CreateAssets() {
 }
 
 void World::CreateLevel() {
+	View view = View(FloatRect(0, 0, 1280, 720));
+	view.zoom(0.7);
+	window->setView(view); 
 	player = new Player(Vector2f(0, 0));
 	houses.push_back(new House(Vector2f(0, 0), &items));
 } 
