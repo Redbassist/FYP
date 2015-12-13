@@ -13,8 +13,11 @@ private:
 	Texture m_texture;
 	Sprite m_sprite;
 	Vector2f m_pos;
+	Vector2f offset;
 	Vector2f size;
 	bool hovering;
+	float scaleX;
+	float scaleY;
 	Font font;
 	Text text;
 	GameState function;
@@ -24,8 +27,8 @@ public:
 	void Update();
 	void Draw(); 
 	void CheckHover();
-	void CheckClick();
-	void UpdateTransform(Vector2f);
+	void CheckClick(); 
+	void UpdateTransform();
 };
 
 #endif

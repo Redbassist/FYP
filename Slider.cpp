@@ -5,6 +5,7 @@ Slider::Slider(Vector2f pos, int length, string & sliderName, Setting s)
 	setting = s;
 	barLength = length;
 	m_barPos = pos;
+	offset = m_barPos;
 	value = 100;
 	LoadAssets(sliderName);
 }
@@ -14,6 +15,7 @@ void Slider::LoadAssets(string & sliderName)
 	if (!m_barTexture.loadFromFile("Sprites/sliderBar.png")) {
 		cout << "Could not find the image in location" << endl;
 	}
+
 	m_barTexture.setSmooth(false);
 	m_barSprite.setTexture(m_barTexture);
 	m_barSprite.setTextureRect(sf::IntRect(0, 0, m_barTexture.getSize().x, m_barTexture.getSize().y));
@@ -24,6 +26,7 @@ void Slider::LoadAssets(string & sliderName)
 	if (!m_slideTexture.loadFromFile("Sprites/sliderSlide.png")) {
 		cout << "Could not find the image in location" << endl;
 	}
+
 	m_slideTexture.setSmooth(false);
 	m_slideSprite.setTexture(m_slideTexture);
 	m_slideSprite.setTextureRect(sf::IntRect(0, 0, m_slideTexture.getSize().x, m_slideTexture.getSize().y));
@@ -66,6 +69,7 @@ void Slider::MoveSlide()
 	float tempY = m_slideSprite.getPosition().y;
 	Vector2f size = Vector2f(50, 50);
 
+	//limited by the bar size and position
 	if (worldMousePos.x > tempX && worldMousePos.x < tempX + size.x &&
 		worldMousePos.y > tempY && worldMousePos.y < tempY + size.y &&
 		Mouse::isButtonPressed(Mouse::Left)) {
@@ -75,4 +79,19 @@ void Slider::MoveSlide()
 
 	value = ((m_slideSprite.getPosition().x - m_barPos.x) / barLength) * 100;
 	SettingsManager::GetInstance()->SetSetting(setting, value);
+}
+
+void Slider::UpdateTransform()
+{
+	View temp = window->getView();
+	Vector2f vPos = temp.getCenter();
+	Vector2f vSize = temp.getSize();
+	vPos.x -= vSize.x / 2;
+	vPos.y -= vSize.y / 2;
+	m_barPos.x = vPos.x + offset.x;
+	m_barPos.y = vPos.y + offset.y;
+
+	m_barSprite.setPosition(m_barPos.x, m_barPos.y);
+	text.setPosition(m_barPos.x, m_barPos.y - 40);
+	m_slideSprite.setPosition(m_barPos.x + barLength - (barLength / 10), m_barPos.y); 
 }

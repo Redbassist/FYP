@@ -37,10 +37,18 @@ void SceneManager::CreateMenus()
 
 	//creating the game menu
 	tempMenu = new Menu(string("ingameMenu"));
-	tempMenu->AddButton(new Button(Vector2f(1050, 230), 200, 80, string("Resume"), GameState::GAME));
-	tempMenu->AddButton(new Button(Vector2f(1050, 330), 200, 80, string("Options"), GameState::GAMEOPTIONS));
-	tempMenu->AddButton(new Button(Vector2f(1050, 430), 200, 80, string("Exit"), GameState::EXIT));
+	tempMenu->AddButton(new Button(Vector2f(430, 150), 180, 55, string("Resume"), GameState::GAME));
+	tempMenu->AddButton(new Button(Vector2f(430, 245), 180, 55, string("Options"), GameState::GAMEOPTIONS));
+	tempMenu->AddButton(new Button(Vector2f(430, 340), 180, 55, string("Exit"), GameState::EXIT));
 	menusMap[GameState::GAMEMENU] = tempMenu;
+
+	//creating the game options menu
+	tempMenu = new Menu(string("ingameMenu")); 
+	tempMenu->AddSlider(new Slider(Vector2f(250, 150), 400, string("Master Volume"), Setting::MASTER));
+	tempMenu->AddSlider(new Slider(Vector2f(250, 245), 400, string("Music Volume"), Setting::MUSIC));
+	tempMenu->AddSlider(new Slider(Vector2f(250, 340), 400, string("Effects Volume"), Setting::EFFECT));
+	tempMenu->AddButton(new Button(Vector2f(330, 420), 180, 55, string("Back"), GameState::GAMEMENU));
+	menusMap[GameState::GAMEOPTIONS] = tempMenu;
 }
 
 void SceneManager::Update()

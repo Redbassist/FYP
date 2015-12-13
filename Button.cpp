@@ -2,6 +2,7 @@
 
 Button::Button(Vector2f pos, int width, int height, string& buttonText, GameState bF) :
 	m_pos(pos), size(Vector2f(width, height)), function(bF) {
+	offset = m_pos;
 	LoadAssets(buttonText);
 }
 
@@ -11,8 +12,11 @@ void Button::LoadAssets(string& buttonText) {
 	} 
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
-	m_sprite.setTextureRect(sf::IntRect(0, 0, size.x, size.y));
+	m_sprite.setTextureRect(sf::IntRect(0, 0, m_texture.getSize().x, m_texture.getSize().y));
 	m_sprite.setOrigin(Vector2f(size.x / 2, size.y / 2));
+	scaleX = size.x / m_texture.getSize().x;
+	scaleY = size.y / m_texture.getSize().y;
+	m_sprite.setScale(scaleX, scaleY);
 	m_sprite.setPosition(m_pos);
 
 	//setting the text inside the button
@@ -26,7 +30,7 @@ void Button::LoadAssets(string& buttonText) {
 	text.setCharacterSize(32); 
 	text.setColor(sf::Color::Black); 
 	text.setStyle(sf::Text::Bold); 
-	text.setPosition(m_pos.x - size.x / 2.5, m_pos.y - size.y / 4);
+	text.setPosition(m_pos.x - (size.x / 2.5) * scaleX, m_pos.y - (size.y / 4) * scaleY);
 }
 
 void Button::Update() {
@@ -36,13 +40,13 @@ void Button::Update() {
 
 void Button::Draw() {
 	if (hovering) {
-		m_sprite.setScale(Vector2f(1.2, 1.2));
+		m_sprite.setScale(scaleX * 1.2f, scaleY * 1.2f);
 		m_sprite.setColor(Color::Yellow);
 		window->draw(m_sprite);
 		window->draw(text);
 	}
 	else {
-		m_sprite.setScale(Vector2f(1, 1));
+		m_sprite.setScale(scaleX, scaleY);
 		m_sprite.setColor(Color::Blue);
 		window->draw(m_sprite);
 		window->draw(text);
@@ -72,5 +76,19 @@ void Button::CheckClick() {
 		//signaling that the scene is changing
 		SceneChanger::GetInstance()->ChangeScene(function);
 	}
-} 
+}
+
+void Button::UpdateTransform()
+{
+	View temp = window->getView();
+	Vector2f vPos = temp.getCenter();
+	Vector2f vSize = temp.getSize();
+	vPos.x -= vSize.x / 2;
+	vPos.y -= vSize.y / 2;
+	m_pos.x = vPos.x + offset.x;
+	m_pos.y = vPos.y + offset.y;
+
+	m_sprite.setPosition(m_pos.x, m_pos.y);
+	text.setPosition(m_pos.x - size.x / 2.5, m_pos.y - size.y / 4);
+}
 

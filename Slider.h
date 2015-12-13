@@ -15,6 +15,7 @@ private:
 	Texture m_slideTexture;
 	Sprite m_slideSprite;
 	Vector2f m_barPos;
+	Vector2f offset;
 	float barLength;
 	Font font;
 	Text text;
@@ -26,6 +27,7 @@ public:
 	void Update();
 	void Draw(); 
 	void MoveSlide();
+	void UpdateTransform();
 };
 
 #endif

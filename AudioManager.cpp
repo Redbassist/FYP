@@ -83,7 +83,7 @@ void AudioManager::startMusic(const std::string& name)
 		mCurrentSong->stop();
 
 	if (!mMusic.count(name) > 0) {
-		std::cout << "Adding music to game: " + name;
+		std::cout << "Adding music to game: " + name << endl;
 		addMusic(name); 
 	} 
 	mCurrentSong = mMusic[name];

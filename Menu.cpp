@@ -64,4 +64,13 @@ void Menu::UpdateTransform()
 	Vector2f vPos = temp.getCenter();
 	Vector2f vSize = temp.getSize();
 	m_sprite.setPosition(vPos.x - vSize.x / 2, vPos.y - vSize.y / 2); 
+
+	int size = buttons.size();
+	for (int i = 0; i < size; i++) {
+		buttons[i]->UpdateTransform();
+	}
+	size = sliders.size();
+	for (int i = 0; i < size; i++) {
+		sliders[i]->UpdateTransform();
+	}
 }
