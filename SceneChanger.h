@@ -6,18 +6,20 @@
 #include "Globals.h" 
 
 using namespace sf;
-using namespace std;
+using namespace std; 
+
+enum class GameState { SPLASHSCREEN, MENU, OPTIONS, GAME, GAMEMENU, GAMEOPTIONS, EXIT };
 
 class SceneChanger {
 private: 
-	bool next;
-	bool previous;
+	GameState currentState;
+	GameState previousState;
 public:
 	SceneChanger();
 	static SceneChanger* GetInstance();
-	void NextScene();
-	void PreviousScene();
-	int SceneChanging();
+	void ChangeScene(GameState);
+	bool SceneChanging();
+	GameState CurrentScene();
 };
 
 #endif

@@ -6,19 +6,19 @@
 #include "Globals.h"
 #include "Button.h"
 #include "Menu.h"
-#include "World.h"
-
-enum class GameState { SPLASHSCREEN, MENU, OPTIONS, GAME, GAMEOPTIONS, EXIT };
+#include "World.h"  
 
 using namespace sf;
 using namespace std;
+//map for holding the menus
+typedef std::map<GameState, Menu*> MenuMap;
 
 class SceneManager {
 private:
-	std::pair<int, Menu*> currentMenu;
+	Menu* currentMenu;
 	World* gameWorld;
-	GameState state;
-	vector<std::pair<int, Menu*>> menus;
+	GameState state; 
+	MenuMap menusMap;
 
 public:
 	SceneManager(); 

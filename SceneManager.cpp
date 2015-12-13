@@ -3,51 +3,104 @@
 SceneManager::SceneManager()
 {
 	state = GameState::SPLASHSCREEN;
-	CreateMenus(); 
+	gameWorld = NULL; 
+	AudioManager::GetInstance()->startMusic("menuMusic");
+	CreateMenus();
 }
 
 void SceneManager::CreateMenus()
 {
-	Menu* tempMenu = new Menu(string("splashMenu"));  
-	tempMenu->AddButton(new Button(Vector2f(1050, 640), 200, 80, string("Continue...")));	
-	menus.push_back(std::pair<int, Menu*>(0, tempMenu));
-	currentMenu = std::pair<int, Menu*>(0, tempMenu);
+	//creating the splash screen
+	Menu* tempMenu = new Menu(string("splashMenu"));
+	tempMenu->AddButton(new Button(Vector2f(650, 640), 200, 80, string("Continue..."), GameState::MENU));
+	menusMap[GameState::SPLASHSCREEN] = tempMenu;
+	currentMenu = tempMenu;
 
+	//creating the main menu
 	tempMenu = new Menu(string("normalMenu"));
-	tempMenu->AddButton(new Button(Vector2f(1050, 400), 200, 80, string("Start Game")));
-	tempMenu->AddButton(new Button(Vector2f(1050, 520), 200, 80, string("Options")));
-	tempMenu->AddButton(new Button(Vector2f(1050, 640), 200, 80, string("Exit")));
-	menus.push_back(std::pair<int, Menu*>(1, tempMenu));
+	tempMenu->AddButton(new Button(Vector2f(1050, 400), 200, 80, string("Start Game"), GameState::GAME));
+	tempMenu->AddButton(new Button(Vector2f(1050, 520), 200, 80, string("Options"), GameState::OPTIONS));
+	tempMenu->AddButton(new Button(Vector2f(1050, 640), 200, 80, string("Exit"), GameState::EXIT));
+	menusMap[GameState::MENU] = tempMenu;
+
+	//creating the options menu
+	tempMenu = new Menu(string("normalMenu"));
+	tempMenu->AddSlider(new Slider(Vector2f(700, 200), 500, string("Master Volume"), Setting::MASTER));
+	tempMenu->AddSlider(new Slider(Vector2f(700, 400), 500, string("Music Volume"), Setting::MUSIC));
+	tempMenu->AddSlider(new Slider(Vector2f(700, 600), 500, string("Effects Volume"), Setting::EFFECT));
+	tempMenu->AddButton(new Button(Vector2f(150, 650), 200, 80, string("Back"), GameState::MENU));
+	menusMap[GameState::OPTIONS] = tempMenu;
+
+	//creating the menu for in game
+	tempMenu = NULL;
+	menusMap[GameState::GAME] = tempMenu;
+
+	//creating the game menu
+	tempMenu = new Menu(string("ingameMenu"));
+	tempMenu->AddButton(new Button(Vector2f(1050, 230), 200, 80, string("Resume"), GameState::GAME));
+	tempMenu->AddButton(new Button(Vector2f(1050, 330), 200, 80, string("Options"), GameState::GAMEOPTIONS));
+	tempMenu->AddButton(new Button(Vector2f(1050, 430), 200, 80, string("Exit"), GameState::EXIT));
+	menusMap[GameState::GAMEMENU] = tempMenu;
 }
 
 void SceneManager::Update()
 {
 	ChangeScene();
-	currentMenu.second->Update();
+	if (currentMenu != NULL)
+		currentMenu->Update();
+	
+	//updating the gameWorld
+	if (SceneChanger::GetInstance()->CurrentScene() == GameState::GAME && gameWorld != NULL)
+		gameWorld->Update();
 }
 
 void SceneManager::Draw()
 {
-	currentMenu.second->Draw();
+	//updating the gameWorld
+	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::GAME ||
+		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEOPTIONS ||
+		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEMENU
+		)
+		&& gameWorld != NULL)
+		gameWorld->Draw();
+	if (currentMenu != NULL)
+		currentMenu->Draw();
 }
 
 void SceneManager::ChangeScene()
 {
-	int size = menus.size();
-	if (SceneChanger::GetInstance()->SceneChanging() == 1) {
-		for (int i = 0; i < size; i++) {
-			if (currentMenu.first + 1== menus[i].first) {
-				currentMenu.second = menus[i].second;
-				break;
+	if (SceneChanger::GetInstance()->SceneChanging()) {
+		switch (SceneChanger::GetInstance()->CurrentScene()) {
+		case(GameState::SPLASHSCREEN) :
+			currentMenu = menusMap[GameState::SPLASHSCREEN];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::MENU) :
+			currentMenu = menusMap[GameState::MENU];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::GAME) :
+			currentMenu = menusMap[GameState::GAME];
+			if (gameWorld == NULL) {
+				gameWorld = new World();
+				AudioManager::GetInstance()->startMusic("backgroundMusic");
 			}
-		}
-	}
-	if (SceneChanger::GetInstance()->SceneChanging() == 2) {
-		for (int i = 0; i < size; i++) {
-			if (currentMenu.first -1 == menus[i].first) {
-				currentMenu.second = menus[i].second;
-				break;
-			}
+			break;
+		case(GameState::OPTIONS) :
+			currentMenu = menusMap[GameState::OPTIONS];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::GAMEMENU) :
+			currentMenu = menusMap[GameState::GAMEMENU];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::GAMEOPTIONS) :
+			currentMenu = menusMap[GameState::GAMEOPTIONS];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::EXIT) :
+			window->close();
+			break;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 #include "Button.h"
 
-Button::Button(Vector2f pos, int width, int height, string& buttonText) : m_pos(pos), size(Vector2f(width, height)) {
+Button::Button(Vector2f pos, int width, int height, string& buttonText, GameState bF) :
+	m_pos(pos), size(Vector2f(width, height)), function(bF) {
 	LoadAssets(buttonText);
 }
 
@@ -69,7 +70,7 @@ void Button::CheckClick() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && hovering)
 	{
 		//signaling that the scene is changing
-		SceneChanger::GetInstance()->NextScene();
+		SceneChanger::GetInstance()->ChangeScene(function);
 	}
-}
+} 
 

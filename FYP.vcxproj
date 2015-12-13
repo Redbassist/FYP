@@ -176,6 +176,8 @@
     <ClInclude Include="SceneChanger.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SettingsManager.h" />
+    <ClInclude Include="Slider.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Wall.h" />
@@ -198,6 +200,8 @@
     <ClCompile Include="SceneChanger.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SettingsManager.cpp" />
+    <ClCompile Include="Slider.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="World.cpp" />

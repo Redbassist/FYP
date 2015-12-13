@@ -11,32 +11,27 @@ SceneChanger* SceneChanger::GetInstance() {
 	return instance;
 }
 
+void SceneChanger::ChangeScene(GameState sceneChange)
+{
+	currentState = sceneChange;
+}
+
 SceneChanger::SceneChanger()
 {
-	next = false;
-	previous = false;
-}
+	currentState = GameState::SPLASHSCREEN;
+	previousState = GameState::SPLASHSCREEN;
+}  
 
-void SceneChanger::NextScene()
+bool SceneChanger::SceneChanging()
 {
-	next = true;
-}
-
-void SceneChanger::PreviousScene()
-{
-	previous = true;
-}
-
-int SceneChanger::SceneChanging()
-{
-	if (next) {
-		next = false;
-		return 1;
+	if (previousState != currentState) {
+		previousState = currentState;
+		return true;
 	}
-	else if (previous) {
-		previous = false;
-		return 2;
-	}
-	else
-		return 0;
+	return false;
+}
+
+GameState SceneChanger::CurrentScene()
+{
+	return currentState;
 }

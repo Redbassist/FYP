@@ -101,6 +101,10 @@ void Player::Update() {
 
 	//setting camera to the player
 	CenterCamera();
+
+	if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+		SceneChanger::GetInstance()->ChangeScene(GameState::GAMEMENU);
+	}
 }
 
 void Player::CenterCamera()

@@ -19,5 +19,6 @@
 #include "InputManager.h"
 #include "AudioManager.h"
 #include "SceneChanger.h"
+#include "SettingsManager.h"
 
 // TODO: reference additional headers your program requires here

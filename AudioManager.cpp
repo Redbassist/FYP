@@ -55,7 +55,7 @@ void AudioManager::playSound(const std::string& name, const sf::Vector2f& pos)
 	}
 
 	//use later to set the volume of the music using SETTINGS
-	snd->setVolume(100);
+	snd->setVolume(SettingsManager::GetInstance()->EffectVolume());
 
 	snd->play();
 
@@ -87,8 +87,8 @@ void AudioManager::startMusic(const std::string& name)
 		addMusic(name); 
 	} 
 	mCurrentSong = mMusic[name];
-	mCurrentSong->play();
 	mCurrentSong->setLoop(true);
+	mCurrentSong->play();
 }
 void AudioManager::stopMusic()
 {
@@ -97,7 +97,12 @@ void AudioManager::stopMusic()
 }
 
 void AudioManager::update()
-{
+{ 
+	sf::Listener::setGlobalVolume(SettingsManager::GetInstance()->MasterVolume());
+
+	if (mCurrentSong != NULL)
+		mCurrentSong->setVolume(SettingsManager::GetInstance()->MusicVolume());
+
 	for (auto it = mPlaying.begin(); it != mPlaying.end();)
 	{
 		if ((*it)->getStatus() == sf::Sound::Stopped)
@@ -107,5 +112,5 @@ void AudioManager::update()
 		}
 		else
 			++it;
-	}
+	} 
 }

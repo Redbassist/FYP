@@ -17,13 +17,15 @@ private:
 	bool hovering;
 	Font font;
 	Text text;
+	GameState function;
 public:
-	Button(Vector2f, int, int, string&);
+	Button(Vector2f, int, int, string&, GameState);
 	void LoadAssets(string&);
 	void Update();
 	void Draw(); 
 	void CheckHover();
 	void CheckClick();
+	void UpdateTransform(Vector2f);
 };
 
 #endif
