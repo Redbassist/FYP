@@ -134,7 +134,9 @@ void Player::Movement() {
 	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
 
 	//updating the player listener to the position of the player
-	AudioManager::GetInstance()->setListener(m_pos, orientation);
+	float temp = orientation;
+	temp += 180;
+	AudioManager::GetInstance()->setListener(m_pos, temp);
 }
 
 void Player::Interaction() {

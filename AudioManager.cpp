@@ -26,8 +26,8 @@ AudioManager::~AudioManager()
 
 void AudioManager::setListener(const sf::Vector2f& pos, float dir)
 {
-	//convert dir to degrees!
-	sf::Listener::setPosition(pos.x, pos.y, 0);
+	//convert dir to degrees!  
+	sf::Listener::setPosition(pos.x, pos.y, 0);  
 	sf::Listener::setDirection(cos(dir), sin(dir), 0);
 	sf::Listener::setUpVector(sf::Vector3f(0, 0, 1));
 }
@@ -50,7 +50,7 @@ void AudioManager::playSound(const std::string& name, const sf::Vector2f& pos)
 
 	if (pos != sf::Vector2f())
 	{
-		snd->setRelativeToListener(true);
+		snd->setRelativeToListener(false);
 		snd->setPosition(pos.x, pos.y, 0); 
 	}
 
@@ -97,7 +97,7 @@ void AudioManager::stopMusic()
 }
 
 void AudioManager::update()
-{ 
+{  
 	sf::Listener::setGlobalVolume(SettingsManager::GetInstance()->MasterVolume());
 
 	if (mCurrentSong != NULL)

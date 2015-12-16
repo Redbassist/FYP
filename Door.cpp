@@ -47,6 +47,7 @@ void Door::OpenClose() {
 	if (open) {
 		open = false;
 		body->GetFixtureList()->SetSensor(false);
+		AudioManager::GetInstance()->playSound("closeDoor", m_sprite.getPosition());
 	}
 	else {
 		open = true;

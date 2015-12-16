@@ -15,7 +15,7 @@
 #include <Box2D/Box2D.h>
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
-#include "SFML/Audio.hpp"   
+#include "SFML/Audio.hpp"    
 #include "InputManager.h"
 #include "AudioManager.h"
 #include "SceneChanger.h"
