@@ -95,12 +95,7 @@ Item* Inventory::DropItem(Vector2f clickPos, Vector2f playerPos) {
 	}
 
 	return NULL;
-}
-
-/*
-Item* Inventory::RemoveItem(Vector2f pos) {
-
-}*/
+} 
 
 void Inventory::Open() {
 	open = true;

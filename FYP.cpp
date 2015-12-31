@@ -16,11 +16,12 @@ int main()
 	/** Prepare the window */
 	//int screenWidth = VideoMode::getDesktopMode().width;
 	//int screenHeight = VideoMode::getDesktopMode().height;	
+
 	int screenWidth = 1280;
 	int screenHeight = 720;
 	window = new RenderWindow(VideoMode(screenWidth, screenHeight, 32), "FYP"); 
 	View view = View(FloatRect(0, 0, screenWidth, screenHeight));
-	window->setView(view); 
+	window->setView(view);  
 
 	b2Vec2 Gravity(0.f, 0.f);
 	world = new b2World(Gravity); 

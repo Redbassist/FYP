@@ -25,6 +25,12 @@ struct keyActions {
 
 class Player {
 private:
+	//player stats
+	float fullHealth;
+	float health;
+	float hunger;
+	float thirst;
+
 	keyActions actions;
 	Texture m_AnimationLegsTexture;
 	Texture m_AnimationTopTexture;
@@ -36,7 +42,24 @@ private:
 	Animation* currentTopAnimation;
 	AnimatedSprite animatedLegSprite;
 	AnimatedSprite animatedTopSprite;
-	 
+
+	//watch variables
+	Texture watchTexture;
+	Sprite watchSprite;
+	Texture watchBGTexture;
+	Sprite watchBGSprite;
+	Texture heartBeatTexture;
+	Sprite heartBeatSprite;
+	Font watchFont;
+	Text heartRateText;
+	Text currentTime;
+
+	float heartRate;
+	float heartBeatX;
+	int currentHours;
+	int currentMinutes;
+	int nextMinute;
+	
 	b2Body* body;
 	b2FixtureDef fixtureDef;
 
@@ -70,6 +93,9 @@ public:
 	float getRotationAngle();
 	void createBox2dBody();
 	b2Vec2 Normalize(b2Vec2);
+	void SetStats();
+	void WatchUIPosition();
+	void DrawWatch();
 };
 
 #endif

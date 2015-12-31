@@ -42,5 +42,4 @@ void World::Draw() {
 	}
 
 	player->Draw();
-
 }

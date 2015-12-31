@@ -17,6 +17,13 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	touchedContainer = NULL;
 	touchedDoor = NULL;
 
+	fullHealth = 1000;
+	health = fullHealth / 100;
+	heartBeatX = 0;
+	currentHours = 12;
+	currentMinutes = 0;
+	nextMinute = 0;
+
 	LoadAssets();
 	LoadBinds();
 	createBox2dBody();
@@ -31,7 +38,7 @@ void Player::LoadAssets() {
 	legsMoving.setSpriteSheet(m_AnimationLegsTexture);
 	legsMoving.addFrames(12, 4, 3, 32, 32);
 	currentLegAnimation = &legsIdle;
-	 
+
 	m_AnimationTopTexture.loadFromFile("Sprites/playerTop.png");
 	m_AnimationTopTexture.setSmooth(false);
 	playerTopIdle.setSpriteSheet(m_AnimationTopTexture);
@@ -39,7 +46,7 @@ void Player::LoadAssets() {
 	playerTopMoving.setSpriteSheet(m_AnimationTopTexture);
 	playerTopMoving.addFrames(12, 4, 3, 31, 27);
 	currentTopAnimation = &playerTopIdle;
-	
+
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(16, 16);
 	animatedLegSprite.setPosition(m_pos);
@@ -49,6 +56,36 @@ void Player::LoadAssets() {
 	animatedTopSprite.setOrigin(12, 13.5);
 	animatedTopSprite.setPosition(m_pos);
 	animatedTopSprite.setScale(1, 1);
+
+	//loading the watch sprites for the UI
+	watchTexture.loadFromFile("Sprites/watch.png");
+	watchTexture.setSmooth(false);
+	watchSprite.setTexture(watchTexture);
+	watchSprite.setTextureRect(sf::IntRect(0, 0, watchTexture.getSize().x, watchTexture.getSize().y));
+	watchSprite.setScale(0.3f, 0.3f);
+
+	watchBGTexture.loadFromFile("Sprites/watchBack.png");
+	watchBGTexture.setSmooth(false);
+	watchBGSprite.setTexture(watchBGTexture);
+	watchBGSprite.setTextureRect(sf::IntRect(0, 0, watchBGTexture.getSize().x, watchBGTexture.getSize().y));
+	watchBGSprite.setScale(0.3f, 0.3f);
+
+	heartBeatTexture.loadFromFile("Sprites/HeartBeat.png");
+	heartBeatTexture.setSmooth(false);
+	heartBeatSprite.setTexture(heartBeatTexture);
+	heartBeatSprite.setTextureRect(sf::IntRect(0, 0, heartBeatTexture.getSize().x, heartBeatTexture.getSize().y));
+	heartBeatSprite.setScale(0.3f, 0.3f);
+
+	//setting the text inside the button
+	watchFont.loadFromFile("digital.ttf");
+
+	heartRateText.setFont(watchFont);
+	heartRateText.setCharacterSize(16);
+	heartRateText.setColor(sf::Color::Black);
+
+	currentTime.setFont(watchFont);
+	currentTime.setCharacterSize(32);
+	currentTime.setColor(sf::Color::Black);
 }
 
 void Player::LoadBinds() {
@@ -84,7 +121,11 @@ void Player::Draw() {
 
 	window->draw(animatedLegSprite);
 	window->draw(animatedTopSprite);
+
+	//drawing the inventory and it's contents
 	inventory->Draw();
+
+	DrawWatch();
 }
 
 void Player::Update() {
@@ -93,14 +134,18 @@ void Player::Update() {
 	}
 	Movement();
 	Interaction();
+	SetStats();
 
 	//setting the position of the sprite to the physics body
 	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
-	animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE); 
+	animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	m_pos = animatedTopSprite.getPosition();
 
 	//setting camera to the player
 	CenterCamera();
+
+	//setting the watch position
+	WatchUIPosition();
 
 	if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 		SceneChanger::GetInstance()->ChangeScene(GameState::GAMEMENU);
@@ -204,7 +249,7 @@ void Player::Interaction() {
 	}
 
 	//opening a door
-	if (actions.interact && touchedDoor != NULL) { 
+	if (actions.interact && touchedDoor != NULL) {
 		touchedDoor->OpenClose();
 		actions.interact = false;
 	}
@@ -278,6 +323,74 @@ b2Vec2 Player::Normalize(b2Vec2 vector) {
 		vector.y /= length;
 	}
 	return vector;
+}
+
+//Setting the stats for the UI depending on the status of the player
+void Player::SetStats() {
+	//for seting current heart rate on watch using the health of the player
+	heartRate = fullHealth / (health * 100);
+	int heartRateForText = 85 + (10 * heartRate);
+	heartRateText.setString(to_string(heartRateForText));
+
+	//current time on the watch 1 second = 1 minute
+	nextMinute++;
+
+	if (nextMinute > 59) {
+		nextMinute = 0;
+		currentMinutes++;
+		if (currentMinutes > 59) {
+			currentHours++;
+			if (currentHours > 23)
+				currentHours = 0;
+			currentMinutes = 0;
+		}
+	}
+
+	String timeText;
+
+	if (currentHours < 10)
+		timeText = "0" + to_string(currentHours) + " : ";
+	else
+		timeText = to_string(currentHours) + " : ";
+
+	if (currentMinutes < 10)
+		timeText += "0" + to_string(currentMinutes);
+	else
+		timeText += to_string(currentMinutes);
+
+	currentTime.setString(timeText);
+}
+
+void Player::WatchUIPosition() {
+	//placing the watchUI in the correct position on the screen
+	Vector2f center = window->getView().getCenter();
+	Vector2f size = window->getView().getSize();
+
+	sf::Vector2f watchBGOffset = sf::Vector2f(size.x / 20, size.y / 6);
+	sf::Vector2f heartBeatOffset = sf::Vector2f(size.x / 19.5, size.y / 6);
+	sf::Vector2f heartRateTextOffset = sf::Vector2f(size.x / 12.2, size.y / 5.8);
+	sf::Vector2f timeTextOffset = sf::Vector2f(size.x / 16.6, size.y / 3.2);
+
+	//placing the watch / heart beat monitor / heart rate text / time
+	watchBGSprite.setPosition(center.x + size.x / 3.1 + watchBGOffset.x, center.y + watchBGOffset.y);
+	heartBeatSprite.setPosition((center.x + size.x / 3.1 + heartBeatOffset.x) + heartBeatX, center.y + heartBeatOffset.y);
+	watchSprite.setPosition(center.x + size.x / 3.1, center.y);
+	heartRateText.setPosition(center.x + size.x / 3.1 + heartRateTextOffset.x, center.y + heartRateTextOffset.y);
+	currentTime.setPosition(center.x + size.x / 3.1 + timeTextOffset.x, center.y + timeTextOffset.y);
+
+	if (heartBeatX < 85) {
+		heartBeatX += heartRate;
+	}
+	else
+		heartBeatX = 0;
+}
+
+void Player::DrawWatch() {
+	window->draw(watchBGSprite);
+	window->draw(heartBeatSprite);
+	window->draw(watchSprite);
+	window->draw(heartRateText);
+	window->draw(currentTime);
 }
 
 float Player::getRotationAngle() {
