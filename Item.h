@@ -38,6 +38,8 @@ private:
 	bool bodyCreated;
 	int size;
 
+	bool dragged;
+
 public:
 	Item(ItemType, int);
 	Item(ItemType, int, bool, Vector2f);
@@ -47,6 +49,7 @@ public:
 	void Draw();
 	void DrawInInventory(Vector2f, FloatRect, int, int);
 	void DrawInContainer(Vector2f, FloatRect, int, int);
+	void DrawDragged();
 	void PickedUp();
 	bool CheckSprite(Vector2f);
 	void Dropped(Vector2f);

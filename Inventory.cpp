@@ -95,7 +95,20 @@ Item* Inventory::DropItem(Vector2f clickPos, Vector2f playerPos) {
 	}
 
 	return NULL;
-} 
+}
+
+Item * Inventory::DragItem(Vector2f clickPos)
+{
+	int size = slots.size();
+	for (int i = 0; i < size; i++) {
+		if (slots[i].full == true && slots[i].item != NULL) {
+			if (slots[i].item->CheckSprite(clickPos)) {
+				return slots[i].item; 
+			}
+		}
+	}
+	return NULL;
+}
 
 void Inventory::Open() {
 	open = true;

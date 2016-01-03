@@ -16,6 +16,7 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	speed = 0.06f;
 	touchedContainer = NULL;
 	touchedDoor = NULL;
+	dragItem = NULL;
 
 	fullHealth = 1000;
 	health = fullHealth / 100;
@@ -98,6 +99,7 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.inventory, Keyboard::Key::G);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.drop, Mouse::Button::Right);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.take, Mouse::Button::Left);
+	InputManager::GetInstance()->Bind(&actions.drag, Mouse::Button::Left);
 }
 
 void Player::Draw() {
@@ -125,13 +127,16 @@ void Player::Draw() {
 	//drawing the inventory and it's contents
 	inventory->Draw();
 
+	//if there is an item being drawn, draw it here
+	if (dragItem != NULL) {
+		dragItem->DrawDragged();
+	}
+
 	DrawWatch();
 }
 
 void Player::Update() {
-	if (!inventory->CheckOpen()) {
-		SetRotation();
-	}
+	SetRotation();
 	Movement();
 	Interaction();
 	SetStats();
@@ -185,6 +190,10 @@ void Player::Movement() {
 }
 
 void Player::Interaction() {
+	Vector2i mousePos = Mouse::getPosition(*window);
+	//used to convert to view coordinates
+	sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+
 	//opening and closing the inventory
 	if (actions.inventory && inventory->CheckOpen()) {
 		inventory->Close();
@@ -217,36 +226,37 @@ void Player::Interaction() {
 	}
 
 	//dropping items from the inventory
-	if (actions.drop && touchedContainer != NULL && touchedContainer->CheckOpen()) {
-		Vector2i mousePos = Mouse::getPosition(*window);
-		//used to convert to view coordinates
-		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+	if (actions.drop && touchedContainer != NULL && touchedContainer->CheckOpen()) { 
 		Item* item = inventory->DropItem((Vector2f)worldMousePos, m_pos);
 		if (item != NULL)
 			touchedContainer->AddItem(item);
 		actions.drop = false;
 	}
 
-	else if (actions.drop && inventory->CheckOpen()) {
-		Vector2i mousePos = Mouse::getPosition(*window);
-		//used to convert to view coordinates
-		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+	//dropping items from the inventory
+	else if (actions.drop && inventory->CheckOpen()) { 
 		Item* item = inventory->DropItem((Vector2f)worldMousePos, m_pos);
 		if (item != NULL)
 			item->Dropped(m_pos);
 		actions.drop = false;
 	}
 
-	//dropping items from the inventory
-	if (actions.take && touchedContainer != NULL && touchedContainer->CheckOpen()) {
-		Vector2i mousePos = Mouse::getPosition(*window);
-		//used to convert to view coordinates
-		sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+	if (actions.drag && inventory->CheckOpen()) {
+		if (dragItem == NULL) {
+			dragItem = inventory->DragItem(worldMousePos);
+		}	 
+	}
+	else if (!actions.drag && dragItem != NULL) {
+		dragItem = NULL;
+		cout << "Dropped dragged item" << endl;
+	}
+
+	if (actions.take && touchedContainer != NULL && touchedContainer->CheckOpen()) { 
 		Item* tempItem = touchedContainer->TakeItem(worldMousePos);
 		if (tempItem != NULL)
 			inventory->AddItem(tempItem);
 		actions.take = false;
-	}
+	} 
 
 	//opening a door
 	if (actions.interact && touchedDoor != NULL) {

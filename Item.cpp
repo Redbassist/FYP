@@ -45,7 +45,7 @@ int Item::GetSize() {
 
 void Item::Draw() {
 	if (onGround)
-		window->draw(m_sprite);
+		window->draw(m_sprite); 
 }
 
 void Item::DrawInInventory(Vector2f pos, FloatRect rect, int slotCol, int slotRow) {
@@ -78,6 +78,17 @@ void Item::DrawInContainer(Vector2f pos, FloatRect rect, int slotCol, int slotRo
 	float posY = pos.y + (rect.height / 100 * startY) + (m_sprite.getTextureRect().height * (slotRow - 1)) + (yOffset * (slotRow - 1));
 	m_sprite.setPosition(Vector2f(posX, posY));
 	window->draw(m_sprite);
+}
+
+void Item::DrawDragged()
+{
+	Vector2i mousePos = Mouse::getPosition(*window);
+	//used to convert to view coordinates
+	sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
+
+	Sprite temp = m_sprite;
+	temp.setPosition(worldMousePos);
+	window->draw(temp);
 }
 
 void Item::PickedUp() {

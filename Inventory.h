@@ -34,6 +34,7 @@ public:
 	void SetupSlots();
 	void AddItem(Item*); 
 	Item* DropItem(Vector2f, Vector2f);
+	Item* DragItem(Vector2f);
 	void Open();
 	void Close();
 	bool CheckOpen();

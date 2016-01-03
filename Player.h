@@ -21,6 +21,7 @@ struct keyActions {
 	bool drop = false;
 	bool take = false;
 	bool inventory = false;
+	bool drag = false;
 };
 
 class Player {
@@ -66,6 +67,8 @@ private:
 	Container* touchedContainer;
 	std::vector<Item*> touchedItems;
 	Door* touchedDoor;
+
+	Item* dragItem;
 
 	Vector2f m_pos;
 	float orientation;
