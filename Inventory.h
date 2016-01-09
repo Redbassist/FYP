@@ -32,8 +32,11 @@ public:
 	Inventory();
 	void LoadAssets();
 	void SetupSlots();
-	void AddItem(Item*); 
-	Item* DropItem(Vector2f, Vector2f);
+	bool AddItem(Item*, Vector2f); 
+	//dropping to ground
+	Item* DropItem(Item*, Vector2f);
+	//dropping to container
+	Item* DropItem(Item*, int);
 	Item* DragItem(Vector2f);
 	void Open();
 	void Close();

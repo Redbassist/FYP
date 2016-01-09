@@ -68,7 +68,8 @@ private:
 	std::vector<Item*> touchedItems;
 	Door* touchedDoor;
 
-	Item* dragItem;
+	Item* dragInventoryItem;
+	Item* dragContainerItem;
 
 	Vector2f m_pos;
 	float orientation;

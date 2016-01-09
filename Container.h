@@ -40,11 +40,12 @@ public:
 	void LoadAssets();
 	void SetupSlots();
 	void GenerateItems();
-	void AddItem(Item*);
-	Item* TakeItem(Vector2f);
+	bool AddItem(Item*, Vector2f);
+	bool TakeItem(Item*, int);
 	void Open();
 	void Close();
 	bool CheckOpen();
+	Item * DragItem(Vector2f clickPos);
 	void Draw();
 	void DrawItems();
 	void createBox2dBody();

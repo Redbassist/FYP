@@ -16,7 +16,8 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	speed = 0.06f;
 	touchedContainer = NULL;
 	touchedDoor = NULL;
-	dragItem = NULL;
+	dragInventoryItem = NULL;
+	dragContainerItem = NULL;
 
 	fullHealth = 1000;
 	health = fullHealth / 100;
@@ -127,9 +128,12 @@ void Player::Draw() {
 	//drawing the inventory and it's contents
 	inventory->Draw();
 
-	//if there is an item being drawn, draw it here
-	if (dragItem != NULL) {
-		dragItem->DrawDragged();
+	//if there is an item being dragged, draw it here
+	if (dragInventoryItem != NULL) {
+		dragInventoryItem->DrawDragged();
+	}
+	if (dragContainerItem != NULL) {
+		dragContainerItem->DrawDragged();
 	}
 
 	DrawWatch();
@@ -197,6 +201,8 @@ void Player::Interaction() {
 	//opening and closing the inventory
 	if (actions.inventory && inventory->CheckOpen()) {
 		inventory->Close();
+		dragInventoryItem = NULL;
+		dragContainerItem = NULL;
 		actions.inventory = false;
 	}
 	else if (actions.inventory && !inventory->CheckOpen()) {
@@ -218,44 +224,58 @@ void Player::Interaction() {
 		}
 		//picking up a close item
 		else if (!touchedItems.empty()) {
-			inventory->AddItem(touchedItems[0]);
+			inventory->AddItem(touchedItems[0], Vector2f());
 			touchedItems[0]->PickedUp();
 			touchedItems.erase(touchedItems.begin());
 			actions.interact = false;
 		}
-	}
-
-	//dropping items from the inventory
-	if (actions.drop && touchedContainer != NULL && touchedContainer->CheckOpen()) { 
-		Item* item = inventory->DropItem((Vector2f)worldMousePos, m_pos);
-		if (item != NULL)
-			touchedContainer->AddItem(item);
-		actions.drop = false;
-	}
-
-	//dropping items from the inventory
-	else if (actions.drop && inventory->CheckOpen()) { 
-		Item* item = inventory->DropItem((Vector2f)worldMousePos, m_pos);
-		if (item != NULL)
-			item->Dropped(m_pos);
-		actions.drop = false;
-	}
-
+	} 
+	
 	if (actions.drag && inventory->CheckOpen()) {
-		if (dragItem == NULL) {
-			dragItem = inventory->DragItem(worldMousePos);
-		}	 
+		if (dragInventoryItem == NULL) {
+			dragInventoryItem = inventory->DragItem(worldMousePos);
+		}
 	}
-	else if (!actions.drag && dragItem != NULL) {
-		dragItem = NULL;
-		cout << "Dropped dragged item" << endl;
+	
+	if (actions.drag && touchedContainer != NULL && touchedContainer->CheckOpen()) {
+		if (dragContainerItem == NULL) {
+			dragContainerItem = touchedContainer->DragItem(worldMousePos);
+		}
 	}
 
-	if (actions.take && touchedContainer != NULL && touchedContainer->CheckOpen()) { 
-		Item* tempItem = touchedContainer->TakeItem(worldMousePos);
-		if (tempItem != NULL)
-			inventory->AddItem(tempItem);
-		actions.take = false;
+	//when you are dropping the item (be it inventory / container)
+	else if (!actions.drag && (dragInventoryItem != NULL || dragContainerItem != NULL)) {
+		
+		if (touchedContainer != NULL) {
+			//dropping from inventory to the container
+			if (dragInventoryItem != NULL && touchedContainer->CheckOpen()) {
+				int itemSlot = dragInventoryItem->GetSlot();
+				if (touchedContainer->AddItem(dragInventoryItem, worldMousePos)) {
+					inventory->DropItem(dragInventoryItem, itemSlot);
+					dragInventoryItem = NULL;
+				}
+			}
+			//dropping from container to the inventory
+			else if (dragContainerItem != NULL && inventory->CheckOpen()) { 
+				int itemSlot = dragContainerItem->GetSlot();
+				if (inventory->AddItem(dragContainerItem, worldMousePos)) {
+					touchedContainer->TakeItem(dragContainerItem, itemSlot);
+					dragContainerItem = NULL;
+				}
+			}
+		}
+
+		//dropping the item from the inventory
+		if (dragInventoryItem != NULL) {  
+			Item* item = inventory->DropItem(dragInventoryItem, worldMousePos);
+			if (item != NULL) {
+				item->Dropped(m_pos); 
+				cout << "Dropped inventory item on ground" << endl;
+			}
+		}
+
+		dragInventoryItem = NULL;
+		dragContainerItem = NULL;
 	} 
 
 	//opening a door

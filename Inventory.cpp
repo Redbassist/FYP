@@ -41,60 +41,94 @@ void Inventory::SetupSlots() {
 	}
 }
 
-void Inventory::AddItem(Item* item) {
+bool Inventory::AddItem(Item* item, Vector2f dropPos) {
 	//this method will look through the slots in the inventory and find one that is free for the item
-	int size = slots.size();
+	Vector2f spritePos = m_sprite.getPosition();
+	float height = m_sprite.getGlobalBounds().height;
+	float width = m_sprite.getGlobalBounds().width;
 
-	for (int i = 0; i < size; i++) {
-		if (item->GetSize() == 1 && !slots[i].full) {
-			slots[i].item = item;
-			slots[i].full = true;
-			break;
-		}
-		else if (item->GetSize() == 2 && !slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
-			slots[i].item = item;
-			slots[i].full = true;
-			slots[i + 1].full = true;
-			break;
-		}
-		else if (item->GetSize() == 2) {
-			bool loop = true;
-			while (loop) {
-				if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
-					slots[i].item = item;
-					slots[i].full = true;
-					slots[i + 1].full = true;
-					loop = false;
-				}
-				i++;
+	//checks if the item is dropped on the inventory (from container)
+	if ((dropPos.x > spritePos.x && dropPos.x < spritePos.x + width &&
+		dropPos.y > spritePos.y && dropPos.y < spritePos.y + height) || dropPos == Vector2f()) {
+
+		int size = slots.size();
+
+		for (int i = 0; i < size; i++) {
+			if (item->GetSize() == 1 && !slots[i].full) {
+				slots[i].item = item;
+				slots[i].item->SlotNumber(i);
+				slots[i].full = true;
+				return true;
 			}
-			break;
+			else if (item->GetSize() == 2 && !slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
+				slots[i].item = item;
+				slots[i].full = true;
+				slots[i].item->SlotNumber(i);
+				slots[i + 1].full = true;
+				return true;
+			}
+			else if (item->GetSize() == 2) {
+				bool loop = true;
+				while (loop) {
+					if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
+						slots[i].item = item;
+						slots[i].full = true;
+						slots[i].item->SlotNumber(i);
+						slots[i + 1].full = true;
+						loop = false;
+					}
+					i++;
+				}
+				return true;
+			}
 		}
 	}
+	return false;
 }
 
-Item* Inventory::DropItem(Vector2f clickPos, Vector2f playerPos) {
+Item* Inventory::DropItem(Item* item, Vector2f dropPos) {
+
+	Vector2f spritePos = m_sprite.getPosition();
+	float height = m_sprite.getGlobalBounds().height;
+	float width = m_sprite.getGlobalBounds().width;
+
+	if (dropPos.x < spritePos.x || dropPos.x > spritePos.x + width ||
+		dropPos.y < spritePos.y || dropPos.y > spritePos.y + height) {
+
+		int slot = item->GetSlot();
+
+		if (item->GetSize() == 1) {
+			slots[slot].full = false;
+			slots[slot].item->ResetSlot();
+			slots[slot].item = NULL;
+		}
+		else {
+			slots[slot].full = false;
+			slots[slot + 1].full = false;
+			slots[slot].item->ResetSlot();
+			slots[slot].item = NULL;
+		}
+		return item;
+	}
+	return NULL;
+}
+
+Item * Inventory::DropItem(Item * item, int slot)
+{
+	int slotNumber = slot;
 	int size = slots.size();
 
-	for (int i = 0; i < size; i++) {
-		if (slots[i].full == true && slots[i].item != NULL) {
-			if (slots[i].item->CheckSprite(clickPos)) {
-				Item* tempItem = slots[i].item;
-				if (slots[i].item->GetSize() == 1) { 
-					slots[i].full = false;
-					slots[i].item = NULL;
-				}
-				else { 
-					slots[i].full = false;
-					slots[i + 1].full = false;
-					slots[i].item = NULL;
-				}
-				return tempItem;
-			}
-		}
+	if (slots[slotNumber].item->GetSize() == 1) {
+		slots[slotNumber].full = false;
+		slots[slotNumber].item = NULL;
+	}
+	else {
+		slots[slotNumber].full = false;
+		slots[slotNumber + 1].full = false;
+		slots[slotNumber].item = NULL;
 	}
 
-	return NULL;
+	return item;
 }
 
 Item * Inventory::DragItem(Vector2f clickPos)
@@ -103,7 +137,7 @@ Item * Inventory::DragItem(Vector2f clickPos)
 	for (int i = 0; i < size; i++) {
 		if (slots[i].full == true && slots[i].item != NULL) {
 			if (slots[i].item->CheckSprite(clickPos)) {
-				return slots[i].item; 
+				return slots[i].item;
 			}
 		}
 	}
@@ -150,6 +184,6 @@ void Inventory::DrawItems() {
 	int currentRow = 1;
 	for (int i = 0; i < size; i++) {
 		if (slots[i].item != NULL && slots[i].full == true)
-			slots[i].item->DrawInInventory(m_sprite.getPosition(), m_sprite.getGlobalBounds(), slots[i].col, slots[i].row); 
+			slots[i].item->DrawInInventory(m_sprite.getPosition(), m_sprite.getGlobalBounds(), slots[i].col, slots[i].row);
 	}
 }

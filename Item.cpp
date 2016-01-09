@@ -39,6 +39,21 @@ void Item::LoadSprites(std::string type)
 	m_sprite.setPosition(m_pos);
 }
 
+void Item::SlotNumber(int sentSlot)
+{
+	slot = sentSlot;
+}
+
+void Item::ResetSlot()
+{
+	slot = 0;
+}
+
+int Item::GetSlot()
+{
+	return slot;
+}
+
 int Item::GetSize() {
 	return size;
 }

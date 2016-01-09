@@ -71,16 +71,19 @@ void Container::GenerateItems() {
 			if (item == 0) {
 				slots[i].item = new Item(FOOD1, 1);
 				slots[i].full = true;
+				slots[i].item->SlotNumber(i);
 				items->push_back(slots[i].item);
 			}
 			else if (item == 3) {
 				slots[i].item = new Item(WATER1, 1);
 				slots[i].full = true;
+				slots[i].item->SlotNumber(i);
 				items->push_back(slots[i].item);
 			}
 			else if (item == 4) {
 				slots[i].item = new Item(WATER2, 1);
 				slots[i].full = true;
+				slots[i].item->SlotNumber(i);
 				items->push_back(slots[i].item);
 			}
 		}
@@ -88,63 +91,68 @@ void Container::GenerateItems() {
 
 }
 
-void Container::AddItem(Item* item) {
+bool Container::AddItem(Item* item, Vector2f dropPos) {
 	//this method will look through the slots in the container and find one that is free for the item
-	int size = slots.size();
 
-	for (int i = 0; i < size; i++) {
-		if (item->GetSize() == 1 && !slots[i].full) {
-			slots[i].item = item;
-			slots[i].full = true;
-			break;
-		}
-		else if (item->GetSize() == 2 && !slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
-			slots[i].item = item;
-			slots[i].full = true;
-			slots[i + 1].full = true;
-			break;
-		}
-		else if (item->GetSize() == 2) {
-			bool loop = true;
-			while (loop) {
-				if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
-					slots[i].item = item;
-					slots[i].full = true;
-					slots[i + 1].full = true;
-					loop = false;
-				}
-				i++;
+	Vector2f spritePos = m_sprite.getPosition();
+	float height = m_sprite.getGlobalBounds().height;
+	float width = m_sprite.getGlobalBounds().width;
+
+	//make class method that does this!!! -v
+	if (dropPos.x > spritePos.x && dropPos.x < spritePos.x + width &&
+		dropPos.y > spritePos.y && dropPos.y < spritePos.y + height) {
+
+		int size = slots.size();
+
+		for (int i = 0; i < size; i++) {
+			if (item->GetSize() == 1 && !slots[i].full) {
+				slots[i].item = item;
+				slots[i].item->SlotNumber(i);
+				slots[i].full = true;
+				break;
 			}
-			break;
-		}
-	}
-}
-
-Item* Container::TakeItem(Vector2f clickPos) {
-	//will check all slots that are full until a slot is found where the dropping click was made
-	int size = slots.size();
-
-	for (int i = 0; i < size; i++) {
-		if (slots[i].full == true && slots[i].item != NULL) {
-			if (slots[i].item->CheckSprite(clickPos)) {
-				if (slots[i].item->GetSize() == 1) {
-					slots[i].full = false;
-					Item* tempPointer = slots[i].item;
-					slots[i].item = NULL;
-					return tempPointer;
-				}
-				else {
-					slots[i].full = false;
-					slots[i + 1].full = false;
-					Item* tempPointer = slots[i].item;
-					slots[i].item = NULL;
-					return tempPointer;
+			else if (item->GetSize() == 2 && !slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
+				slots[i].item = item;
+				slots[i].item->SlotNumber(i);
+				slots[i].full = true;
+				slots[i + 1].full = true;
+				break;
+			}
+			else if (item->GetSize() == 2) {
+				bool loop = true;
+				while (loop) {
+					if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
+						slots[i].item = item;
+						slots[i].item->SlotNumber(i);
+						slots[i].full = true;
+						slots[i + 1].full = true;
+						loop = false;
+					}
+					i++;
 				}
 				break;
 			}
 		}
+		return true;
 	}
-	return NULL;
+	return false;
+}
+
+bool Container::TakeItem(Item* item, int slot) {
+	//will check all slots that are full until a slot is found where the dropping click was made 
+	int slotNumber = slot;
+	int size = slots.size();
+
+	if (slots[slotNumber].item->GetSize() == 1) {
+		slots[slotNumber].full = false; 
+		slots[slotNumber].item = NULL; 
+	}
+	else {
+		slots[slotNumber].full = false;
+		slots[slotNumber + 1].full = false; 
+		slots[slotNumber].item = NULL; 
+	} 
+	return false;
 }
 
 void Container::Open() {
@@ -157,6 +165,19 @@ void Container::Close() {
 
 bool Container::CheckOpen() {
 	return open;
+}
+
+Item * Container::DragItem(Vector2f clickPos)
+{
+	int size = slots.size();
+	for (int i = 0; i < size; i++) {
+		if (slots[i].full == true && slots[i].item != NULL) {
+			if (slots[i].item->CheckSprite(clickPos)) {
+				return slots[i].item;
+			}
+		}
+	}
+	return NULL;
 }
 
 void Container::Draw() {

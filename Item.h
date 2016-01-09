@@ -39,12 +39,16 @@ private:
 	int size;
 
 	bool dragged;
+	int slot;
 
 public:
 	Item(ItemType, int);
 	Item(ItemType, int, bool, Vector2f);
 	void LoadAssets(); 
 	void LoadSprites(std::string type);
+	void SlotNumber(int);
+	void ResetSlot();
+	int GetSlot();
 	int GetSize();
 	void Draw();
 	void DrawInInventory(Vector2f, FloatRect, int, int);
