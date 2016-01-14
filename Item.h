@@ -40,6 +40,7 @@ private:
 
 	bool dragged;
 	int slot;
+	int hotbarSlot;
 
 public:
 	Item(ItemType, int);
@@ -47,6 +48,8 @@ public:
 	void LoadAssets(); 
 	void LoadSprites(std::string type);
 	void SlotNumber(int);
+	void SetHotbarSlot(int);
+	int GetHotbarSlot();
 	void ResetSlot();
 	int GetSlot();
 	int GetSize();

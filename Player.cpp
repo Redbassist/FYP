@@ -13,6 +13,7 @@ Player::Player(Vector2f pos) : m_pos(pos)
 {
 	m_pos = pos;
 	inventory = new Inventory();
+	hotbar = new Hotbar();
 	speed = 0.06f;
 	touchedContainer = NULL;
 	touchedDoor = NULL;
@@ -125,8 +126,11 @@ void Player::Draw() {
 	window->draw(animatedLegSprite);
 	window->draw(animatedTopSprite);
 
-	//drawing the inventory and it's contents
+	//drawing the inventory and its contents
 	inventory->Draw();
+
+	//drawing the hotbar and its contents
+	hotbar->Draw();
 
 	//if there is an item being dragged, draw it here
 	if (dragInventoryItem != NULL) {
@@ -265,14 +269,25 @@ void Player::Interaction() {
 			}
 		}
 
+		//try drop item in the hotbar <- THINK OF WAY TO MAKE MORE EFFICIENT
+		bool addedToHotbar = false;
+		if (dragInventoryItem != NULL) {
+			addedToHotbar = hotbar->AddItem(worldMousePos, dragInventoryItem);
+		}
+		else if (dragContainerItem != NULL) {
+			addedToHotbar = hotbar->AddItem(worldMousePos, dragContainerItem);
+		}
+
 		//dropping the item from the inventory
-		if (dragInventoryItem != NULL) {  
+		if (dragInventoryItem != NULL && addedToHotbar == false) {
 			Item* item = inventory->DropItem(dragInventoryItem, worldMousePos);
 			if (item != NULL) {
+				hotbar->RemoveItem(item->GetHotbarSlot());
 				item->Dropped(m_pos); 
 				cout << "Dropped inventory item on ground" << endl;
 			}
 		}
+
 
 		dragInventoryItem = NULL;
 		dragContainerItem = NULL;

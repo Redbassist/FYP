@@ -7,6 +7,7 @@
 #include "Animation.h"
 #include "AnimatedSprite.h" 
 #include "Inventory.h"
+#include "Hotbar.h"
 #include "Container.h" 
 #include "Door.h"
 
@@ -74,7 +75,9 @@ private:
 	Vector2f m_pos;
 	float orientation;
 	float speed;
+
 	Inventory* inventory;
+	Hotbar* hotbar;
 
 	sf::Clock frameClock;
 

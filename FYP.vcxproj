@@ -168,6 +168,7 @@
     <ClInclude Include="Container.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Hotbar.h" />
     <ClInclude Include="House.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Inventory.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="FYP.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="Hotbar.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Inventory.cpp" />

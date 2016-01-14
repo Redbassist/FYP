@@ -44,6 +44,16 @@ void Item::SlotNumber(int sentSlot)
 	slot = sentSlot;
 }
 
+void Item::SetHotbarSlot(int hbslot)
+{
+	hotbarSlot = hbslot;
+}
+
+int Item::GetHotbarSlot()
+{
+	return hotbarSlot;
+}
+
 void Item::ResetSlot()
 {
 	slot = 0;
@@ -126,6 +136,7 @@ bool Item::CheckSprite(Vector2f mouseClick) {
 
 void Item::Dropped(Vector2f pos) {
 	onGround = true;
+	hotbarSlot = -1;
 	m_sprite.setScale(Vector2f(0.2, 0.2));
 	m_sprite.setPosition(pos);
 	createBox2dBody();
