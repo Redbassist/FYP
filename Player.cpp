@@ -1,13 +1,6 @@
 #include "Player.h"
 
 //For the handling of collision filtering
-enum _entityCategory {
-	PLAYER = 0x0004,
-	ITEM = 0x0008,
-	CONTAINER = 0x0016,
-	WALL = 0x0020,
-	DOOR = 0x0024,
-};
 
 Player::Player(Vector2f pos) : m_pos(pos)
 {
@@ -29,6 +22,9 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	LoadAssets();
 	LoadBinds();
 	createBox2dBody();
+	createPunchBox2dBody();
+	createMeleeBox2dBody();
+	createJoint();
 }
 
 void Player::LoadAssets() {
@@ -96,11 +92,14 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->Bind(&actions.walkDown, Keyboard::Key::S);
 	InputManager::GetInstance()->Bind(&actions.walkLeft, Keyboard::Key::A);
 	InputManager::GetInstance()->Bind(&actions.walkRight, Keyboard::Key::D);
+	InputManager::GetInstance()->Bind(&actions.sprint, Keyboard::Key::LShift);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.interact, Keyboard::Key::E);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.inventory, Keyboard::Key::G);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.drop, Mouse::Button::Right);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.take, Mouse::Button::Left);
 	InputManager::GetInstance()->Bind(&actions.drag, Mouse::Button::Left);
+	InputManager::GetInstance()->BindSingleMousePress(&actions.swing, Mouse::Button::Left);
+	InputManager::GetInstance()->BindSingleMousePress(&actions.punch, Mouse::Button::Left);
 }
 
 void Player::Draw() {
@@ -169,28 +168,41 @@ void Player::CenterCamera()
 }
 
 void Player::Movement() {
-	b2Vec2 position = body->GetPosition();
+	b2Vec2 position = body->GetPosition(); 
+
+	float moveSpeed = speed;
+	if (actions.sprint) { moveSpeed *= 1.5; }
 
 	if (actions.walkUp) {
-		position.y -= speed;
+		position.y -= moveSpeed;
 	}
 	if (actions.walkDown) {
-		position.y += speed;
+		position.y += moveSpeed;
 	}
 	if (actions.walkLeft) {
-		position.x -= speed;
+		position.x -= moveSpeed;
 	}
 	if (actions.walkRight) {
-		position.x += speed;
+		position.x += moveSpeed;
 	}
 
-	body->SetTransform(position, 0);
+	//getting the punch to move out from players body using current orientation
+	b2Vec2 punchTemp = b2Vec2((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
+	punchTemp.x /= 100;
+	punchTemp.y /= 100;
+	punchTemp.x *= punchDistance;
+	punchTemp.y *= punchDistance;
+
+	body->SetTransform(position, orientation * DEGTORAD);
+	punchbody->SetTransform(body->GetPosition() + punchTemp, orientation * DEGTORAD);
+	meleebody->SetTransform(meleebody->GetPosition(), (orientation - (80 - meleeAngle)) * DEGTORAD);
+
 	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
 
 	//updating the player listener to the position of the player
-	float temp = orientation;
-	temp += 180;
-	AudioManager::GetInstance()->setListener(m_pos, temp);
+	float tempRot = orientation;
+	tempRot += 180;
+	AudioManager::GetInstance()->setListener(m_pos, tempRot);
 }
 
 void Player::Interaction() {
@@ -283,6 +295,33 @@ void Player::Interaction() {
 		touchedDoor->OpenClose();
 		actions.interact = false;
 	}
+
+	if (actions.swing && melee) {
+		if (swingDirection == 0) {
+			meleeAngle += swingSpeed;
+		}
+		else {
+			meleeAngle -= swingSpeed;
+		}
+		if (meleeAngle >= 160) {
+			swingDirection = 1;
+			actions.swing = false;
+		}
+		else if (meleeAngle <= 0) {
+			swingDirection = 0;
+			actions.swing = false;
+		}
+	}
+
+	if (actions.punch && punch) {
+		if (punchDistance < maxPunchDistance) {
+			punchDistance += 5;
+		}
+		else {
+			punchDistance = 0;
+			actions.punch = false;
+		}
+	}
 }
 
 void Player::TouchingContainer(Container* container) {
@@ -330,9 +369,10 @@ void Player::createBox2dBody() {
 	bodyDef.userData = this;
 	bodyDef.gravityScale = 1;
 	body = world->CreateBody(&bodyDef);
-	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox((31 / 2.0f) / SCALE, (27 / 2.0f) / SCALE);
-	fixtureDef.shape = &dynamicBox;
+
+	b2CircleShape circle;
+	circle.m_radius = 15 / SCALE; 
+	fixtureDef.shape = &circle;
 
 	fixtureDef.density = 1;
 	fixtureDef.friction = 0.3f;
@@ -344,6 +384,68 @@ void Player::createBox2dBody() {
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);
+}
+
+void Player::createPunchBox2dBody()
+{
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	//bodyDef.position.Set(m_pos.x / SCALE, m_pos.y / SCALE);
+	bodyDef.userData = this;
+	bodyDef.gravityScale = 1;
+	punchbody = world->CreateBody(&bodyDef);
+
+	b2PolygonShape dynamicBox;
+	dynamicBox.SetAsBox(7.5 / SCALE, 7.5 / SCALE, b2Vec2(0 / SCALE, 0), 0);
+	punchfixtureDef.shape = &dynamicBox;
+
+	punchfixtureDef.isSensor = true;
+	punchfixtureDef.density = 1;
+	punchfixtureDef.friction = 0.3f;
+	punchfixtureDef.userData = "Punch";
+	punchfixtureDef.restitution = b2MixRestitution(0, 0);
+
+	punchfixtureDef.filter.categoryBits = PUNCH;
+	punchfixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR | PLAYER;
+
+	punchbody->CreateFixture(&punchfixtureDef);
+	punchbody->SetFixedRotation(false);
+}
+
+void Player::createMeleeBox2dBody()
+{
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody; 
+	bodyDef.userData = this;
+	bodyDef.gravityScale = 1;
+	meleebody = world->CreateBody(&bodyDef);
+
+	b2PolygonShape dynamicBox;
+	dynamicBox.SetAsBox(15 / SCALE, 1 / SCALE, b2Vec2(15/SCALE,0), 0);
+	meleefixtureDef.shape = &dynamicBox;
+
+	meleefixtureDef.isSensor = true;
+	meleefixtureDef.density = 0.000000001;
+	meleefixtureDef.friction = 0.0f;
+	meleefixtureDef.userData = "MeleeWeapon";
+	meleefixtureDef.restitution = b2MixRestitution(0, 0);
+
+	meleefixtureDef.filter.categoryBits = MELEE;
+	meleefixtureDef.filter.maskBits = CONTAINER | WALL | DOOR | PLAYER;
+
+	meleebody->CreateFixture(&meleefixtureDef);
+	meleebody->SetFixedRotation(false);
+}
+
+void Player::createJoint()
+{
+	meleeJointDef;
+	meleeJointDef.bodyA = body;
+	meleeJointDef.bodyB = meleebody;
+	meleeJointDef.collideConnected = false; 
+	meleeJointDef.localAnchorA.Set(0, 0);
+	meleeJointDef.localAnchorB.Set(0, 0); 
+	meleeJoint = world->CreateJoint(&meleeJointDef);
 }
 
 b2Vec2 Player::Normalize(b2Vec2 vector) {
@@ -430,5 +532,5 @@ float Player::getRotationAngle() {
 	float dx = worldMousePos.x - m_pos.x;
 	float dy = worldMousePos.y - m_pos.y;
 	float radian = atan2f(dy, dx);
-	return (radian * 180 / 3.14159265359);
+	return (radian * RADTODEG);
 }

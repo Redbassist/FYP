@@ -114,12 +114,15 @@ void InputManager::UpdateSinglePress() {
 		case sf::Event::MouseButtonPressed:
 			it2 = singlePressMouseBinds.begin();
 			end2 = singlePressMouseBinds.end();
-			for (; it2 != end2; ++it2) {
+			for (; it2 != end2;) {
 				if (event.key.code == it2->second) {
 					*it2->first = true;
 					pressedSinglePressMouseBinds.push_back(*it2);
 					it2 = singlePressMouseBinds.erase(it2);
-					break;
+					end2 = singlePressMouseBinds.end();
+				}
+				else {
+					it2++;
 				}
 			}
 			break;
@@ -127,13 +130,16 @@ void InputManager::UpdateSinglePress() {
 		case sf::Event::MouseButtonReleased:
 			it2 = pressedSinglePressMouseBinds.begin();
 			end2 = pressedSinglePressMouseBinds.end();
-			for (; it2 != end2; ++it2) {
-				*it2->first = false;
+			for (; it2 != end2;) {
+				//*it2->first = false;
 				if (event.key.code == it2->second) {
 					singlePressMouseBinds.push_back(*it2);
 					it2 = pressedSinglePressMouseBinds.erase(it2);
+					end2 = pressedSinglePressMouseBinds.end();
 				}
-				break;
+				else {
+					it2++;
+				}
 			}
 			break;
 		}

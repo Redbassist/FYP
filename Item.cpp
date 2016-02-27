@@ -1,14 +1,5 @@
 #pragma once
-#include "Item.h"
-
-//For the handling of collision filtering
-enum _entityCategory {
-	PLAYER = 0x0004,
-	ITEM = 0x0008,
-	CONTAINER = 0x0016,
-	WALL = 0x0020,
-	DOOR = 0x0024,
-};
+#include "Item.h" 
 
 Item::Item( ItemType t, int s) : type(t), size(s) {
 	onGround = false;

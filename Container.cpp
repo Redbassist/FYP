@@ -1,13 +1,4 @@
-#include "Container.h"
-
-//For the handling of collision filtering
-enum _entityCategory {
-	PLAYER = 0x0004,
-	ITEM = 0x0008,
-	CONTAINER = 0x0016,
-	WALL = 0x0020,
-	DOOR = 0x0024,
-};
+#include "Container.h" 
 
 Container::Container(Vector2f pos, float rot, std::vector<Item*>* i) :
 	m_pos(pos), rotation(rot), items(i)

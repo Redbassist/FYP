@@ -17,11 +17,14 @@ struct keyActions {
 	bool walkRight = false;
 	bool walkUp = false;
 	bool walkDown = false;
+	bool sprint = false;
 	bool interact = false;
 	bool drop = false;
 	bool take = false;
 	bool inventory = false;
 	bool drag = false;
+	bool swing = false;
+	bool punch = false;
 };
 
 class Player {
@@ -62,7 +65,22 @@ private:
 	int nextMinute;
 	
 	b2Body* body;
-	b2FixtureDef fixtureDef;
+	b2FixtureDef fixtureDef; 
+	b2Body* punchbody;
+	b2FixtureDef punchfixtureDef;
+	b2Body* meleebody;
+	b2Joint* meleeJoint;
+	b2FixtureDef meleefixtureDef;
+	b2RevoluteJointDef meleeJointDef;
+
+	bool punch = true;
+	int punchDistance = 0;
+	int maxPunchDistance = 40;
+
+	bool melee = false;
+	int swingDirection = 0; //0 is right, 1 is left
+	float meleeAngle = 0;
+	int swingSpeed = 25;
 
 	Container* touchedContainer;
 	std::vector<Item*> touchedItems;
@@ -96,6 +114,9 @@ public:
 	void SetRotation();
 	float getRotationAngle();
 	void createBox2dBody();
+	void createPunchBox2dBody();
+	void createMeleeBox2dBody();
+	void createJoint();
 	b2Vec2 Normalize(b2Vec2);
 	void SetStats();
 	void WatchUIPosition();
