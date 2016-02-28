@@ -6,13 +6,18 @@ Item::Item(ItemType t, int s) : type(t), size(s) {
 	LoadAssets();
 }
 
+Item::Item(ItemType t, int s, int amount) : type(t), size(s), amountAmmo(amount) {
+	onGround = false;
+	LoadAssets();
+}
+
 //debugging constructor
 Item::Item(ItemType t, int s, bool g, Vector2f pos) : type(t), size(s) {
 	onGround = g;
 	m_pos = pos;
 	LoadAssets();
 	createBox2dBody();
-}
+} 
 
 void Item::LoadAssets()
 {

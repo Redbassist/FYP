@@ -59,6 +59,7 @@ void Container::GenerateItems() {
 
 	for (int i = 0; i < size; i++) {
 		int item = rand() % 20 + 0;
+		int amount;
 		if (item == 0) {
 			temp = new Item(FOOD1, 1);
 			AddItem(temp);
@@ -87,7 +88,19 @@ void Container::GenerateItems() {
 			temp = new Item(BAT, 2);
 			AddItem(temp);
 			items->push_back(temp); 
-		} 
+		}
+		else if (item == 5) {
+			amount = rand() % 5 + 0;
+			temp = new Item(PISTOL, 1, amount);
+			AddItem(temp);
+			items->push_back(temp);
+		}
+		else if (item == 6) {
+			amount = rand() % 6 + 0;
+			temp = new Item(AMMOPISTOL, 1, amount);
+			AddItem(temp);
+			items->push_back(temp);
+		}
 	}
 
 }

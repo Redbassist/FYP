@@ -15,3 +15,7 @@ enum _entityCategory {
 	MELEE = 0x0028,
 	PUNCH = 0x0032,
 };
+
+enum EffectType {
+	SPARK,
+};

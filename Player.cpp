@@ -27,8 +27,9 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	createJoint();
 
 	swingSpeed = 10;
-	punch = true;
+	punch = false;
 	melee = false;
+	pistol = true;
 }
 
 void Player::LoadAssets() {
@@ -43,7 +44,9 @@ void Player::LoadAssets() {
 	EasyLoadAssetsAnimation(&m_SwingAxeLeftTexture, "swingAnimationAxeLeft", &swingAxeLeft, 5, 5, 1, 60, 60);
 
 	EasyLoadAssetsAnimation(&m_PunchRightTexture, "rightPunch", &punchRight, 4, 4, 1, 31, 27);
-	EasyLoadAssetsAnimation(&m_SwingAxeLeftTexture, "leftPunch", &punchLeft, 4, 4, 1, 31, 27);
+	EasyLoadAssetsAnimation(&m_PunchLeftTexture, "leftPunch", &punchLeft, 4, 4, 1, 31, 27);
+
+	EasyLoadAssetsAnimation(&m_pistolTexture, "playerPistol", &pistolShoot, 1, 1, 1, 31, 27);
 
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(16, 16);
@@ -140,6 +143,7 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->Bind(&actions.drag, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.swing, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.punch, Mouse::Button::Left);
+	InputManager::GetInstance()->BindSingleMousePress(&actions.fire, Mouse::Button::Left);
 }
 
 void Player::Draw() {
@@ -148,25 +152,32 @@ void Player::Draw() {
 
 	//Setting the animation of the player legs depending on if is moving or not
 	if ((actions.walkUp || actions.walkDown || actions.walkLeft || actions.walkRight)) {
-		if (!punch && !melee)
-			currentTopAnimation = &playerTopMoving;
-		else if (punch) {
+	
+		if (punch) {
 			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
 		}
 		else if (melee) {
 			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
 		} 
+		else if (pistol) {
+			currentTopAnimation = &pistolShoot;
+		}
+		else
+			currentTopAnimation = &playerTopMoving;
 		currentLegAnimation = &legsMoving;
 	}
 	else {
-		if (!punch && !melee)
-			currentTopAnimation = &playerTopIdle;
-		else if (punch) {
+		if (punch) {
 			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
 		}
 		else if (melee) {
 			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
-		} 
+		}
+		else if (pistol) {
+			currentTopAnimation = &pistolShoot;
+		}
+		else
+			currentTopAnimation = &playerTopIdle;
 		currentLegAnimation = &legsIdle;
 	}
 
@@ -279,7 +290,8 @@ void Player::Movement() {
 	}
 
 	//getting the punch to move out from players body using current orientation
-	b2Vec2 punchTemp = b2Vec2((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
+	b2Vec2 orientationPoint = b2Vec2((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
+	b2Vec2 punchTemp = orientationPoint;
 	punchTemp.x /= 100;
 	punchTemp.y /= 100;
 	punchTemp.x *= punchDistance;
@@ -290,6 +302,11 @@ void Player::Movement() {
 	meleebody->SetTransform(meleebody->GetPosition(), (orientation - (80 - meleeAngle)) * DEGTORAD);
 
 	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
+
+	//updating the ray for the gun
+	gunRay.p1 = position + b2Vec2(orientationPoint.x * 0.5, orientationPoint.y * 0.5);
+	gunRay.p2 = position + b2Vec2(orientationPoint.x * 14.5, orientationPoint.y * 14.5);
+	gunRay.maxFraction = 1; 
 
 	//updating the player listener to the position of the player
 	float tempRot = orientation;
@@ -426,6 +443,12 @@ void Player::Interaction() {
 			punchDistance = 0;
 			actions.punch = false;
 		}
+	}
+
+	if (actions.fire && pistol) {
+		AudioManager::GetInstance()->playSound("pistolshot", m_pos);
+		RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+		actions.fire = false;
 	}
 }
 

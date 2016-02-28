@@ -68,7 +68,7 @@ void Door::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = DOOR;
-	fixtureDef.filter.maskBits = PLAYER | MELEE;
+	fixtureDef.filter.maskBits = PLAYER | MELEE | PUNCH;
 
 	body->CreateFixture(&fixtureDef); 
 }

@@ -39,13 +39,14 @@ private:
 	bool onGround;
 	bool bodyCreated;
 	int size;
-
+	int amountAmmo = 0;
 	bool dragged;
 	int slot;
 
 public:
 	Item(ItemType, int);
-	Item(ItemType, int, bool, Vector2f);
+	Item(ItemType, int, int);
+	Item(ItemType, int, bool, Vector2f); 
 	void LoadAssets(); 
 	void LoadSprites(std::string type);
 	void SlotNumber(int);

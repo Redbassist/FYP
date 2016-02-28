@@ -68,7 +68,7 @@ int main()
 		}
 		window->clear();
 		sceneManager->Draw();
-		world->DrawDebugData();
+		//world->DrawDebugData();
 		window->display();
 	}
 }

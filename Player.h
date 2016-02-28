@@ -8,7 +8,7 @@
 #include "AnimatedSprite.h" 
 #include "Inventory.h"
 #include "Container.h" 
-#include "Door.h"
+#include "Door.h" 
 
 using namespace sf;
 
@@ -25,6 +25,7 @@ struct keyActions {
 	bool drag = false;
 	bool swing = false;
 	bool punch = false;
+	bool fire = false;
 };
 
 class Player {
@@ -42,6 +43,7 @@ private:
 	Texture m_SwingAxeLeftTexture;
 	Texture m_PunchRightTexture;
 	Texture m_PunchLeftTexture;
+	Texture m_pistolTexture;
 	Animation legsIdle;
 	Animation legsMoving;
 	Animation playerTopIdle;
@@ -50,6 +52,7 @@ private:
 	Animation swingAxeLeft;
 	Animation punchLeft;
 	Animation punchRight;
+	Animation pistolShoot;
 	Animation* currentLegAnimation;
 	Animation* currentTopAnimation;
 	AnimatedSprite animatedLegSprite;
@@ -95,6 +98,10 @@ private:
 	float meleeAngle = 0;
 	int swingSpeed;
 
+	bool pistol;
+	int shoottime = 0;
+	int shootspeed;  
+
 	Container* touchedContainer;
 	std::vector<Item*> touchedItems;
 	Door* touchedDoor;
@@ -108,6 +115,7 @@ private:
 	Inventory* inventory;
 
 	sf::Clock frameClock;
+	b2RayCastInput gunRay;
 
 public:
 	Player(Vector2f);

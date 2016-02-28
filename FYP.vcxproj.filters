@@ -111,6 +111,18 @@
     <ClInclude Include="SFMLDebugDraw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RayCastCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCastManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -177,6 +189,15 @@
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="SFMLDebugDraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RayCastManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
