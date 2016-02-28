@@ -104,7 +104,7 @@ public:
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
 				static_cast<Player*>(bodyUserData1)->NotTouchingDoor(); 
 			}
-		}
+		} 
 	}
 };
 #endif

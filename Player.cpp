@@ -27,35 +27,23 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	createJoint();
 
 	swingSpeed = 10;
+	punch = true;
+	melee = false;
 }
 
 void Player::LoadAssets() {
 	//loading the animations for the player
-	m_AnimationLegsTexture.loadFromFile("Sprites/legs.png");
-	m_AnimationLegsTexture.setSmooth(false);
-	legsIdle.setSpriteSheet(m_AnimationLegsTexture);
-	legsIdle.addFrames(1, 1, 1, 32, 32);
-	legsMoving.setSpriteSheet(m_AnimationLegsTexture);
-	legsMoving.addFrames(12, 4, 3, 32, 32);
-	currentLegAnimation = &legsIdle;
+	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "legs", &legsIdle, 1, 1, 1, 32, 32, currentLegAnimation);
+	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "legs", &legsMoving, 12, 4, 3, 32, 32);
 
-	m_AnimationTopTexture.loadFromFile("Sprites/playerTop.png");
-	m_AnimationTopTexture.setSmooth(false);
-	playerTopIdle.setSpriteSheet(m_AnimationTopTexture);
-	playerTopIdle.addFrames(1, 1, 1, 31, 27);
-	playerTopMoving.setSpriteSheet(m_AnimationTopTexture);
-	playerTopMoving.addFrames(12, 4, 3, 31, 27);
-	currentTopAnimation = &playerTopIdle;
+	EasyLoadAssetsAnimation(&m_AnimationTopTexture, "playerTop", &playerTopIdle, 1, 1, 1, 31, 27, currentTopAnimation);
+	EasyLoadAssetsAnimation(&m_AnimationTopTexture, "playerTop", &playerTopMoving, 12, 4, 3, 31, 27);
 
-	m_SwingAxeRightTexture.loadFromFile("Sprites/swingAnimationAxeRight.png");
-	m_SwingAxeRightTexture.setSmooth(false);
-	swingAxeRight.setSpriteSheet(m_SwingAxeRightTexture);
-	swingAxeRight.addFrames(5, 5, 1, 60, 60);  
+	EasyLoadAssetsAnimation(&m_SwingAxeRightTexture, "swingAnimationAxeRight", &swingAxeRight, 5, 5, 1, 60, 60);
+	EasyLoadAssetsAnimation(&m_SwingAxeLeftTexture, "swingAnimationAxeLeft", &swingAxeLeft, 5, 5, 1, 60, 60);
 
-	m_SwingAxeLeftTexture.loadFromFile("Sprites/swingAnimationAxeLeft.png");
-	m_SwingAxeLeftTexture.setSmooth(false);
-	swingAxeLeft.setSpriteSheet(m_SwingAxeLeftTexture);
-	swingAxeLeft.addFrames(5, 5, 1, 60, 60);
+	EasyLoadAssetsAnimation(&m_PunchRightTexture, "rightPunch", &punchRight, 4, 4, 1, 31, 27);
+	EasyLoadAssetsAnimation(&m_SwingAxeLeftTexture, "leftPunch", &punchLeft, 4, 4, 1, 31, 27);
 
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(16, 16);
@@ -78,6 +66,18 @@ void Player::LoadAssets() {
 	animatedSwingAxeLeft.setPosition(m_pos);
 	animatedSwingAxeLeft.setScale(1, 1);
 	animatedSwingAxeLeft.play(swingAxeLeft);
+
+	animatedPunchRight = AnimatedSprite(sf::seconds(0.04), true, false);
+	animatedPunchRight.setOrigin(12, 13.5);
+	animatedPunchRight.setPosition(m_pos);
+	animatedPunchRight.setScale(1, 1);
+	animatedPunchRight.play(punchRight);
+
+	animatedPunchLeft = AnimatedSprite(sf::seconds(0.04), true, false);
+	animatedPunchLeft.setOrigin(12, 13.5);
+	animatedPunchLeft.setPosition(m_pos);
+	animatedPunchLeft.setScale(1, 1);
+	animatedPunchLeft.play(punchLeft);
 
 	//loading the watch sprites for the UI
 	watchTexture.loadFromFile("Sprites/watch.png");
@@ -109,6 +109,22 @@ void Player::LoadAssets() {
 	currentTime.setCharacterSize(32);
 	currentTime.setColor(sf::Color::Black);
 }
+void Player::EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current)
+{
+	t->loadFromFile("Sprites/" + file + ".png");
+	t->setSmooth(false);
+	anim->setSpriteSheet(*t);
+	anim->addFrames(frames, columns, rows, individualWidth, individualHeight);
+	current = anim;
+}
+
+void Player::EasyLoadAssetsAnimation(Texture*t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight)
+{
+	t->loadFromFile("Sprites/" + file + ".png");
+	t->setSmooth(false);
+	anim->setSpriteSheet(*t);
+	anim->addFrames(frames, columns, rows, individualWidth, individualHeight);
+}
 
 void Player::LoadBinds() {
 	//binding the keys for the player
@@ -135,30 +151,24 @@ void Player::Draw() {
 		if (!punch && !melee)
 			currentTopAnimation = &playerTopMoving;
 		else if (punch) {
-			currentTopAnimation = &playerTopMoving;
+			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
 		}
 		else if (melee) {
 			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
-		}
-		else
-			currentTopAnimation = &playerTopMoving;
-
+		} 
 		currentLegAnimation = &legsMoving;
 	}
 	else {
 		if (!punch && !melee)
 			currentTopAnimation = &playerTopIdle;
 		else if (punch) {
-			currentTopAnimation = &playerTopIdle;
+			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
 		}
 		else if (melee) {
 			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
-		}
-		else
-			currentTopAnimation = &playerTopIdle; 
-
+		} 
 		currentLegAnimation = &legsIdle;
-	}  
+	}
 
 	animatedLegSprite.play(*currentLegAnimation);
 	animatedLegSprite.update(frameTime);
@@ -166,7 +176,18 @@ void Player::Draw() {
 	window->draw(animatedLegSprite);
 
 	if (punch) {
-		animatedTopSprite.play(*currentTopAnimation);
+		if (punchDirection == 0) {
+			window->draw(animatedPunchRight);
+		}
+		else {
+			window->draw(animatedPunchLeft);
+		}
+		if (actions.punch) {
+			if (punchDirection == 0)
+				animatedPunchRight.update(frameTime);
+			else
+				animatedPunchLeft.update(frameTime);
+		}
 	}
 	else if (melee) {
 		if (swingDirection == 0) {
@@ -188,7 +209,7 @@ void Player::Draw() {
 		animatedTopSprite.play(*currentTopAnimation);
 		animatedTopSprite.update(frameTime);
 		window->draw(animatedTopSprite);
-	}  
+	}
 
 	//drawing the inventory and it's contents
 	inventory->Draw();
@@ -215,6 +236,8 @@ void Player::Update() {
 	animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedSwingAxeRight.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedSwingAxeLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	animatedPunchRight.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	animatedPunchLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 
 	m_pos = animatedTopSprite.getPosition();
 
@@ -237,7 +260,7 @@ void Player::CenterCamera()
 }
 
 void Player::Movement() {
-	b2Vec2 position = body->GetPosition(); 
+	b2Vec2 position = body->GetPosition();
 
 	float moveSpeed = speed;
 	if (actions.sprint) { moveSpeed *= 1.5; }
@@ -310,14 +333,14 @@ void Player::Interaction() {
 			touchedItems.erase(touchedItems.begin());
 			actions.interact = false;
 		}
-	} 
-	
+	}
+
 	if (actions.drag && inventory->CheckOpen()) {
 		if (dragInventoryItem == NULL) {
 			dragInventoryItem = inventory->DragItem(worldMousePos);
 		}
 	}
-	
+
 	if (actions.drag && touchedContainer != NULL && touchedContainer->CheckOpen()) {
 		if (dragContainerItem == NULL) {
 			dragContainerItem = touchedContainer->DragItem(worldMousePos);
@@ -326,7 +349,7 @@ void Player::Interaction() {
 
 	//when you are dropping the item (be it inventory / container)
 	else if (!actions.drag && (dragInventoryItem != NULL || dragContainerItem != NULL)) {
-		
+
 		if (touchedContainer != NULL) {
 			//dropping from inventory to the container
 			if (dragInventoryItem != NULL && touchedContainer->CheckOpen()) {
@@ -337,7 +360,7 @@ void Player::Interaction() {
 				}
 			}
 			//dropping from container to the inventory
-			else if (dragContainerItem != NULL && inventory->CheckOpen()) { 
+			else if (dragContainerItem != NULL && inventory->CheckOpen()) {
 				int itemSlot = dragContainerItem->GetSlot();
 				if (inventory->AddItem(dragContainerItem, worldMousePos)) {
 					touchedContainer->TakeItem(dragContainerItem, itemSlot);
@@ -347,17 +370,17 @@ void Player::Interaction() {
 		}
 
 		//dropping the item from the inventory
-		if (dragInventoryItem != NULL) {  
+		if (dragInventoryItem != NULL) {
 			Item* item = inventory->DropItem(dragInventoryItem, worldMousePos);
 			if (item != NULL) {
-				item->Dropped(m_pos); 
+				item->Dropped(m_pos);
 				cout << "Dropped inventory item on ground" << endl;
 			}
 		}
 
 		dragInventoryItem = NULL;
 		dragContainerItem = NULL;
-	} 
+	}
 
 	//opening a door
 	if (actions.interact && touchedDoor != NULL) {
@@ -391,6 +414,15 @@ void Player::Interaction() {
 			punchDistance += 5;
 		}
 		else {
+			punchDirection = (punchDirection == 0) ? 1 : 0;
+			if (punchDirection == 0) {
+				animatedPunchLeft.stop();
+				animatedPunchRight.play(punchRight);
+			}
+			else {
+				animatedPunchRight.stop();
+				animatedPunchLeft.play(punchLeft);
+			}
 			punchDistance = 0;
 			actions.punch = false;
 		}
@@ -435,6 +467,8 @@ void Player::SetRotation() {
 	animatedTopSprite.setRotation(orientation);
 	animatedSwingAxeRight.setRotation(orientation);
 	animatedSwingAxeLeft.setRotation(orientation);
+	animatedPunchRight.setRotation(orientation);
+	animatedPunchLeft.setRotation(orientation);
 }
 
 void Player::createBox2dBody() {
@@ -446,7 +480,7 @@ void Player::createBox2dBody() {
 	body = world->CreateBody(&bodyDef);
 
 	b2CircleShape circle;
-	circle.m_radius = 15 / SCALE; 
+	circle.m_radius = 7 / SCALE;
 	fixtureDef.shape = &circle;
 
 	fixtureDef.density = 1;
@@ -490,13 +524,13 @@ void Player::createPunchBox2dBody()
 void Player::createMeleeBox2dBody()
 {
 	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody; 
+	bodyDef.type = b2_dynamicBody;
 	bodyDef.userData = this;
 	bodyDef.gravityScale = 1;
 	meleebody = world->CreateBody(&bodyDef);
 
 	b2PolygonShape dynamicBox;
-	dynamicBox.SetAsBox(15 / SCALE, 1 / SCALE, b2Vec2(15/SCALE,0), 0);
+	dynamicBox.SetAsBox(15 / SCALE, 1 / SCALE, b2Vec2(15 / SCALE, 0), 0);
 	meleefixtureDef.shape = &dynamicBox;
 
 	meleefixtureDef.isSensor = true;
@@ -517,9 +551,9 @@ void Player::createJoint()
 	meleeJointDef;
 	meleeJointDef.bodyA = body;
 	meleeJointDef.bodyB = meleebody;
-	meleeJointDef.collideConnected = false; 
+	meleeJointDef.collideConnected = false;
 	meleeJointDef.localAnchorA.Set(0, 0);
-	meleeJointDef.localAnchorB.Set(0, 0); 
+	meleeJointDef.localAnchorB.Set(0, 0);
 	meleeJoint = world->CreateJoint(&meleeJointDef);
 }
 

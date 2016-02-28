@@ -40,18 +40,24 @@ private:
 	Texture m_AnimationTopTexture;
 	Texture m_SwingAxeRightTexture;
 	Texture m_SwingAxeLeftTexture;
+	Texture m_PunchRightTexture;
+	Texture m_PunchLeftTexture;
 	Animation legsIdle;
 	Animation legsMoving;
 	Animation playerTopIdle;
 	Animation playerTopMoving;
 	Animation swingAxeRight;
 	Animation swingAxeLeft;
+	Animation punchLeft;
+	Animation punchRight;
 	Animation* currentLegAnimation;
 	Animation* currentTopAnimation;
 	AnimatedSprite animatedLegSprite;
 	AnimatedSprite animatedTopSprite;
 	AnimatedSprite animatedSwingAxeRight;
 	AnimatedSprite animatedSwingAxeLeft;
+	AnimatedSprite animatedPunchRight;
+	AnimatedSprite animatedPunchLeft;
 
 	//watch variables
 	Texture watchTexture;
@@ -69,9 +75,9 @@ private:
 	int currentHours;
 	int currentMinutes;
 	int nextMinute;
-	
+
 	b2Body* body;
-	b2FixtureDef fixtureDef; 
+	b2FixtureDef fixtureDef;
 	b2Body* punchbody;
 	b2FixtureDef punchfixtureDef;
 	b2Body* meleebody;
@@ -80,10 +86,11 @@ private:
 	b2RevoluteJointDef meleeJointDef;
 
 	bool punch = false;
+	int punchDirection = 0;
 	int punchDistance = 0;
 	int maxPunchDistance = 40;
 
-	bool melee = false;
+	bool melee;
 	int swingDirection = 0; //0 is right, 1 is left
 	float meleeAngle = 0;
 	int swingSpeed;
@@ -105,6 +112,10 @@ private:
 public:
 	Player(Vector2f);
 	void LoadAssets();
+	void EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight);
+	void EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim,
+		int frames, int columns, int rows, int individualWidth, int individualHeight,
+		Animation* current);
 	void LoadBinds();
 	void Draw();
 	void Update();
