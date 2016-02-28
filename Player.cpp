@@ -25,6 +25,8 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	createPunchBox2dBody();
 	createMeleeBox2dBody();
 	createJoint();
+
+	swingSpeed = 10;
 }
 
 void Player::LoadAssets() {
@@ -45,6 +47,16 @@ void Player::LoadAssets() {
 	playerTopMoving.addFrames(12, 4, 3, 31, 27);
 	currentTopAnimation = &playerTopIdle;
 
+	m_SwingAxeRightTexture.loadFromFile("Sprites/swingAnimationAxeRight.png");
+	m_SwingAxeRightTexture.setSmooth(false);
+	swingAxeRight.setSpriteSheet(m_SwingAxeRightTexture);
+	swingAxeRight.addFrames(5, 5, 1, 60, 60);  
+
+	m_SwingAxeLeftTexture.loadFromFile("Sprites/swingAnimationAxeLeft.png");
+	m_SwingAxeLeftTexture.setSmooth(false);
+	swingAxeLeft.setSpriteSheet(m_SwingAxeLeftTexture);
+	swingAxeLeft.addFrames(5, 5, 1, 60, 60);
+
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(16, 16);
 	animatedLegSprite.setPosition(m_pos);
@@ -54,6 +66,18 @@ void Player::LoadAssets() {
 	animatedTopSprite.setOrigin(12, 13.5);
 	animatedTopSprite.setPosition(m_pos);
 	animatedTopSprite.setScale(1, 1);
+
+	animatedSwingAxeRight = AnimatedSprite(sf::seconds(0.055), true, false);
+	animatedSwingAxeRight.setOrigin(12, 28);
+	animatedSwingAxeRight.setPosition(m_pos);
+	animatedSwingAxeRight.setScale(1, 1);
+	animatedSwingAxeRight.play(swingAxeRight);
+
+	animatedSwingAxeLeft = AnimatedSprite(sf::seconds(0.055), true, false);
+	animatedSwingAxeLeft.setOrigin(12, 28);
+	animatedSwingAxeLeft.setPosition(m_pos);
+	animatedSwingAxeLeft.setScale(1, 1);
+	animatedSwingAxeLeft.play(swingAxeLeft);
 
 	//loading the watch sprites for the UI
 	watchTexture.loadFromFile("Sprites/watch.png");
@@ -107,22 +131,64 @@ void Player::Draw() {
 	sf::Time frameTime = frameClock.restart();
 
 	//Setting the animation of the player legs depending on if is moving or not
-	if (actions.walkUp || actions.walkDown || actions.walkLeft || actions.walkRight) {
-		currentTopAnimation = &playerTopMoving;
+	if ((actions.walkUp || actions.walkDown || actions.walkLeft || actions.walkRight)) {
+		if (!punch && !melee)
+			currentTopAnimation = &playerTopMoving;
+		else if (punch) {
+			currentTopAnimation = &playerTopMoving;
+		}
+		else if (melee) {
+			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
+		}
+		else
+			currentTopAnimation = &playerTopMoving;
+
 		currentLegAnimation = &legsMoving;
 	}
 	else {
-		currentTopAnimation = &playerTopIdle;
+		if (!punch && !melee)
+			currentTopAnimation = &playerTopIdle;
+		else if (punch) {
+			currentTopAnimation = &playerTopIdle;
+		}
+		else if (melee) {
+			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
+		}
+		else
+			currentTopAnimation = &playerTopIdle; 
+
 		currentLegAnimation = &legsIdle;
-	}
-	animatedTopSprite.play(*currentTopAnimation);
-	animatedTopSprite.update(frameTime);
+	}  
 
 	animatedLegSprite.play(*currentLegAnimation);
 	animatedLegSprite.update(frameTime);
 
 	window->draw(animatedLegSprite);
-	window->draw(animatedTopSprite);
+
+	if (punch) {
+		animatedTopSprite.play(*currentTopAnimation);
+	}
+	else if (melee) {
+		if (swingDirection == 0) {
+			//animatedSwingAxeRight.play(*currentTopAnimation);
+			window->draw(animatedSwingAxeRight);
+		}
+		else {
+			//animatedSwingAxeLeft.play(*currentTopAnimation);
+			window->draw(animatedSwingAxeLeft);
+		}
+		if (actions.swing) {
+			if (swingDirection == 0)
+				animatedSwingAxeRight.update(frameTime);
+			else
+				animatedSwingAxeLeft.update(frameTime);
+		}
+	}
+	else {
+		animatedTopSprite.play(*currentTopAnimation);
+		animatedTopSprite.update(frameTime);
+		window->draw(animatedTopSprite);
+	}  
 
 	//drawing the inventory and it's contents
 	inventory->Draw();
@@ -147,6 +213,9 @@ void Player::Update() {
 	//setting the position of the sprite to the physics body
 	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	animatedSwingAxeRight.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	animatedSwingAxeLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+
 	m_pos = animatedTopSprite.getPosition();
 
 	//setting camera to the player
@@ -305,10 +374,14 @@ void Player::Interaction() {
 		}
 		if (meleeAngle >= 160) {
 			swingDirection = 1;
+			animatedSwingAxeRight.stop();
+			animatedSwingAxeLeft.play(swingAxeLeft);
 			actions.swing = false;
 		}
 		else if (meleeAngle <= 0) {
 			swingDirection = 0;
+			animatedSwingAxeLeft.stop();
+			animatedSwingAxeRight.play(swingAxeRight);
 			actions.swing = false;
 		}
 	}
@@ -360,6 +433,8 @@ void Player::SetRotation() {
 	orientation = getRotationAngle();
 	animatedLegSprite.setRotation(orientation);
 	animatedTopSprite.setRotation(orientation);
+	animatedSwingAxeRight.setRotation(orientation);
+	animatedSwingAxeLeft.setRotation(orientation);
 }
 
 void Player::createBox2dBody() {

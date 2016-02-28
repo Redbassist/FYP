@@ -12,6 +12,7 @@ const static float SCALE = 30.f;
 enum ItemType { 
 	FOOD1, FOOD2, FOOD3,
 	WATER1, WATER2, 
+	AXE, BAT,
 	AMMOPISTOL, AMMOSHOTGUN, AMMORIFLE,
 	PISTOL, SHOTGUN, RIFLE,
 	MAP
@@ -21,6 +22,7 @@ static const std::string ItemTypeStrings[] =
 { 
 	"FOOD1", "FOOD2", "FOOD3",
 	"WATER1", "WATER2",
+	"AXE", "BAT",
 	"AMMOPISTOL", "AMMOSHOTGUN", "AMMORIFLE",
 	"PISTOL", "SHOTGUN", "RIFLE",
 	"MAP"

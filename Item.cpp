@@ -1,7 +1,7 @@
 #pragma once
 #include "Item.h" 
 
-Item::Item( ItemType t, int s) : type(t), size(s) {
+Item::Item(ItemType t, int s) : type(t), size(s) {
 	onGround = false;
 	LoadAssets();
 }
@@ -51,7 +51,7 @@ int Item::GetSize() {
 
 void Item::Draw() {
 	if (onGround)
-		window->draw(m_sprite); 
+		window->draw(m_sprite);
 }
 
 void Item::DrawInInventory(Vector2f pos, FloatRect rect, int slotCol, int slotRow) {
@@ -64,8 +64,12 @@ void Item::DrawInInventory(Vector2f pos, FloatRect rect, int slotCol, int slotRo
 
 	float xOffset = -(rect.width / 100 * 8);
 	float yOffset = -(rect.height / 100 * 3.7);
-	float posX = pos.x + (rect.width / 100 * startX) + (m_sprite.getTextureRect().width * (slotCol - 1)) + (xOffset * (slotCol - 1));
-	float posY = pos.y + (rect.height / 100 * startY) + m_sprite.getTextureRect().height * (slotRow - 1) + (yOffset * (slotRow - 1));
+	float posX;
+	if (m_sprite.getTextureRect().width == 128)
+		posX = pos.x + (rect.width / 100 * startX) + 64 * (slotCol - 1) + (xOffset * (slotCol - 1)) + 20;
+	else
+		posX = pos.x + (rect.width / 100 * startX) + 64 * (slotCol - 1) + (xOffset * (slotCol - 1));
+	float posY = pos.y + (rect.height / 100 * startY) + 64 * (slotRow - 1) + (yOffset * (slotRow - 1));
 	m_sprite.setPosition(Vector2f(posX, posY));
 	window->draw(m_sprite);
 }
@@ -80,7 +84,11 @@ void Item::DrawInContainer(Vector2f pos, FloatRect rect, int slotCol, int slotRo
 
 	float xOffset = (rect.width / 100 * 1.5);
 	float yOffset = (rect.height / 100 * 1);
-	float posX = pos.x + (rect.width / 100 * startX) + (m_sprite.getTextureRect().width * (slotCol - 1)) + (xOffset * (slotCol - 1));
+	float posX;
+	if (m_sprite.getTextureRect().width == 128)
+		posX = pos.x + (rect.width / 100 * startX) + 64 * (slotCol - 1) + (xOffset * (slotCol - 1)) + 40;
+	else
+		posX = pos.x + (rect.width / 100 * startX) + 64 * (slotCol - 1) + (xOffset * (slotCol - 1));
 	float posY = pos.y + (rect.height / 100 * startY) + (m_sprite.getTextureRect().height * (slotRow - 1)) + (yOffset * (slotRow - 1));
 	m_sprite.setPosition(Vector2f(posX, posY));
 	window->draw(m_sprite);

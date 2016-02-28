@@ -54,9 +54,7 @@ public:
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
 				static_cast<Player*>(bodyUserData1)->TouchingDoor(static_cast<Door*>(bodyUserData2));
 			}
-		}
-
-
+		} 
 	}
 
 	void EndContact(b2Contact* contact) {

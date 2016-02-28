@@ -55,29 +55,39 @@ void Container::SetupSlots() {
 
 void Container::GenerateItems() {
 	int size = slots.size();
+	Item* temp;
 
 	for (int i = 0; i < size; i++) {
-		if ((rand() % 5 + 1) == 5) {
-			int item = rand() % 4 + 0;
-			if (item == 0) {
-				slots[i].item = new Item(FOOD1, 1);
-				slots[i].full = true;
-				slots[i].item->SlotNumber(i);
-				items->push_back(slots[i].item);
-			}
-			else if (item == 3) {
-				slots[i].item = new Item(WATER1, 1);
-				slots[i].full = true;
-				slots[i].item->SlotNumber(i);
-				items->push_back(slots[i].item);
-			}
-			else if (item == 4) {
-				slots[i].item = new Item(WATER2, 1);
-				slots[i].full = true;
-				slots[i].item->SlotNumber(i);
-				items->push_back(slots[i].item);
-			}
+		int item = rand() % 20 + 0;
+		if (item == 0) {
+			temp = new Item(FOOD1, 1);
+			AddItem(temp);
+			items->push_back(temp);
+			/*slots[i].item = new Item(FOOD1, 1); OLD WAY
+			slots[i].full = true;
+			slots[i].item->SlotNumber(i);
+			items->push_back(slots[i].item);*/
 		}
+		else if (item == 1) {
+			temp = new Item(WATER1, 1);
+			AddItem(temp);
+			items->push_back(temp); 
+		}
+		else if (item == 2) {
+			temp = new Item(WATER2, 1);
+			AddItem(temp);
+			items->push_back(temp); 
+		}
+		else if (item == 3) {
+			temp = new Item(AXE, 2);
+			AddItem(temp);
+			items->push_back(temp); 
+		}
+		else if (item == 4) {
+			temp = new Item(BAT, 2);
+			AddItem(temp);
+			items->push_back(temp); 
+		} 
 	}
 
 }
@@ -90,8 +100,8 @@ bool Container::AddItem(Item* item, Vector2f dropPos) {
 	float width = m_sprite.getGlobalBounds().width;
 
 	//make class method that does this!!! -v
-	if (dropPos.x > spritePos.x && dropPos.x < spritePos.x + width &&
-		dropPos.y > spritePos.y && dropPos.y < spritePos.y + height) {
+	if ((dropPos.x > spritePos.x && dropPos.x < spritePos.x + width &&
+		dropPos.y > spritePos.y && dropPos.y < spritePos.y + height) || dropPos == Vector2f()) {
 
 		int size = slots.size();
 
@@ -135,14 +145,14 @@ bool Container::TakeItem(Item* item, int slot) {
 	int size = slots.size();
 
 	if (slots[slotNumber].item->GetSize() == 1) {
-		slots[slotNumber].full = false; 
-		slots[slotNumber].item = NULL; 
+		slots[slotNumber].full = false;
+		slots[slotNumber].item = NULL;
 	}
 	else {
 		slots[slotNumber].full = false;
-		slots[slotNumber + 1].full = false; 
-		slots[slotNumber].item = NULL; 
-	} 
+		slots[slotNumber + 1].full = false;
+		slots[slotNumber].item = NULL;
+	}
 	return false;
 }
 

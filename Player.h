@@ -38,14 +38,20 @@ private:
 	keyActions actions;
 	Texture m_AnimationLegsTexture;
 	Texture m_AnimationTopTexture;
+	Texture m_SwingAxeRightTexture;
+	Texture m_SwingAxeLeftTexture;
 	Animation legsIdle;
 	Animation legsMoving;
 	Animation playerTopIdle;
 	Animation playerTopMoving;
+	Animation swingAxeRight;
+	Animation swingAxeLeft;
 	Animation* currentLegAnimation;
 	Animation* currentTopAnimation;
 	AnimatedSprite animatedLegSprite;
 	AnimatedSprite animatedTopSprite;
+	AnimatedSprite animatedSwingAxeRight;
+	AnimatedSprite animatedSwingAxeLeft;
 
 	//watch variables
 	Texture watchTexture;
@@ -73,14 +79,14 @@ private:
 	b2FixtureDef meleefixtureDef;
 	b2RevoluteJointDef meleeJointDef;
 
-	bool punch = true;
+	bool punch = false;
 	int punchDistance = 0;
 	int maxPunchDistance = 40;
 
 	bool melee = false;
 	int swingDirection = 0; //0 is right, 1 is left
 	float meleeAngle = 0;
-	int swingSpeed = 25;
+	int swingSpeed;
 
 	Container* touchedContainer;
 	std::vector<Item*> touchedItems;
