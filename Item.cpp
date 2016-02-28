@@ -105,6 +105,15 @@ void Item::DrawInContainer(Vector2f pos, FloatRect rect, int slotCol, int slotRo
 	window->draw(m_sprite);
 }
 
+void Item::DrawInHotbar(Vector2f pos)
+{
+	pos.x += 35;
+	pos.y += 36;
+	m_sprite.setScale(0.9, 0.9);
+	m_sprite.setPosition(pos);
+	window->draw(m_sprite);
+}
+
 void Item::DrawDragged()
 {
 	Vector2i mousePos = Mouse::getPosition(*window);

@@ -19,7 +19,7 @@ void Hotbar::LoadAssets()
 }
 
 void Hotbar::CreateSlots()
-{ 	
+{
 	for (int i = 0; i < numberSlots; i++) {
 		slots.push_back(HotbarSlot());
 	}
@@ -36,6 +36,7 @@ void Hotbar::Draw()
 	for (int i = 0; i < numberSlots; i++) {
 		spritePos.x = center.x - (size.x / 3) + (xOffset * i);
 		m_sprite.setPosition(spritePos);
+		if (slots[i].item != NULL) { slots[i].item->DrawInHotbar(spritePos); }
 		window->draw(m_sprite);
 	}
 }

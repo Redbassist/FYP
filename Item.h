@@ -56,6 +56,7 @@ public:
 	void Draw();
 	void DrawInInventory(Vector2f, FloatRect, int, int);
 	void DrawInContainer(Vector2f, FloatRect, int, int);
+	void DrawInHotbar(Vector2f);
 	void DrawDragged();
 	void PickedUp();
 	bool CheckSprite(Vector2f);
