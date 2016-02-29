@@ -43,7 +43,7 @@ void SettingsManager::SetSetting(Setting changingSetting, float value)
 	case (Setting::MUSIC) :
 		musicVolume = value;
 		break;
-	case (Setting::EFFECT) :
+	case (Setting::SHORT) :
 		effectsVolume = value;
 		break;
 	}

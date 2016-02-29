@@ -1,24 +1,27 @@
-#pragma once
-#ifndef EFFECTMANAGER_H
-#define EFFECTMANAGER_H
+#pragma once 
+#ifndef EFFECT_MANAGER_H
+#define EFFECT_MANAGER_H
 
-#include "stdafx.h"
-#include "Animation.h"
-#include "AnimatedSprite.h" 
-#include "Effect.h"
+#include "stdafx.h" 
 #include "Globals.h"
+
+using namespace std;
+using namespace sf; 
+
+class Effect;
 
 class EffectManager {
 public:
-	static EffectManager* GetInstance();
 	EffectManager();
+	static EffectManager* GetInstance();
 	void LoadAssets();
 	void Draw(); 
-	void PlayEffect(EffectType type);
+	void PlayEffect(int type, Vector2f pos);
 	void RemoveEffects();
 private:
 	vector<Effect*> effects;
-};
+	Texture* m_smokeEffectTexture;
+	Clock frameClock;
+}; 
 
 #endif
-#pragma once

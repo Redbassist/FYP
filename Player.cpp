@@ -304,7 +304,7 @@ void Player::Movement() {
 	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
 
 	//updating the ray for the gun
-	gunRay.p1 = position + b2Vec2(orientationPoint.x * 0.5, orientationPoint.y * 0.5);
+	gunRay.p1 = position + b2Vec2(orientationPoint.x * 0.4, orientationPoint.y * 0.5);
 	gunRay.p2 = position + b2Vec2(orientationPoint.x * 14.5, orientationPoint.y * 14.5);
 	gunRay.maxFraction = 1; 
 

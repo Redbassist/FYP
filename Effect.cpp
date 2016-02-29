@@ -1,26 +1,32 @@
 #include "Effect.h" 
  
-Effect::Effect(Texture * t, Vector2f pos, int frames, int columns, int rows, int individualWidth, int individualHeight, int speed)
+Effect::Effect()
 {
-	anim.setSpriteSheet(*t);
-	anim.addFrames(frames, columns, rows, individualWidth, individualHeight); 
-	animSprite = AnimatedSprite(sf::seconds(speed), true, false);
-	animSprite.setOrigin(t->getSize().x,t->getSize().y);
-	animSprite.setPosition(pos);
-	animSprite.setScale(1, 1);
-	animSprite.play(anim);
 }
 
-void Effect::Draw(sf::Time frameTime)
+Effect::Effect(Texture * t, Vector2f pos, int frames, int columns, int rows, int individualWidth, int individualHeight, float speed, float scale)
 {
-	animSprite.update(frameTime);
-	window->draw(animSprite);
+	animation.setSpriteSheet(*t);
+	animation.addFrames(frames, columns, rows, individualWidth, individualHeight);
+	animatedSprite = AnimatedSprite(sf::seconds(speed), true, false);
+	animatedSprite.setOrigin(t->getSize().x / 2 / columns,t->getSize().y / 2 / rows);
+	animatedSprite.setPosition(pos);
+	animatedSprite.setScale(scale, scale);
+	int rot = rand() % 360 + 0;
+	animatedSprite.setRotation(rot);
+	animatedSprite.play(animation);
 }
 
-bool Effect::Complete()
+void Effect::DrawEffect(sf::Time frameTime)
 {
-	if (!animSprite.isPlaying())
+	animatedSprite.update(frameTime);
+	window->draw(animatedSprite);
+}
+
+bool Effect::IsComplete()
+{
+	if (!animatedSprite.isPlaying())
 		return true;
 	else
 		return false;
-}
+} 

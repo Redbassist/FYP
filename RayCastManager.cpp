@@ -25,7 +25,10 @@ void RayCastManager::CastRay(b2Vec2 p1, b2Vec2 p2) {
 void RayCastManager::HitReaction()
 {
 	if (callBack->objectName != NULL) {
-		int poop = 123;
+		EffectManager::GetInstance()->PlayEffect(0, Vector2f(callBack->m_point.x * 30, callBack->m_point.y * 30));
+	}
+	if (callBack->objectName == "Door") {
+		static_cast<Door*>(callBack->data)->OpenClose();
 	}
 }
 

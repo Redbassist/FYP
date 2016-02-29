@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "RayCastCallback.h"
+#include "Door.h"
 
 class RayCastManager {
 private:

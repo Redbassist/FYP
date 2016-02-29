@@ -20,6 +20,7 @@
 #include "AudioManager.h"
 #include "SceneChanger.h"
 #include "SettingsManager.h"
-#include "RayCastManager.h"
+#include "RayCastManager.h" 
+#include "EffectManager.h" 
 
 // TODO: reference additional headers your program requires here

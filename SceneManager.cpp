@@ -3,7 +3,7 @@
 SceneManager::SceneManager()
 {
 	state = GameState::SPLASHSCREEN;
-	gameWorld = NULL; 
+	gameWorld = NULL;
 	AudioManager::GetInstance()->startMusic("menuMusic");
 	CreateMenus();
 }
@@ -27,7 +27,7 @@ void SceneManager::CreateMenus()
 	tempMenu = new Menu(string("normalMenu"));
 	tempMenu->AddSlider(new Slider(Vector2f(700, 200), 500, string("Master Volume"), Setting::MASTER));
 	tempMenu->AddSlider(new Slider(Vector2f(700, 400), 500, string("Music Volume"), Setting::MUSIC));
-	tempMenu->AddSlider(new Slider(Vector2f(700, 600), 500, string("Effects Volume"), Setting::EFFECT));
+	tempMenu->AddSlider(new Slider(Vector2f(700, 600), 500, string("Effects Volume"), Setting::SHORT));
 	tempMenu->AddButton(new Button(Vector2f(150, 650), 200, 80, string("Back"), GameState::MENU));
 	menusMap[GameState::OPTIONS] = tempMenu;
 
@@ -43,10 +43,10 @@ void SceneManager::CreateMenus()
 	menusMap[GameState::GAMEMENU] = tempMenu;
 
 	//creating the game options menu
-	tempMenu = new Menu(string("ingameMenu")); 
+	tempMenu = new Menu(string("ingameMenu"));
 	tempMenu->AddSlider(new Slider(Vector2f(250, 150), 400, string("Master Volume"), Setting::MASTER));
 	tempMenu->AddSlider(new Slider(Vector2f(250, 245), 400, string("Music Volume"), Setting::MUSIC));
-	tempMenu->AddSlider(new Slider(Vector2f(250, 340), 400, string("Effects Volume"), Setting::EFFECT));
+	tempMenu->AddSlider(new Slider(Vector2f(250, 340), 400, string("Effects Volume"), Setting::SHORT));
 	tempMenu->AddButton(new Button(Vector2f(330, 420), 180, 55, string("Back"), GameState::GAMEMENU));
 	menusMap[GameState::GAMEOPTIONS] = tempMenu;
 }
@@ -56,7 +56,7 @@ void SceneManager::Update()
 	ChangeScene();
 	if (currentMenu != NULL)
 		currentMenu->Update();
-	
+
 	//updating the gameWorld
 	if (SceneChanger::GetInstance()->CurrentScene() == GameState::GAME && gameWorld != NULL)
 		gameWorld->Update();
@@ -69,8 +69,10 @@ void SceneManager::Draw()
 		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEOPTIONS ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEMENU
 		)
-		&& gameWorld != NULL)
+		&& gameWorld != NULL) {
 		gameWorld->Draw();
+		EffectManager::GetInstance()->Draw();
+	}
 	if (currentMenu != NULL)
 		currentMenu->Draw();
 }

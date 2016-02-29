@@ -1,5 +1,5 @@
 #pragma once
-#include "stdafx.h"  
+#include "stdafx.h"
 
 extern b2World* world;
 extern sf::RenderWindow* window; 
@@ -14,8 +14,4 @@ enum _entityCategory {
 	DOOR = 0x0024,
 	MELEE = 0x0028,
 	PUNCH = 0x0032,
-};
-
-enum EffectType {
-	SPARK,
 };

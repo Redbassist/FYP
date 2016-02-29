@@ -1,19 +1,24 @@
-#pragma once
-#ifndef EFFECT_H
-#define EFFECT_H
+#pragma once 
+#ifndef Effect_H
+#define Effect_H
 
-#include "stdafx.h"
+#include "Globals.h"
+#include <vector>
 #include "Animation.h"
-#include "AnimatedSprite.h" 
+#include "AnimatedSprite.h"
+
+using namespace std;
+using namespace sf;
 
 class Effect {
 public:
-	Effect(Texture*, Vector2f, int frames, int columns, int rows, int individualWidth, int individualHeight, int speed);
-	void Draw(sf::Time frameTime);
-	bool Complete();
+	Effect();
+	Effect(Texture* t, Vector2f pos, int frames, int columns, int rows, int individualWidth, int individualHeight, float speed, float scale);
+	void DrawEffect(sf::Time frameTime);
+	bool IsComplete();
 private:
-	Animation anim;
-	AnimatedSprite animSprite;
+	Animation animation;
+	AnimatedSprite animatedSprite;
 };
 
-#endif
+#endif 
