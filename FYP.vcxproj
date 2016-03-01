@@ -167,6 +167,8 @@
     <ClInclude Include="ContactListener.h" />
     <ClInclude Include="Container.h" />
     <ClInclude Include="Door.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Hotbar.h" />
     <ClInclude Include="House.h" />
@@ -174,10 +176,13 @@
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="RayCastCallback.h" />
+    <ClInclude Include="RayCastManager.h" />
     <ClInclude Include="SceneChanger.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SettingsManager.h" />
+    <ClInclude Include="SFMLDebugDraw.h" />
     <ClInclude Include="Slider.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -191,6 +196,8 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Container.cpp" />
     <ClCompile Include="Door.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="FYP.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Hotbar.cpp" />
@@ -199,10 +206,12 @@
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="RayCastManager.cpp" />
     <ClCompile Include="SceneChanger.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SettingsManager.cpp" />
+    <ClCompile Include="SFMLDebugDraw.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Wall.cpp" />

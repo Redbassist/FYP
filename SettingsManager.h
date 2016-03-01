@@ -3,7 +3,7 @@
 
 using namespace sf;
 
-enum class Setting {MASTER, MUSIC, EFFECT};
+enum class Setting {MASTER, MUSIC, SHORT};
 
 class SettingsManager
 {
