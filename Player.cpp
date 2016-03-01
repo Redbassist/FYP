@@ -145,6 +145,11 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->BindSingleMousePress(&actions.swing, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.punch, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.fire, Mouse::Button::Left);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar1, Keyboard::Key::Num1);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar2, Keyboard::Key::Num2);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar3, Keyboard::Key::Num3);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar4, Keyboard::Key::Num4);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar5, Keyboard::Key::Num5);
 }
 
 void Player::Draw() {
@@ -153,13 +158,13 @@ void Player::Draw() {
 
 	//Setting the animation of the player legs depending on if is moving or not
 	if ((actions.walkUp || actions.walkDown || actions.walkLeft || actions.walkRight)) {
-	
+
 		if (punch) {
 			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
 		}
 		else if (melee) {
 			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
-		} 
+		}
 		else if (pistol) {
 			currentTopAnimation = &pistolShoot;
 		}
@@ -310,7 +315,7 @@ void Player::Movement() {
 	//updating the ray for the gun
 	gunRay.p1 = position + b2Vec2(orientationPoint.x * 0.4, orientationPoint.y * 0.5);
 	gunRay.p2 = position + b2Vec2(orientationPoint.x * 14.5, orientationPoint.y * 14.5);
-	gunRay.maxFraction = 1; 
+	gunRay.maxFraction = 1;
 
 	//updating the player listener to the position of the player
 	float tempRot = orientation;
@@ -404,7 +409,7 @@ void Player::Interaction() {
 			Item* item = inventory->DropItem(dragInventoryItem, worldMousePos);
 			if (item != NULL) {
 				hotbar->RemoveItem(item->GetHotbarSlot());
-				item->Dropped(m_pos);  
+				item->Dropped(m_pos);
 				cout << "Dropped inventory item on ground" << endl;
 			}
 		}
@@ -464,6 +469,41 @@ void Player::Interaction() {
 		AudioManager::GetInstance()->playSound("pistolshot", m_pos);
 		RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
 		actions.fire = false;
+	}
+
+	if (actions.hotbar1 || actions.hotbar2 || actions.hotbar3 || actions.hotbar4 || actions.hotbar5) {
+		if (actions.hotbar1) hotbarItem = hotbar->SelectItem(0);
+		else if (actions.hotbar2) hotbarItem = hotbar->SelectItem(1);
+		else if (actions.hotbar3) hotbarItem = hotbar->SelectItem(2);
+		else if (actions.hotbar4) hotbarItem = hotbar->SelectItem(3);
+		else if (actions.hotbar5) hotbarItem = hotbar->SelectItem(4);
+
+		if (hotbarItem != NULL) {
+			switch (hotbarItem->GetType()) {
+			case(ItemType::AXE) :
+				punch = false;
+				melee = true;
+				pistol = false;
+				actions.swing = false;
+				break;
+			case(ItemType::PISTOL):
+				punch = false;
+				melee = false;
+				pistol = true; 
+				actions.fire = false;
+			}
+		}
+		else {
+			punch = true;
+			melee = false;
+			pistol = false;
+		}
+
+		actions.hotbar1 = false;
+		actions.hotbar2 = false;
+		actions.hotbar3 = false;
+		actions.hotbar4 = false;
+		actions.hotbar5 = false;
 	}
 }
 

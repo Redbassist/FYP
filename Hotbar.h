@@ -26,7 +26,7 @@ public:
 	bool AddItem(Vector2f, Item*);
 	int CheckSprite(Vector2f);
 	void RemoveItem(int slot);
-	Item* SelectItem();
+	Item* SelectItem(int i);
 };
 
 #endif

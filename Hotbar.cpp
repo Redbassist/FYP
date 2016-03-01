@@ -3,7 +3,7 @@
 Hotbar::Hotbar()
 {
 	numberSlots = 5;
-	xOffset = 120;
+	xOffset = 60;
 	LoadAssets();
 	CreateSlots();
 }
@@ -14,7 +14,7 @@ void Hotbar::LoadAssets()
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
 	m_sprite.setTextureRect(sf::IntRect(0, 0, m_texture.getSize().x, m_texture.getSize().y));
-	m_sprite.setScale(0.9, 0.9);
+	m_sprite.setScale(0.45, 0.45);
 	//offset for where the container is drawing
 }
 
@@ -31,10 +31,10 @@ void Hotbar::Draw()
 	Vector2f size = window->getView().getSize();
 
 	Vector2f spritePos = m_sprite.getPosition();
-	spritePos.y = center.y + (size.y / 3);
+	spritePos.y = center.y + (size.y / 2.65);
 
 	for (int i = 0; i < numberSlots; i++) {
-		spritePos.x = center.x - (size.x / 3) + (xOffset * i);
+		spritePos.x = center.x - (size.x / 2.3) + (xOffset * i);
 		m_sprite.setPosition(spritePos);
 		if (slots[i].item != NULL) { slots[i].item->DrawInHotbar(spritePos); }
 		window->draw(m_sprite);
@@ -64,7 +64,7 @@ int Hotbar::CheckSprite(Vector2f mousePos)
 	Vector2f spritePos = m_sprite.getPosition();
 
 	for (int i = 0; i < numberSlots; i++) {
-		spritePos.x = center.x - (size.x / 3) + (xOffset * i);
+		spritePos.x = center.x - (size.x / 2.3) + (xOffset * i);
 		if (mousePos.x > spritePos.x && mousePos.x < spritePos.x + width &&
 			mousePos.y > spritePos.y && mousePos.y < spritePos.y + height)
 			return i;
@@ -80,7 +80,7 @@ void Hotbar::RemoveItem(int slot)
 	}
 }
 
-Item * Hotbar::SelectItem()
+Item * Hotbar::SelectItem(int i)
 {
-	return nullptr;
-}
+	return slots[i].item; 
+} 

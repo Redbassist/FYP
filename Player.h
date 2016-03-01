@@ -27,6 +27,11 @@ struct keyActions {
 	bool swing = false;
 	bool punch = false;
 	bool fire = false;
+	bool hotbar1 = false;
+	bool hotbar2 = false;
+	bool hotbar3 = false;
+	bool hotbar4 = false;
+	bool hotbar5 = false;
 };
 
 class Player {
@@ -109,6 +114,7 @@ private:
 
 	Item* dragInventoryItem;
 	Item* dragContainerItem;
+	Item* hotbarItem = NULL;
 
 	Vector2f m_pos;
 	float orientation;

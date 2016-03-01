@@ -111,9 +111,9 @@ void Item::DrawInContainer(Vector2f pos, FloatRect rect, int slotCol, int slotRo
 
 void Item::DrawInHotbar(Vector2f pos)
 {
-	pos.x += 35;
-	pos.y += 36;
-	m_sprite.setScale(0.9, 0.9);
+	pos.x += 18;
+	pos.y += 18;
+	m_sprite.setScale(0.45, 0.45);
 	m_sprite.setPosition(pos);
 	window->draw(m_sprite);
 }

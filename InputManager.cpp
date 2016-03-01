@@ -88,12 +88,15 @@ void InputManager::UpdateSinglePress() {
 		case sf::Event::KeyPressed:
 			it = singlePressKeyboardBinds.begin();
 			end = singlePressKeyboardBinds.end();
-			for (; it != end; ++it) {
+			for (; it != end;) {
 				if (event.key.code == it->second) {
 					*it->first = true;
 					pressedSinglePressKeyboardBinds.push_back(*it);
 					it = singlePressKeyboardBinds.erase(it);
-					break;
+					end = singlePressKeyboardBinds.end(); 
+				}
+				else {
+					it++;
 				}
 			}
 			break;
@@ -101,13 +104,16 @@ void InputManager::UpdateSinglePress() {
 		case sf::Event::KeyReleased:
 			it = pressedSinglePressKeyboardBinds.begin();
 			end = pressedSinglePressKeyboardBinds.end();
-			for (; it != end; ++it) {
+			for (; it != end;) {
 				if (event.key.code == it->second) {
 					*it->first = false;
 					singlePressKeyboardBinds.push_back(*it);
 					it = pressedSinglePressKeyboardBinds.erase(it);
+					end = pressedSinglePressKeyboardBinds.end();
 				}
-				break;
+				else {
+					it++;
+				}
 			}
 			break;
 			// mouse pressed

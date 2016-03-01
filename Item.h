@@ -66,6 +66,7 @@ public:
 	void Dropped(Vector2f);
 	std::string getTextForEnum(int enumVal);
 	void createBox2dBody();
+	ItemType GetType() { return type; }
 };
 
 #endif
