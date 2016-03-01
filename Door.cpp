@@ -1,13 +1,4 @@
-#include "Door.h"
-
-//For the handling of collision filtering
-enum _entityCategory {
-	PLAYER = 0x0004,
-	ITEM = 0x0008,
-	CONTAINER = 0x0016,
-	WALL = 0x0020,
-	DOOR = 0x0024,
-};
+#include "Door.h" 
 
 Door::Door(Vector2f pos, float r) : m_pos(pos), rotation(r)  { 
 	int random = rand() % 2;
@@ -77,7 +68,7 @@ void Door::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = DOOR;
-	fixtureDef.filter.maskBits = PLAYER;
+	fixtureDef.filter.maskBits = PLAYER | MELEE | PUNCH;
 
 	body->CreateFixture(&fixtureDef); 
 }

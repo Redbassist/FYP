@@ -3,8 +3,8 @@
 Inventory::Inventory() {
 	open = false;
 	invCols = 4;
-	invRows = 3;
-	invSize = 12;
+	invRows = 4;
+	invSize = 16;
 	LoadAssets();
 	SetupSlots();
 }

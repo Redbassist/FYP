@@ -107,7 +107,7 @@
     </ClInclude>
     <ClInclude Include="SettingsManager.h">
       <Filter>Header Files\Managers</Filter>
-    </ClInclude>
+    </ClInclude> 
     <ClInclude Include="Player.h">
       <Filter>Header Files\Player</Filter>
     </ClInclude>
@@ -115,7 +115,22 @@
       <Filter>Header Files\Player</Filter>
     </ClInclude>
     <ClInclude Include="Hotbar.h">
-      <Filter>Header Files\Player</Filter>
+      <Filter>Header Files\Player</Filter> 
+    </ClInclude>
+    <ClInclude Include="SFMLDebugDraw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCastCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCastManager.h">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager.h">
+      <Filter>Header Files\Managers</Filter> 
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -175,7 +190,7 @@
     </ClCompile>
     <ClCompile Include="SettingsManager.cpp">
       <Filter>Source Files\Managers</Filter>
-    </ClCompile>
+    </ClCompile> 
     <ClCompile Include="Inventory.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
@@ -183,7 +198,19 @@
       <Filter>Source Files\Player</Filter>
     </ClCompile>
     <ClCompile Include="Hotbar.cpp">
-      <Filter>Source Files\Player</Filter>
+      <Filter>Source Files\Player</Filter> 
+    </ClCompile>
+    <ClCompile Include="SFMLDebugDraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RayCastManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
+      <Filter>Source Files\Managers</Filter> 
     </ClCompile>
   </ItemGroup>
 </Project>

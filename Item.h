@@ -12,6 +12,7 @@ const static float SCALE = 30.f;
 enum ItemType { 
 	FOOD1, FOOD2, FOOD3,
 	WATER1, WATER2, 
+	AXE, BAT,
 	AMMOPISTOL, AMMOSHOTGUN, AMMORIFLE,
 	PISTOL, SHOTGUN, RIFLE,
 	MAP
@@ -21,6 +22,7 @@ static const std::string ItemTypeStrings[] =
 { 
 	"FOOD1", "FOOD2", "FOOD3",
 	"WATER1", "WATER2",
+	"AXE", "BAT",
 	"AMMOPISTOL", "AMMOSHOTGUN", "AMMORIFLE",
 	"PISTOL", "SHOTGUN", "RIFLE",
 	"MAP"
@@ -37,14 +39,15 @@ private:
 	bool onGround;
 	bool bodyCreated;
 	int size;
-
+	int amountAmmo = 0;
 	bool dragged;
 	int slot;
 	int hotbarSlot;
 
 public:
 	Item(ItemType, int);
-	Item(ItemType, int, bool, Vector2f);
+	Item(ItemType, int, int);
+	Item(ItemType, int, bool, Vector2f); 
 	void LoadAssets(); 
 	void LoadSprites(std::string type);
 	void SlotNumber(int);

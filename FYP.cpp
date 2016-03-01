@@ -2,6 +2,7 @@
 #include "ContactListener.h" 
 #include "Globals.h"
 #include "SceneManager.h"
+#include "SFMLDebugDraw.h"
 
 using namespace std;
 using namespace sf;
@@ -29,6 +30,9 @@ int main()
 	ContactListener contactListener = ContactListener();
 	world->SetContactListener(&contactListener);
 
+	SFMLDebugDraw debugDraw(*window);
+	world->SetDebugDraw(&debugDraw);
+	debugDraw.SetFlags(b2Draw::e_shapeBit);
 	//setting up the managers
 	InputManager::GetInstance();
 	AudioManager::GetInstance(); 
@@ -43,8 +47,8 @@ int main()
 			timeOfLastTick = myClock.now();
 
 			float32 timeStep = 1 / 20.0;      //the length of time passed to simulate (seconds)
-			int32 velocityIterations = 8;   //how strongly to correct velocity
-			int32 positionIterations = 3;   //how strongly to correct position
+			int32 velocityIterations = 200;   //how strongly to correct velocity
+			int32 positionIterations = 100;   //how strongly to correct position
 
 			world->Step(timeStep, velocityIterations, positionIterations);
 
@@ -64,6 +68,7 @@ int main()
 		}
 		window->clear();
 		sceneManager->Draw();
+		//world->DrawDebugData();
 		window->display();
 	}
 }
