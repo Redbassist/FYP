@@ -113,9 +113,11 @@ void Item::DrawInHotbar(Vector2f pos)
 {
 	pos.x += 18;
 	pos.y += 18;
+	Vector2f tempPos = m_sprite.getPosition();
 	m_sprite.setScale(0.45, 0.45);
 	m_sprite.setPosition(pos);
 	window->draw(m_sprite);
+	m_sprite.setPosition(tempPos);
 }
 
 void Item::DrawDragged()

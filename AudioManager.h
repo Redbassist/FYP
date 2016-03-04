@@ -21,7 +21,7 @@ public:
 	void update();
 
 private: 
-	float mUpdated;;
+	float mUpdated;
 	std::unordered_map<std::string, sf::SoundBuffer> mBuffers;
 	sf::Music* mCurrentSong;
 	std::unordered_map<std::string, sf::Music*> mMusic;

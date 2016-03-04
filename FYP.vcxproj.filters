@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Player">
       <UniqueIdentifier>{d9d94113-8508-4f1a-a575-fa6adcc20842}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Lighting">
+      <UniqueIdentifier>{01975cdf-dcd9-41b2-831c-3d78302da35e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lighting">
+      <UniqueIdentifier>{40b9e27d-02ec-4226-b3d2-c2b8b1cd0da3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -52,9 +58,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ContactListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Container.h">
@@ -107,7 +110,7 @@
     </ClInclude>
     <ClInclude Include="SettingsManager.h">
       <Filter>Header Files\Managers</Filter>
-    </ClInclude> 
+    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files\Player</Filter>
     </ClInclude>
@@ -115,7 +118,7 @@
       <Filter>Header Files\Player</Filter>
     </ClInclude>
     <ClInclude Include="Hotbar.h">
-      <Filter>Header Files\Player</Filter> 
+      <Filter>Header Files\Player</Filter>
     </ClInclude>
     <ClInclude Include="SFMLDebugDraw.h">
       <Filter>Header Files</Filter>
@@ -130,7 +133,46 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EffectManager.h">
-      <Filter>Header Files\Managers</Filter> 
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="ContactListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicQuadtree.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="LightDirectionEmission.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="LightPointEmission.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="LightShape.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSystem.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="newMath.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalsSprite.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="pool.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Quadtree.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadtreeNode.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadtreeOccupant.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticQuadtree.h">
+      <Filter>Header Files\Lighting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -190,7 +232,7 @@
     </ClCompile>
     <ClCompile Include="SettingsManager.cpp">
       <Filter>Source Files\Managers</Filter>
-    </ClCompile> 
+    </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
@@ -198,7 +240,7 @@
       <Filter>Source Files\Player</Filter>
     </ClCompile>
     <ClCompile Include="Hotbar.cpp">
-      <Filter>Source Files\Player</Filter> 
+      <Filter>Source Files\Player</Filter>
     </ClCompile>
     <ClCompile Include="SFMLDebugDraw.cpp">
       <Filter>Source Files</Filter>
@@ -210,7 +252,39 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EffectManager.cpp">
-      <Filter>Source Files\Managers</Filter> 
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="DynamicQuadtree.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="LightDirectionEmission.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSystem.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="LightPointEmission.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="newMath.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Quadtree.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadtreeNode.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadtreeOccupant.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticQuadtree.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pool.inl">
+      <Filter>Header Files\Lighting</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@ private:
 	Vector2f m_pos;
 	float rotation;
 	bool open;
+	ltbl::LightShape* lightBlocker;
 
 public:
 	Door(Vector2f, float);

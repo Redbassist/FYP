@@ -105,6 +105,17 @@ void Player::LoadAssets() {
 	//setting the text inside the button
 	watchFont.loadFromFile("digital.ttf");
 
+	pointLightTexture.loadFromFile("assets/pointLightTexture.png");
+	pointLightTexture.setSmooth(true);
+
+	light = std::make_shared<ltbl::LightPointEmission>();
+	light->_emissionSprite.setOrigin(pointLightTexture.getSize().x * 0.5f, pointLightTexture.getSize().y * 0.5f);
+	light->_emissionSprite.setTexture(pointLightTexture);
+	light->_emissionSprite.setScale(lightSize, lightSize);
+	light->_emissionSprite.setColor({ 255u, 255u, 255u });
+	light->_emissionSprite.setPosition(100.0f, 100.0f);
+	ltbl::LightSystem::GetInstance()->addLight(light); 
+
 	heartRateText.setFont(watchFont);
 	heartRateText.setCharacterSize(16);
 	heartRateText.setColor(sf::Color::Black);
@@ -226,7 +237,14 @@ void Player::Draw() {
 		animatedTopSprite.play(*currentTopAnimation);
 		animatedTopSprite.update(frameTime);
 		window->draw(animatedTopSprite);
-	}
+	}        
+
+	View view1 = window->getView();
+	ltbl::LightSystem::GetInstance()->render(view1, *unshadowShader, *lightOverShapeShader, *normalsShader);
+	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
+	sprite.setPosition(view1.getCenter());
+	sprite.setOrigin(640, 360);
+	window->draw(sprite, *lightRenderStates);
 
 	//drawing the inventory and its contents
 	inventory->Draw();
@@ -243,9 +261,13 @@ void Player::Draw() {
 	}
 
 	DrawWatch();
+
+	if (touchedContainer != NULL) {
+		touchedContainer->DrawUI();
+	}
 }
 
-void Player::Update() {
+void Player::Update() {  
 	SetRotation();
 	Movement();
 	Interaction();
@@ -320,7 +342,9 @@ void Player::Movement() {
 	//updating the player listener to the position of the player
 	float tempRot = orientation;
 	tempRot += 180;
-	AudioManager::GetInstance()->setListener(m_pos, tempRot);
+	AudioManager::GetInstance()->setListener(m_pos, tempRot); 
+
+	light->_emissionSprite.setPosition(m_pos);
 }
 
 void Player::Interaction() {
@@ -398,22 +422,20 @@ void Player::Interaction() {
 		//try drop item in the hotbar <- THINK OF WAY TO MAKE MORE EFFICIENT
 		bool addedToHotbar = false;
 		if (dragInventoryItem != NULL) {
-			addedToHotbar = hotbar->AddItem(worldMousePos, dragInventoryItem);
-		}
-		else if (dragContainerItem != NULL) {
-			addedToHotbar = hotbar->AddItem(worldMousePos, dragContainerItem);
-		}
+			addedToHotbar = hotbar->AddItem(worldMousePos, dragInventoryItem); 
+		} 
 
 		//dropping the item from the inventory 
 		if (dragInventoryItem != NULL && addedToHotbar == false) {
 			Item* item = inventory->DropItem(dragInventoryItem, worldMousePos);
 			if (item != NULL) {
 				hotbar->RemoveItem(item->GetHotbarSlot());
+				if (item == hotbarItem)
+					hotbarItem = NULL;
 				item->Dropped(m_pos);
 				cout << "Dropped inventory item on ground" << endl;
 			}
 		}
-
 
 		dragInventoryItem = NULL;
 		dragContainerItem = NULL;
@@ -504,6 +526,11 @@ void Player::Interaction() {
 		actions.hotbar3 = false;
 		actions.hotbar4 = false;
 		actions.hotbar5 = false;
+	}  
+
+	if (hotbarItem == NULL) {
+		melee = false;
+		pistol = false;
 	}
 }
 
@@ -513,6 +540,7 @@ void Player::TouchingContainer(Container* container) {
 
 void Player::NotTouchingContainer() {
 	touchedContainer = NULL;
+	dragContainerItem - NULL;
 }
 
 void Player::TouchingDoor(Door* door) {

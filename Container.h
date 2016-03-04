@@ -47,6 +47,7 @@ public:
 	bool CheckOpen();
 	Item * DragItem(Vector2f clickPos);
 	void Draw();
+	void DrawUI();
 	void DrawItems();
 	void createBox2dBody();
 };

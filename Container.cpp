@@ -199,6 +199,20 @@ void Container::Draw() {
 	m_shapeSprite.setPosition(Vector2f(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE));
 	window->draw(m_shapeSprite);
 
+	if (open) {
+		if (offset.x < m_sprite.getGlobalBounds().width)
+			offset.x += 40;
+		//drawing the items in the inventory
+	}
+
+	else {
+		if (offset.x > 0)
+			offset.x -= 40;
+	}
+}
+
+void Container::DrawUI()
+{
 	//opening and closing the container onto the screen. SLIDES.
 	Vector2f center = window->getView().getCenter();
 	Vector2f size = window->getView().getSize();
@@ -207,15 +221,7 @@ void Container::Draw() {
 	window->draw(m_sprite);
 
 	if (open) {
-		if (offset.x < m_sprite.getGlobalBounds().width)
-			offset.x += 40;
-		//drawing the items in the inventory
 		DrawItems();
-	}
-
-	else {
-		if (offset.x > 0)
-			offset.x -= 40;
 	}
 }
 

@@ -15,7 +15,9 @@ private:
 	b2Body* body;
 	b2FixtureDef fixtureDef;
 	Vector2f m_pos; 
-	Vector2f size;
+	Vector2f size; 
+
+	ltbl::LightShape* lightBlocker; 
 
 public:
 	Wall(Vector2f, Vector2f); 

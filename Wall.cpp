@@ -14,7 +14,7 @@ void Wall::LoadAssets() {
 	m_sprite.setPosition(m_pos);
 }
 
-void Wall::Draw() { 
+void Wall::Draw() {
 	window->draw(m_sprite);
 }
 
@@ -39,4 +39,19 @@ void Wall::createBox2dBody() {
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);
+
+	FloatRect size = m_sprite.getGlobalBounds(); 
+	m_pos.x += 1;
+	size.width -= 2;
+	m_pos.y+= 1;
+	size.height -= 2; 
+
+	lightBlocker = ltbl::LightSystem::GetInstance()->allocateShape();
+	lightBlocker->_shape.setPointCount(4u);
+	lightBlocker->_shape.setPoint(0u, { 0.f, 0.f });
+	lightBlocker->_shape.setPoint(1u, { 0.f, size.height });
+	lightBlocker->_shape.setPoint(2u, { size.width, size.height });
+	lightBlocker->_shape.setPoint(3u, { size.width, 0.f });
+	lightBlocker->_shape.setPosition(Vector2f(m_pos.x, m_pos.y));  
+	ltbl::LightSystem::GetInstance()->addShape(lightBlocker);
 }

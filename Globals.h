@@ -1,7 +1,11 @@
 #pragma once
 #include "stdafx.h"
 
-extern b2World* world;
+extern b2World* world; 
+extern sf::RenderStates* lightRenderStates;
+extern sf::Shader* unshadowShader;
+extern sf::Shader* lightOverShapeShader;
+extern sf::Shader* normalsShader;
 extern sf::RenderWindow* window; 
 #define RADTODEG (180.0 / b2_pi)
 #define DEGTORAD (b2_pi / 180)

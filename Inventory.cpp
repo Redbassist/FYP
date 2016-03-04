@@ -120,6 +120,7 @@ Item * Inventory::DropItem(Item * item, int slot)
 
 	if (slots[slotNumber].item->GetSize() == 1) {
 		slots[slotNumber].full = false;
+		slots[slotNumber].item->SetHotbarSlot(-1);
 		slots[slotNumber].item = NULL;
 	}
 	else {

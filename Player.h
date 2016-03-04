@@ -79,6 +79,10 @@ private:
 	Text heartRateText;
 	Text currentTime;
 
+	sf::Texture pointLightTexture;
+	shared_ptr<ltbl::LightPointEmission> light;
+	float lightSize = 20;
+
 	float heartRate;
 	float heartBeatX;
 	int currentHours;
