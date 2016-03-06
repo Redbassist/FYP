@@ -58,6 +58,8 @@ void Player::LoadAssets() {
 
 	EasyLoadAssetsAnimation(&m_rifleTexture, "playerRifle", &rifleShoot, 1, 1, 1, 36, 27);
 
+	EasyLoadAssetsAnimation(&m_rifleTexture, "playerShotgun", &shotgunShoot, 1, 1, 1, 36, 27);
+
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(16, 16);
 	animatedLegSprite.setPosition(m_pos);
@@ -194,6 +196,9 @@ void Player::Draw() {
 		else if (rifle) {
 			currentTopAnimation = &rifleShoot;
 		}
+		else if (shotgun) {
+			currentTopAnimation = &shotgunShoot;
+		}
 		else
 			currentTopAnimation = &playerTopMoving;
 		currentLegAnimation = &legsMoving;
@@ -210,6 +215,9 @@ void Player::Draw() {
 		}
 		else if (rifle) {
 			currentTopAnimation = &rifleShoot;
+		}
+		else if (shotgun) {
+			currentTopAnimation = &shotgunShoot;
 		}
 		else
 			currentTopAnimation = &playerTopIdle;
@@ -531,7 +539,7 @@ void Player::Interaction() {
 					if (pistol)
 						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
 					else if (shotgun)
-						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
+						AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
 					RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
 				}
 				else {
@@ -592,7 +600,7 @@ void Player::Interaction() {
 		actions.hotbar5 = false;
 	}
 
-	if (actions.reload && hotbarItem != NULL && (pistol || rifle) && !reloading) {
+	if (actions.reload && hotbarItem != NULL && (pistol || rifle || shotgun) && !reloading) {
 		hotbarItem->AddAmmo(inventory->SearchAmmo(hotbarItem->GetType(), hotbarItem->MissingAmmo()));
 		reloadTimer = time(&timer);
 		if (hotbarItem->GetType() == PISTOL)

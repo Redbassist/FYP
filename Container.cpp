@@ -113,6 +113,18 @@ void Container::GenerateItems() {
 			AddItem(temp);
 			items->push_back(temp);
 		}
+		else if (item == 9) {
+			amount = rand() % 6 + 0;
+			temp = new Item(SHOTGUN, 2, amount);
+			AddItem(temp);
+			items->push_back(temp);
+		}
+		else if (item == 10) {
+			amount = rand() % 8 + 0;
+			temp = new Item(AMMOSHOTGUN, 1, amount);
+			AddItem(temp);
+			items->push_back(temp);
+		}
 	}
 
 }

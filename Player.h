@@ -43,6 +43,7 @@ private:
 	float health;
 	float hunger;
 	float thirst;
+	bool bleeding = false;
 
 	keyActions actions;
 	Texture m_AnimationLegsTexture;
@@ -53,6 +54,7 @@ private:
 	Texture m_PunchLeftTexture;
 	Texture m_pistolTexture;
 	Texture m_rifleTexture;
+	Texture m_shotgunTexture;
 	Animation legsIdle;
 	Animation legsMoving;
 	Animation playerTopIdle;
@@ -63,6 +65,7 @@ private:
 	Animation punchRight;
 	Animation pistolShoot;
 	Animation rifleShoot;
+	Animation shotgunShoot;
 	Animation* currentLegAnimation;
 	Animation* currentTopAnimation;
 	AnimatedSprite animatedLegSprite;
