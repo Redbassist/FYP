@@ -90,13 +90,13 @@ void Container::GenerateItems() {
 			items->push_back(temp); 
 		}
 		else if (item == 5) {
-			amount = rand() % 5 + 0;
+			amount = rand() % 7 + 0;
 			temp = new Item(PISTOL, 1, amount);
 			AddItem(temp);
 			items->push_back(temp);
 		}
 		else if (item == 6) {
-			amount = rand() % 6 + 0;
+			amount = rand() % 20 + 0;
 			temp = new Item(AMMOPISTOL, 1, amount);
 			AddItem(temp);
 			items->push_back(temp);

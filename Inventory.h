@@ -36,6 +36,7 @@ public:
 	//dropping to ground
 	Item* DropItem(Item*, Vector2f);
 	//dropping to container
+	int SearchAmmo(ItemType, int);
 	Item* DropItem(Item*, int);
 	Item* DragItem(Vector2f);
 	void Open();

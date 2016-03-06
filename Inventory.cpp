@@ -111,6 +111,42 @@ Item* Inventory::DropItem(Item* item, Vector2f dropPos) {
 		return item;
 	}
 	return NULL;
+} 
+
+int Inventory::SearchAmmo(ItemType t, int searchAmmo)
+{ 
+	int ammoFound = 0;
+	ItemType searchType;
+
+	switch (t) {
+	case (ItemType::PISTOL) : 
+		searchType = AMMOPISTOL;
+		break;
+	case (ItemType::RIFLE) : 
+		searchType = AMMORIFLE;
+		break;
+	case (ItemType::SHOTGUN) : 
+		searchType = AMMOSHOTGUN;
+	}
+
+	int size = slots.size();
+
+	for (int i = 0; i < size; i++) {
+		if (slots[i].item != NULL) {
+			if (slots[i].item->GetType() == searchType) {
+				pair<bool, int> temp = slots[i].item->RemoveAmmo(searchAmmo - ammoFound); 
+ 				ammoFound += temp.second;
+				if (!temp.first) {
+					slots[i].item->destroy = true;
+					slots[i].item = NULL;
+					slots[i].full = false;
+				}
+				if (ammoFound >= searchAmmo)
+					break;
+			}
+		}
+	}
+	return ammoFound;
 }
 
 Item * Inventory::DropItem(Item * item, int slot)

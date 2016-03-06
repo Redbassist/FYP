@@ -1,6 +1,12 @@
 #pragma once
 #include "Item.h" 
 
+Item::~Item()
+{
+	if (onGround)
+		body->GetFixtureList()->SetUserData("Destroy");
+}
+
 Item::Item(ItemType t, int s) : type(t), size(s) {
 	onGround = false;
 	LoadAssets();
@@ -9,6 +15,27 @@ Item::Item(ItemType t, int s) : type(t), size(s) {
 Item::Item(ItemType t, int s, int amount) : type(t), size(s), amountAmmo(amount) {
 	onGround = false;
 	LoadAssets();
+
+	switch (t) {
+	case (ItemType::AMMOPISTOL) :
+		maxAmmo = 20;
+		break;
+	case (ItemType::AMMORIFLE) :
+		maxAmmo = 30;
+		break;
+	case (ItemType::AMMOSHOTGUN) :
+		maxAmmo = 8;
+		break;
+	case (ItemType::PISTOL) :
+		maxAmmo = 7;
+		break;
+	case (ItemType::RIFLE) :
+		maxAmmo = 30;
+		break;
+	case (ItemType::SHOTGUN) :
+		maxAmmo = 6;
+		break;
+	}
 }
 
 //debugging constructor
@@ -62,6 +89,18 @@ int Item::GetSlot()
 
 int Item::GetSize() {
 	return size;
+}
+
+pair<bool, int> Item::RemoveAmmo(int amount)
+{
+	amountAmmo -= amount;
+	int returnAmount = amount;
+	if (amountAmmo < 0) {
+		int returnAmount = amount + amountAmmo;
+		amountAmmo = 0;
+		return pair<bool, int>(false, (returnAmount));
+	}
+	return pair<bool, int>(true, (returnAmount));
 }
 
 void Item::Draw() {
@@ -151,6 +190,7 @@ bool Item::CheckSprite(Vector2f mouseClick) {
 
 void Item::Dropped(Vector2f pos) {
 	onGround = true;
+	inHotBar = false;
 	hotbarSlot = -1;
 	m_sprite.setScale(Vector2f(0.2, 0.2));
 	m_sprite.setPosition(pos);

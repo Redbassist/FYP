@@ -38,7 +38,14 @@ void World::Draw() {
 	//drawing the items
 	size = items.size();
 	for (int i = 0; i < size; i++) {
-		items[i]->Draw();
+		if (items[i]->destroy) {
+			delete items[i];
+			items.erase(items.begin() + i);
+			size = items.size();
+			i--;
+		}
+		else
+			items[i]->Draw();
 	}
 
 	player->Draw();

@@ -27,6 +27,7 @@ struct keyActions {
 	bool swing = false;
 	bool punch = false;
 	bool fire = false;
+	bool reload = false;
 	bool hotbar1 = false;
 	bool hotbar2 = false;
 	bool hotbar3 = false;
@@ -111,6 +112,9 @@ private:
 	bool pistol;
 	int shoottime = 0;
 	int shootspeed;  
+	time_t reloadTimer;
+	int reloadTime;
+	bool reloading;
 
 	Container* touchedContainer;
 	std::vector<Item*> touchedItems;
@@ -129,6 +133,7 @@ private:
 
 	sf::Clock frameClock;
 	b2RayCastInput gunRay;
+	time_t timer;
 
 public:
 	Player(Vector2f);

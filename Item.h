@@ -40,11 +40,15 @@ private:
 	bool bodyCreated;
 	int size;
 	int amountAmmo = 0;
+	int maxAmmo = 0;
 	bool dragged;
 	int slot;
 	int hotbarSlot;
 
 public:
+	bool inHotBar = false;
+	bool destroy = false;
+	~Item();
 	Item(ItemType, int);
 	Item(ItemType, int, int);
 	Item(ItemType, int, bool, Vector2f); 
@@ -56,6 +60,13 @@ public:
 	void ResetSlot();
 	int GetSlot();
 	int GetSize();
+	pair<bool, int> RemoveAmmo(int);
+	int MissingAmmo() {
+		return maxAmmo - amountAmmo;
+	}
+	void AddAmmo(int ammo) {
+		amountAmmo += ammo;
+	}
 	void Draw();
 	void DrawInInventory(Vector2f, FloatRect, int, int);
 	void DrawInContainer(Vector2f, FloatRect, int, int);

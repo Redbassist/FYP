@@ -31,6 +31,9 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	punch = false;
 	melee = false;
 	pistol = false;
+
+	reloadTime = 1;
+	reloadTimer = time(&timer);
 }
 
 void Player::LoadAssets() {
@@ -161,6 +164,8 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar3, Keyboard::Key::Num3);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar4, Keyboard::Key::Num4);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar5, Keyboard::Key::Num5);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.reload, Keyboard::Key::R);
+	
 }
 
 void Player::Draw() {
@@ -488,8 +493,14 @@ void Player::Interaction() {
 	}
 
 	if (actions.fire && pistol) {
-		AudioManager::GetInstance()->playSound("pistolshot", m_pos);
-		RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+		if (!reloading) {
+			if (hotbarItem->RemoveAmmo(1).first) {
+				AudioManager::GetInstance()->playSound("pistolshot", m_pos);
+				RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+			}
+			else
+				AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+		}
 		actions.fire = false;
 	}
 
@@ -527,6 +538,18 @@ void Player::Interaction() {
 		actions.hotbar4 = false;
 		actions.hotbar5 = false;
 	}  
+
+	if (actions.reload && hotbarItem != NULL && (pistol) && !reloading) {  
+		hotbarItem->AddAmmo(inventory->SearchAmmo(hotbarItem->GetType(), hotbarItem->MissingAmmo()));
+		reloadTimer = time(&timer);
+		AudioManager::GetInstance()->playSound("loadPistol", m_pos);
+		reloading = true;
+		actions.reload = false;
+	}
+	 
+	if (difftime(time(&timer), reloadTimer) > reloadTime && reloading) {
+		reloading = false;
+	}
 
 	if (hotbarItem == NULL) {
 		melee = false;

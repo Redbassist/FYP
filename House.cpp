@@ -20,15 +20,15 @@ void House::CreateWalls() {
 	walls.push_back(new Wall(m_pos + Vector2f(0, 10), Vector2f(20, 10)));
 	walls.push_back(new Wall(m_pos + Vector2f(80, 10), Vector2f(20, 10)));
 	walls.push_back(new Wall(m_pos + Vector2f(-90, 100), Vector2f(100, 10)));
-	walls.push_back(new Wall(m_pos + Vector2f(-90, 100), Vector2f(10, 300)));
+	walls.push_back(new Wall(m_pos + Vector2f(-90, 100), Vector2f(10, 310)));
 	walls.push_back(new Wall(m_pos + Vector2f(-90, 400), Vector2f(400, 10)));
-	walls.push_back(new Wall(m_pos + Vector2f(90, 100), Vector2f(210, 10)));
-	walls.push_back(new Wall(m_pos + Vector2f(300, 100), Vector2f(10, 300)));	
+	walls.push_back(new Wall(m_pos + Vector2f(90, 100), Vector2f(220, 10)));
+	walls.push_back(new Wall(m_pos + Vector2f(300, 100), Vector2f(10, 310)));	
 	walls.push_back(new Wall(m_pos + Vector2f(-90, 200), Vector2f(100, 10)));
-	walls.push_back(new Wall(m_pos + Vector2f(70, 300), Vector2f(230, 10)));
+	walls.push_back(new Wall(m_pos + Vector2f(70, 300), Vector2f(240, 10)));
 	walls.push_back(new Wall(m_pos + Vector2f(-90, 200), Vector2f(100, 10)));
-	walls.push_back(new Wall(m_pos + Vector2f(190, 100), Vector2f(10, 130)));
-	walls.push_back(new Wall(m_pos + Vector2f(0, 270), Vector2f(10, 200)));
+	walls.push_back(new Wall(m_pos + Vector2f(190, 100), Vector2f(10, 140)));
+	walls.push_back(new Wall(m_pos + Vector2f(0, 270), Vector2f(10, 140)));
 
 	doors.push_back(new Door(m_pos + Vector2f(50, 15), 0));
 	doors.push_back(new Door(m_pos + Vector2f(6, 240), 90));

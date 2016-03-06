@@ -44,10 +44,27 @@ void Hotbar::Draw()
 bool Hotbar::AddItem(Vector2f dropPos, Item* item)
 {
 	int slot = CheckSprite(dropPos);
-
-	if (slot >= 0 && slots[slot].item == NULL) {
+	
+	if (slot < 0) {
+		return false;
+	}
+	else if (item->GetType() == AMMOPISTOL || item->GetType() == AMMORIFLE || item->GetType() == AMMOSHOTGUN ) {
+		return false;
+	}
+	else if (item->inHotBar == false) {
+		if (slots[slot].item != NULL) {
+			slots[slot].item->SetHotbarSlot(-1);
+			slots[slot].item->inHotBar = false;
+		}
 		item->SetHotbarSlot(slot);
 		slots[slot].item = item;
+		item->inHotBar = true;
+		return true;
+	}
+	else if (item->inHotBar == true) {
+		return true;
+	}
+	else if (slots[slot].item == item) {
 		return true;
 	}
 	return false;
