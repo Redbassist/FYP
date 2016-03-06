@@ -21,7 +21,7 @@ Item::Item(ItemType t, int s, int amount) : type(t), size(s), amountAmmo(amount)
 		maxAmmo = 20;
 		break;
 	case (ItemType::AMMORIFLE) :
-		maxAmmo = 30;
+		maxAmmo = 100;
 		break;
 	case (ItemType::AMMOSHOTGUN) :
 		maxAmmo = 8;

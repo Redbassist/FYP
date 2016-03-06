@@ -101,6 +101,18 @@ void Container::GenerateItems() {
 			AddItem(temp);
 			items->push_back(temp);
 		}
+		else if (item == 7) {
+			amount = rand() % 30 + 0;
+			temp = new Item(RIFLE, 2, amount);
+			AddItem(temp);
+			items->push_back(temp);
+		}
+		else if (item == 8) {
+			amount = rand() % 100 + 0;
+			temp = new Item(AMMORIFLE, 1, amount);
+			AddItem(temp);
+			items->push_back(temp);
+		}
 	}
 
 }
@@ -135,12 +147,14 @@ bool Container::AddItem(Item* item, Vector2f dropPos) {
 			else if (item->GetSize() == 2) {
 				bool loop = true;
 				while (loop) {
-					if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
-						slots[i].item = item;
-						slots[i].item->SlotNumber(i);
-						slots[i].full = true;
-						slots[i + 1].full = true;
-						loop = false;
+					if (i != size - 1) {
+						if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
+							slots[i].item = item;
+							slots[i].item->SlotNumber(i);
+							slots[i].full = true;
+							slots[i + 1].full = true;
+							loop = false;
+						}
 					}
 					i++;
 				}

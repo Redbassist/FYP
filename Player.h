@@ -27,6 +27,7 @@ struct keyActions {
 	bool swing = false;
 	bool punch = false;
 	bool fire = false;
+	bool autoFire = false;
 	bool reload = false;
 	bool hotbar1 = false;
 	bool hotbar2 = false;
@@ -51,6 +52,7 @@ private:
 	Texture m_PunchRightTexture;
 	Texture m_PunchLeftTexture;
 	Texture m_pistolTexture;
+	Texture m_rifleTexture;
 	Animation legsIdle;
 	Animation legsMoving;
 	Animation playerTopIdle;
@@ -60,6 +62,7 @@ private:
 	Animation punchLeft;
 	Animation punchRight;
 	Animation pistolShoot;
+	Animation rifleShoot;
 	Animation* currentLegAnimation;
 	Animation* currentTopAnimation;
 	AnimatedSprite animatedLegSprite;
@@ -110,9 +113,14 @@ private:
 	int swingSpeed;
 
 	bool pistol;
+	bool shotgun;
+	bool rifle;
 	int shoottime = 0;
-	int shootspeed;  
-	time_t reloadTimer;
+	float shootspeed;  
+	typedef std::chrono::high_resolution_clock Clock;
+	typedef std::chrono::milliseconds milliseconds;
+	Clock::time_point lastShot;
+	time_t reloadTimer; 
 	int reloadTime;
 	bool reloading;
 

@@ -31,9 +31,13 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	punch = false;
 	melee = false;
 	pistol = false;
+	rifle = false;
+	shotgun = false;
 
 	reloadTime = 1;
-	reloadTimer = time(&timer);
+	reloadTimer = time(&timer); 
+	lastShot = Clock::now();
+	shootspeed = 100;
 }
 
 void Player::LoadAssets() {
@@ -51,6 +55,8 @@ void Player::LoadAssets() {
 	EasyLoadAssetsAnimation(&m_PunchLeftTexture, "leftPunch", &punchLeft, 4, 4, 1, 31, 27);
 
 	EasyLoadAssetsAnimation(&m_pistolTexture, "playerPistol", &pistolShoot, 1, 1, 1, 31, 27);
+
+	EasyLoadAssetsAnimation(&m_rifleTexture, "playerRifle", &rifleShoot, 1, 1, 1, 36, 27);
 
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(16, 16);
@@ -117,7 +123,7 @@ void Player::LoadAssets() {
 	light->_emissionSprite.setScale(lightSize, lightSize);
 	light->_emissionSprite.setColor({ 255u, 255u, 255u });
 	light->_emissionSprite.setPosition(100.0f, 100.0f);
-	ltbl::LightSystem::GetInstance()->addLight(light); 
+	ltbl::LightSystem::GetInstance()->addLight(light);
 
 	heartRateText.setFont(watchFont);
 	heartRateText.setCharacterSize(16);
@@ -159,13 +165,14 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->BindSingleMousePress(&actions.swing, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.punch, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.fire, Mouse::Button::Left);
+	InputManager::GetInstance()->Bind(&actions.autoFire, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar1, Keyboard::Key::Num1);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar2, Keyboard::Key::Num2);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar3, Keyboard::Key::Num3);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar4, Keyboard::Key::Num4);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar5, Keyboard::Key::Num5);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.reload, Keyboard::Key::R);
-	
+
 }
 
 void Player::Draw() {
@@ -184,6 +191,9 @@ void Player::Draw() {
 		else if (pistol) {
 			currentTopAnimation = &pistolShoot;
 		}
+		else if (rifle) {
+			currentTopAnimation = &rifleShoot;
+		}
 		else
 			currentTopAnimation = &playerTopMoving;
 		currentLegAnimation = &legsMoving;
@@ -197,6 +207,9 @@ void Player::Draw() {
 		}
 		else if (pistol) {
 			currentTopAnimation = &pistolShoot;
+		}
+		else if (rifle) {
+			currentTopAnimation = &rifleShoot;
 		}
 		else
 			currentTopAnimation = &playerTopIdle;
@@ -242,7 +255,7 @@ void Player::Draw() {
 		animatedTopSprite.play(*currentTopAnimation);
 		animatedTopSprite.update(frameTime);
 		window->draw(animatedTopSprite);
-	}        
+	}
 
 	View view1 = window->getView();
 	ltbl::LightSystem::GetInstance()->render(view1, *unshadowShader, *lightOverShapeShader, *normalsShader);
@@ -272,7 +285,7 @@ void Player::Draw() {
 	}
 }
 
-void Player::Update() {  
+void Player::Update() {
 	SetRotation();
 	Movement();
 	Interaction();
@@ -347,7 +360,7 @@ void Player::Movement() {
 	//updating the player listener to the position of the player
 	float tempRot = orientation;
 	tempRot += 180;
-	AudioManager::GetInstance()->setListener(m_pos, tempRot); 
+	AudioManager::GetInstance()->setListener(m_pos, tempRot);
 
 	light->_emissionSprite.setPosition(m_pos);
 }
@@ -427,16 +440,22 @@ void Player::Interaction() {
 		//try drop item in the hotbar <- THINK OF WAY TO MAKE MORE EFFICIENT
 		bool addedToHotbar = false;
 		if (dragInventoryItem != NULL) {
-			addedToHotbar = hotbar->AddItem(worldMousePos, dragInventoryItem); 
-		} 
+			addedToHotbar = hotbar->AddItem(worldMousePos, dragInventoryItem);
+		}
 
 		//dropping the item from the inventory 
 		if (dragInventoryItem != NULL && addedToHotbar == false) {
 			Item* item = inventory->DropItem(dragInventoryItem, worldMousePos);
 			if (item != NULL) {
 				hotbar->RemoveItem(item->GetHotbarSlot());
-				if (item == hotbarItem)
+				if (item == hotbarItem) {
 					hotbarItem = NULL;
+					punch = false;
+					pistol = false;
+					melee = false;
+					rifle = false;
+					shotgun = false;
+				}
 				item->Dropped(m_pos);
 				cout << "Dropped inventory item on ground" << endl;
 			}
@@ -491,17 +510,39 @@ void Player::Interaction() {
 			actions.punch = false;
 		}
 	}
-
-	if (actions.fire && pistol) {
-		if (!reloading) {
-			if (hotbarItem->RemoveAmmo(1).first) {
-				AudioManager::GetInstance()->playSound("pistolshot", m_pos);
-				RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+	
+	if (!inventory->CheckOpen()) {
+		if (actions.autoFire && rifle && !reloading) {
+			if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shootspeed) {
+				if (hotbarItem->RemoveAmmo(1).first) {
+					AudioManager::GetInstance()->playSound("rifleshot", m_pos);
+					RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+				}
+				else {
+					AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+				}
+				lastShot = Clock::now();
 			}
-			else
-				AudioManager::GetInstance()->playSound("pistoldry", m_pos);
 		}
-		actions.fire = false;
+
+		else if (actions.fire) {
+			if (!reloading && (pistol || shotgun)) {
+				if (hotbarItem->RemoveAmmo(1).first) {
+					if (pistol)
+						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
+					else if (shotgun)
+						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
+					RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+				}
+				else {
+					if (pistol)
+						AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+					else if (shotgun)
+						AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+				}
+			}
+			actions.fire = false;
+		}
 	}
 
 	if (actions.hotbar1 || actions.hotbar2 || actions.hotbar3 || actions.hotbar4 || actions.hotbar5) {
@@ -512,24 +553,36 @@ void Player::Interaction() {
 		else if (actions.hotbar5) hotbarItem = hotbar->SelectItem(4);
 
 		if (hotbarItem != NULL) {
+
+			punch = false;
+			melee = false;
+			pistol = false;
+			shotgun = false;
+			rifle = false;
+			actions.swing = false;
+
 			switch (hotbarItem->GetType()) {
 			case(ItemType::AXE) :
-				punch = false;
 				melee = true;
-				pistol = false;
-				actions.swing = false;
 				break;
-			case(ItemType::PISTOL):
-				punch = false;
-				melee = false;
-				pistol = true; 
-				actions.fire = false;
+			case(ItemType::PISTOL) :
+				pistol = true;
+				break;
+			case(ItemType::RIFLE) :
+				rifle = true;
+				break;
+			case(ItemType::SHOTGUN) :
+				shotgun = true;
+				break;
 			}
+
 		}
 		else {
 			punch = true;
 			melee = false;
 			pistol = false;
+			shotgun = false;
+			rifle = false;
 		}
 
 		actions.hotbar1 = false;
@@ -537,16 +590,21 @@ void Player::Interaction() {
 		actions.hotbar3 = false;
 		actions.hotbar4 = false;
 		actions.hotbar5 = false;
-	}  
+	}
 
-	if (actions.reload && hotbarItem != NULL && (pistol) && !reloading) {  
+	if (actions.reload && hotbarItem != NULL && (pistol || rifle) && !reloading) {
 		hotbarItem->AddAmmo(inventory->SearchAmmo(hotbarItem->GetType(), hotbarItem->MissingAmmo()));
 		reloadTimer = time(&timer);
-		AudioManager::GetInstance()->playSound("loadPistol", m_pos);
+		if (hotbarItem->GetType() == PISTOL)
+			AudioManager::GetInstance()->playSound("loadPistol", m_pos);
+		else if (hotbarItem->GetType() == RIFLE)
+			AudioManager::GetInstance()->playSound("loadRifle", m_pos);
+		else if (hotbarItem->GetType() == SHOTGUN)
+			AudioManager::GetInstance()->playSound("loadPistol", m_pos);
 		reloading = true;
 		actions.reload = false;
 	}
-	 
+
 	if (difftime(time(&timer), reloadTimer) > reloadTime && reloading) {
 		reloading = false;
 	}
