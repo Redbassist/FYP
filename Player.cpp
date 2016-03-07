@@ -24,6 +24,7 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	LoadBinds();
 	createBox2dBody();
 	createPunchBox2dBody();
+
 	createMeleeBox2dBody();
 	createJoint();
 
@@ -37,7 +38,8 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	reloadTime = 1;
 	reloadTimer = time(&timer); 
 	lastShot = Clock::now();
-	shootspeed = 100;
+	rifleShootSpeed = 100;
+	shotgunShootSpeed = 1100;
 }
 
 void Player::LoadAssets() {
@@ -521,7 +523,7 @@ void Player::Interaction() {
 	
 	if (!inventory->CheckOpen()) {
 		if (actions.autoFire && rifle && !reloading) {
-			if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shootspeed) {
+			if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > rifleShootSpeed) {
 				if (hotbarItem->RemoveAmmo(1).first) {
 					AudioManager::GetInstance()->playSound("rifleshot", m_pos);
 					RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
@@ -536,11 +538,15 @@ void Player::Interaction() {
 		else if (actions.fire) {
 			if (!reloading && (pistol || shotgun)) {
 				if (hotbarItem->RemoveAmmo(1).first) {
-					if (pistol)
+					if (pistol) {
 						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
-					else if (shotgun)
+						RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+					}
+					else if (shotgun && std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shotgunShootSpeed) {
 						AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
-					RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+						RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+						lastShot = Clock::now();
+					}
 				}
 				else {
 					if (pistol)

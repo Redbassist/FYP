@@ -119,7 +119,8 @@ private:
 	bool shotgun;
 	bool rifle;
 	int shoottime = 0;
-	float shootspeed;  
+	float rifleShootSpeed; 
+	float shotgunShootSpeed;
 	typedef std::chrono::high_resolution_clock Clock;
 	typedef std::chrono::milliseconds milliseconds;
 	Clock::time_point lastShot;
