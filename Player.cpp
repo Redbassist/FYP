@@ -30,7 +30,8 @@ Player::Player(Vector2f pos) : m_pos(pos)
 
 	swingSpeed = 10;
 	punch = false;
-	melee = false;
+	meleeAxe = false;
+	meleeBat = false;
 	pistol = false;
 	rifle = false;
 	shotgun = false;
@@ -52,6 +53,9 @@ void Player::LoadAssets() {
 
 	EasyLoadAssetsAnimation(&m_SwingAxeRightTexture, "swingAnimationAxeRight", &swingAxeRight, 5, 5, 1, 60, 60);
 	EasyLoadAssetsAnimation(&m_SwingAxeLeftTexture, "swingAnimationAxeLeft", &swingAxeLeft, 5, 5, 1, 60, 60);
+
+	EasyLoadAssetsAnimation(&m_SwingBatRightTexture, "swingAnimationBatRight", &swingBatRight, 5, 5, 1, 60, 60);
+	EasyLoadAssetsAnimation(&m_SwingBatLeftTexture, "swingAnimationBatLeft", &swingBatLeft, 5, 5, 1, 60, 60);
 
 	EasyLoadAssetsAnimation(&m_PunchRightTexture, "rightPunch", &punchRight, 4, 4, 1, 31, 27);
 	EasyLoadAssetsAnimation(&m_PunchLeftTexture, "leftPunch", &punchLeft, 4, 4, 1, 31, 27);
@@ -189,8 +193,11 @@ void Player::Draw() {
 		if (punch) {
 			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
 		}
-		else if (melee) {
+		else if (meleeAxe) {
 			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
+		}
+		else if (meleeBat) {
+			currentTopAnimation = (swingDirection == 0) ? &swingBatRight : &swingBatLeft;
 		}
 		else if (pistol) {
 			currentTopAnimation = &pistolShoot;
@@ -209,8 +216,11 @@ void Player::Draw() {
 		if (punch) {
 			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
 		}
-		else if (melee) {
+		else if (meleeAxe) {
 			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
+		}
+		else if (meleeBat) {
+			currentTopAnimation = (swingDirection == 0) ? &swingBatRight : &swingBatLeft;
 		}
 		else if (pistol) {
 			currentTopAnimation = &pistolShoot;
@@ -245,7 +255,7 @@ void Player::Draw() {
 				animatedPunchLeft.update(frameTime);
 		}
 	}
-	else if (melee) {
+	else if (meleeAxe || meleeBat) {
 		if (swingDirection == 0) {
 			//animatedSwingAxeRight.play(*currentTopAnimation);
 			window->draw(animatedSwingAxeRight);
@@ -462,7 +472,8 @@ void Player::Interaction() {
 					hotbarItem = NULL;
 					punch = false;
 					pistol = false;
-					melee = false;
+					meleeAxe = false;
+					meleeBat = false;
 					rifle = false;
 					shotgun = false;
 				}
@@ -481,7 +492,7 @@ void Player::Interaction() {
 		actions.interact = false;
 	}
 
-	if (actions.swing && melee) {
+	if (actions.swing && (meleeAxe || meleeBat)) {
 		if (swingDirection == 0) {
 			meleeAngle += swingSpeed;
 		}
@@ -491,13 +502,19 @@ void Player::Interaction() {
 		if (meleeAngle >= 160) {
 			swingDirection = 1;
 			animatedSwingAxeRight.stop();
-			animatedSwingAxeLeft.play(swingAxeLeft);
+			if (meleeAxe)
+				animatedSwingAxeLeft.play(swingAxeLeft);
+			else if (meleeBat)
+				animatedSwingAxeLeft.play(swingBatLeft);
 			actions.swing = false;
 		}
 		else if (meleeAngle <= 0) {
 			swingDirection = 0;
 			animatedSwingAxeLeft.stop();
-			animatedSwingAxeRight.play(swingAxeRight);
+			if (meleeAxe)
+				animatedSwingAxeRight.play(swingAxeRight);
+			else if (meleeBat)
+				animatedSwingAxeRight.play(swingBatRight);
 			actions.swing = false;
 		}
 	}
@@ -569,7 +586,8 @@ void Player::Interaction() {
 		if (hotbarItem != NULL) {
 
 			punch = false;
-			melee = false;
+			meleeAxe = false;
+			meleeBat = false;
 			pistol = false;
 			shotgun = false;
 			rifle = false;
@@ -577,7 +595,14 @@ void Player::Interaction() {
 
 			switch (hotbarItem->GetType()) {
 			case(ItemType::AXE) :
-				melee = true;
+				meleeAxe = true;
+				animatedSwingAxeRight.play(swingAxeRight);
+				animatedSwingAxeLeft.play(swingAxeLeft);
+				break;
+			case(ItemType::BAT) :
+				meleeBat = true;
+				animatedSwingAxeRight.play(swingBatRight);
+				animatedSwingAxeLeft.play(swingBatLeft);
 				break;
 			case(ItemType::PISTOL) :
 				pistol = true;
@@ -593,7 +618,8 @@ void Player::Interaction() {
 		}
 		else {
 			punch = true;
-			melee = false;
+			meleeAxe = false;
+			meleeBat = false;
 			pistol = false;
 			shotgun = false;
 			rifle = false;
@@ -630,7 +656,8 @@ void Player::Interaction() {
 	}
 
 	if (hotbarItem == NULL) {
-		melee = false;
+		meleeAxe = false;
+		meleeBat = false;
 		pistol = false;
 	}
 }

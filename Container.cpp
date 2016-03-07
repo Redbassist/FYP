@@ -159,7 +159,7 @@ bool Container::AddItem(Item* item, Vector2f dropPos) {
 			else if (item->GetSize() == 2) {
 				bool loop = true;
 				while (loop) {
-					if (i < size) {
+					if (i >= 0 && i < size) {
 						if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
 							slots[i].item = item;
 							slots[i].item->SlotNumber(i);

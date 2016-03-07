@@ -50,6 +50,8 @@ private:
 	Texture m_AnimationTopTexture;
 	Texture m_SwingAxeRightTexture;
 	Texture m_SwingAxeLeftTexture;
+	Texture m_SwingBatRightTexture;
+	Texture m_SwingBatLeftTexture;
 	Texture m_PunchRightTexture;
 	Texture m_PunchLeftTexture;
 	Texture m_pistolTexture;
@@ -61,6 +63,8 @@ private:
 	Animation playerTopMoving;
 	Animation swingAxeRight;
 	Animation swingAxeLeft;
+	Animation swingBatRight;
+	Animation swingBatLeft;
 	Animation punchLeft;
 	Animation punchRight;
 	Animation pistolShoot;
@@ -110,7 +114,8 @@ private:
 	int punchDistance = 0;
 	int maxPunchDistance = 40;
 
-	bool melee;
+	bool meleeAxe;
+	bool meleeBat;
 	int swingDirection = 0; //0 is right, 1 is left
 	float meleeAngle = 0;
 	int swingSpeed;
