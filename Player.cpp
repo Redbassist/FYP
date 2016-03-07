@@ -58,7 +58,7 @@ void Player::LoadAssets() {
 
 	EasyLoadAssetsAnimation(&m_rifleTexture, "playerRifle", &rifleShoot, 1, 1, 1, 36, 27);
 
-	EasyLoadAssetsAnimation(&m_rifleTexture, "playerShotgun", &shotgunShoot, 1, 1, 1, 36, 27);
+	EasyLoadAssetsAnimation(&m_shotgunTexture, "playerShotgun", &shotgunShoot, 1, 1, 1, 36, 27);
 
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(16, 16);
@@ -411,13 +411,13 @@ void Player::Interaction() {
 		}
 	}
 
-	if (actions.drag && inventory->CheckOpen()) {
+	if (actions.drag && inventory->CheckOpen() && dragContainerItem == NULL) {
 		if (dragInventoryItem == NULL) {
 			dragInventoryItem = inventory->DragItem(worldMousePos);
 		}
 	}
 
-	if (actions.drag && touchedContainer != NULL && touchedContainer->CheckOpen()) {
+	if (actions.drag && touchedContainer != NULL && touchedContainer->CheckOpen() && dragInventoryItem == NULL) {
 		if (dragContainerItem == NULL) {
 			dragContainerItem = touchedContainer->DragItem(worldMousePos);
 		}
@@ -603,12 +603,18 @@ void Player::Interaction() {
 	if (actions.reload && hotbarItem != NULL && (pistol || rifle || shotgun) && !reloading) {
 		hotbarItem->AddAmmo(inventory->SearchAmmo(hotbarItem->GetType(), hotbarItem->MissingAmmo()));
 		reloadTimer = time(&timer);
-		if (hotbarItem->GetType() == PISTOL)
+		if (hotbarItem->GetType() == PISTOL) {
 			AudioManager::GetInstance()->playSound("loadPistol", m_pos);
-		else if (hotbarItem->GetType() == RIFLE)
+			reloadTime = 1;
+		}
+		else if (hotbarItem->GetType() == RIFLE) {
 			AudioManager::GetInstance()->playSound("loadRifle", m_pos);
-		else if (hotbarItem->GetType() == SHOTGUN)
-			AudioManager::GetInstance()->playSound("loadPistol", m_pos);
+			reloadTime = 1;
+		}
+		else if (hotbarItem->GetType() == SHOTGUN) {
+			AudioManager::GetInstance()->playSound("loadShotgun", m_pos);
+			reloadTime = 2;
+		}
 		reloading = true;
 		actions.reload = false;
 	}
