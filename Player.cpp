@@ -572,7 +572,6 @@ void Player::Interaction() {
 						AudioManager::GetInstance()->playSound("pistoldry", m_pos);
 				}
 			}
-			actions.fire = false;
 		}
 	}
 
@@ -660,6 +659,8 @@ void Player::Interaction() {
 		meleeBat = false;
 		pistol = false;
 	}
+	//making sure if fire didnt happen, that it doesnt try again next frame
+	actions.fire = false;
 }
 
 void Player::TouchingContainer(Container* container) {
