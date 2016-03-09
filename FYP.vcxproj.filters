@@ -49,6 +49,12 @@
     <Filter Include="Source Files\Lighting">
       <UniqueIdentifier>{40b9e27d-02ec-4226-b3d2-c2b8b1cd0da3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Tiled">
+      <UniqueIdentifier>{56d5f1d3-50bf-4fd9-9a06-66836cbd6096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tiled">
+      <UniqueIdentifier>{9d261c51-66cf-4cdd-89c4-26ce38bf5356}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -165,14 +171,44 @@
     <ClInclude Include="Quadtree.h">
       <Filter>Header Files\Lighting</Filter>
     </ClInclude>
-    <ClInclude Include="QuadtreeNode.h">
-      <Filter>Header Files\Lighting</Filter>
-    </ClInclude>
     <ClInclude Include="QuadtreeOccupant.h">
       <Filter>Header Files\Lighting</Filter>
     </ClInclude>
     <ClInclude Include="StaticQuadtree.h">
       <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadtreeNodeTwo.h">
+      <Filter>Header Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer.h">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLoader.h">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="MapObject.h">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="pugiconfig.hpp">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="pugixml.hpp">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="QuadTreeNode.h">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="tmx2box2d.h">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugShape.h">
+      <Filter>Header Files\Tiled</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.h">
+      <Filter>Header Files\Tiled</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -272,14 +308,38 @@
     <ClCompile Include="Quadtree.cpp">
       <Filter>Source Files\Lighting</Filter>
     </ClCompile>
-    <ClCompile Include="QuadtreeNode.cpp">
-      <Filter>Source Files\Lighting</Filter>
-    </ClCompile>
     <ClCompile Include="QuadtreeOccupant.cpp">
       <Filter>Source Files\Lighting</Filter>
     </ClCompile>
     <ClCompile Include="StaticQuadtree.cpp">
       <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadtreeNodeTwo.cpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugShape.cpp">
+      <Filter>Source Files\Tiled</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLayer.cpp">
+      <Filter>Source Files\Tiled</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLoaderPrivate.cpp">
+      <Filter>Source Files\Tiled</Filter>
+    </ClCompile>
+    <ClCompile Include="MapLoaderPublic.cpp">
+      <Filter>Source Files\Tiled</Filter>
+    </ClCompile>
+    <ClCompile Include="MapObject.cpp">
+      <Filter>Source Files\Tiled</Filter>
+    </ClCompile>
+    <ClCompile Include="pugixml.cpp">
+      <Filter>Source Files\Tiled</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadTreeNode.cpp">
+      <Filter>Source Files\Tiled</Filter>
+    </ClCompile>
+    <ClCompile Include="tmx2box2d.cpp">
+      <Filter>Source Files\Tiled</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

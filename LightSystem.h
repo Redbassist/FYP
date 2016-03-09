@@ -5,6 +5,7 @@
 #include <LightDirectionEmission.h>
 #include <LightShape.h>
 #include <NormalsSprite.h>
+#include "Globals.h"
 
 #include <pool.h>
 
@@ -63,8 +64,7 @@ namespace ltbl
                     const sf::Texture& penumbraTexture,
                     sf::Shader& unshadowShader, sf::Shader& lightOverShapeShader, sf::Shader& normalsShader);
 
-        void render(sf::View &view,
-                    sf::Shader &unshadowShader, sf::Shader &lightOverShapeShader, sf::Shader& normalsShader);
+        void render();
 		void Move(sf::FloatRect& rootRegion);
         //! Request a new shape from the pool.
         LightShape* allocateShape();

@@ -10,18 +10,18 @@
 #include <stdlib.h>     
 #include <time.h>       
 #include <math.h>
-#include <unordered_map>
-#include <functional>
+#include <unordered_map>  
 #include <Box2D/Box2D.h>
 #include "SFML/Graphics.hpp"
 #include "SFML/OpenGL.hpp"
 #include "SFML/Audio.hpp" 
+#include "MapLoader.h"
 #include "LightSystem.h"
 #include "InputManager.h"
 #include "AudioManager.h"
 #include "SceneChanger.h"
 #include "SettingsManager.h"
 #include "RayCastManager.h" 
-#include "EffectManager.h" 
+#include "EffectManager.h"  
 
 // TODO: reference additional headers your program requires here

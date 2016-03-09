@@ -12,17 +12,17 @@
 namespace ltbl {
     class QuadtreeOccupant {
         friend class Quadtree;
-        friend class QuadtreeNode;
+        friend class QuadtreeNodeTwo;
         friend class DynamicQuadtree;
         friend class StaticQuadtree;
 
     private:
-        class QuadtreeNode* _pQuadtreeNode;
+        class QuadtreeNodeTwo* _pQuadtreeNodeTwo;
         class Quadtree* _pQuadtree;
 
     public:
         QuadtreeOccupant()
-            : _pQuadtreeNode(nullptr), _pQuadtree(nullptr)
+            : _pQuadtreeNodeTwo(nullptr), _pQuadtree(nullptr)
         {}
 
         void quadtreeUpdate();

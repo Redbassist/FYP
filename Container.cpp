@@ -140,7 +140,7 @@ bool Container::AddItem(Item* item, Vector2f dropPos) {
 	if ((dropPos.x > spritePos.x && dropPos.x < spritePos.x + width &&
 		dropPos.y > spritePos.y && dropPos.y < spritePos.y + height) || dropPos == Vector2f()) {
 
-		int size = slots.size();
+		int size = slots.size(); 
 
 		for (int i = 0; i < size; i++) {
 			if (item->GetSize() == 1 && !slots[i].full) {
@@ -159,7 +159,7 @@ bool Container::AddItem(Item* item, Vector2f dropPos) {
 			else if (item->GetSize() == 2) {
 				bool loop = true;
 				while (loop) {
-					if (i >= 0 && i < size) {
+					if (i >= 0 && i < size - 1) {
 						if (!slots[i].full && !slots[i + 1].full && slots[i].col != invCols) {
 							slots[i].item = item;
 							slots[i].item->SlotNumber(i);
@@ -168,7 +168,10 @@ bool Container::AddItem(Item* item, Vector2f dropPos) {
 							loop = false;
 						}
 					}
-					i++;
+					if (i < size - 1)
+						i++;
+					else
+						loop = false;
 				}
 				break;
 			}

@@ -28,7 +28,7 @@ void World::Update() {
 }
 
 void World::Draw() {
-	window->draw(m_sprite);  
+	//window->draw(m_sprite);  
 	
 	int size = houses.size();
 	for (int i = 0; i < size; i++) {

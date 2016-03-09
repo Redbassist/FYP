@@ -9,11 +9,11 @@ namespace ltbl
     public:
         StaticQuadtree() {}
         StaticQuadtree(const sf::FloatRect &rootRegion) {
-            _pRootNode.reset(new QuadtreeNode(rootRegion, 0, nullptr, this));
+            _pRootNode.reset(new QuadtreeNodeTwo(rootRegion, 0, nullptr, this));
         }
 
         void create(const sf::FloatRect &rootRegion) {
-            _pRootNode.reset(new QuadtreeNode(rootRegion, 0, nullptr, this));
+            _pRootNode.reset(new QuadtreeNodeTwo(rootRegion, 0, nullptr, this));
         }
 
         // Inherited from Quadtree

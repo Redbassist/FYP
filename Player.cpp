@@ -128,6 +128,7 @@ void Player::LoadAssets() {
 	light = std::make_shared<ltbl::LightPointEmission>();
 	light->_emissionSprite.setOrigin(pointLightTexture.getSize().x * 0.5f, pointLightTexture.getSize().y * 0.5f);
 	light->_emissionSprite.setTexture(pointLightTexture);
+	lightSize = 10;
 	light->_emissionSprite.setScale(lightSize, lightSize);
 	light->_emissionSprite.setColor({ 255u, 255u, 255u });
 	light->_emissionSprite.setPosition(100.0f, 100.0f);
@@ -278,7 +279,7 @@ void Player::Draw() {
 	}
 
 	View view1 = window->getView();
-	ltbl::LightSystem::GetInstance()->render(view1, *unshadowShader, *lightOverShapeShader, *normalsShader);
+	ltbl::LightSystem::GetInstance()->render();
 	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
 	sprite.setPosition(view1.getCenter());
 	sprite.setOrigin(640, 360);

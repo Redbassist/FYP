@@ -63,6 +63,9 @@ int main()
 
 	SceneManager* sceneManager = new SceneManager();
 
+	tmx::MapLoader ml("Maps");
+	ml.Load("myMap.tmx");
+
 	while (window->isOpen())
 	{
 		//while (myClock.now() - timeOfLastTick >= timePerTick) {
@@ -90,6 +93,7 @@ int main()
 		//}  
 
 		window->clear();
+		window->draw(ml);
 		sceneManager->Draw();
 		//world->DrawDebugData();  
 

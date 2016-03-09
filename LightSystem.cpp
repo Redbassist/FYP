@@ -624,8 +624,10 @@ void LightSystem::create(const sf::FloatRect& rootRegion, const sf::Vector2u& im
     normalsShader.setParameter("lightTexture", sf::Shader::CurrentTexture);
 }
 
-void LightSystem::render(sf::View &view, sf::Shader &unshadowShader, sf::Shader &lightOverShapeShader, sf::Shader& normalsShader)
-{
+void LightSystem::render()
+{ 
+	sf::View view = window->getView();
+
 	view.zoom(1 / 0.7);
 
     _compositionTexture.clear(_ambientColor); 
@@ -661,7 +663,7 @@ void LightSystem::render(sf::View &view, sf::Shader &unshadowShader, sf::Shader 
         lightShapes.clear();
         _shapeQuadtree.queryRegion(lightShapes, pPointEmissionLight->getAABB());
 
-        pPointEmissionLight->render(view, _lightTempTexture, _emissionTempTexture, _antumbraTempTexture, lightShapes, unshadowShader, lightOverShapeShader, _normalsEnabled, normalsShader);
+        pPointEmissionLight->render(view, _lightTempTexture, _emissionTempTexture, _antumbraTempTexture, lightShapes, *unshadowShader, *lightOverShapeShader, _normalsEnabled, *normalsShader);
         _compositionTexture.draw(lightTempSprite, compoRenderStates);
     }
 
@@ -684,7 +686,7 @@ void LightSystem::render(sf::View &view, sf::Shader &unshadowShader, sf::Shader 
         std::vector<QuadtreeOccupant*> viewLightShapes;
         _shapeQuadtree.queryShape(viewLightShapes, directionShape);
 
-        pDirectionEmissionLight->render(view, _lightTempTexture, _antumbraTempTexture, viewLightShapes, unshadowShader, shadowExtension);
+        pDirectionEmissionLight->render(view, _lightTempTexture, _antumbraTempTexture, viewLightShapes, *unshadowShader, shadowExtension);
 
         sf::Sprite sprite;
         sprite.setTexture(_lightTempTexture.getTexture());

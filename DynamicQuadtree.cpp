@@ -35,7 +35,7 @@ void DynamicQuadtree::expand() {
 
     newRootAABB = rectRecenter(newRootAABB, centerOffset + rectCenter(_pRootNode->getRegion()));
 
-    QuadtreeNode* pNewRoot = new QuadtreeNode(newRootAABB,  _pRootNode->_level + 1, nullptr, this);
+    QuadtreeNodeTwo* pNewRoot = new QuadtreeNodeTwo(newRootAABB,  _pRootNode->_level + 1, nullptr, this);
 
     // ----------------------- Manual Children Creation for New Root -------------------------
 
@@ -61,7 +61,7 @@ void DynamicQuadtree::expand() {
 
                 childAABB = rectRecenter(childAABB, center);
 
-                pNewRoot->_children[x + y * 2].reset(new QuadtreeNode(childAABB, _pRootNode->_level, pNewRoot, this));
+                pNewRoot->_children[x + y * 2].reset(new QuadtreeNodeTwo(childAABB, _pRootNode->_level, pNewRoot, this));
             }
         }
 
@@ -102,7 +102,7 @@ void DynamicQuadtree::contract() {
         _pRootNode->_children[i]->removeForDeletion(_outsideRoot);
     }
 
-    QuadtreeNode* pNewRoot = _pRootNode->_children[maxIndex].release();
+    QuadtreeNodeTwo* pNewRoot = _pRootNode->_children[maxIndex].release();
 
     _pRootNode->destroyChildren();
 

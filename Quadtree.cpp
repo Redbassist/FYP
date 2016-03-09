@@ -22,7 +22,7 @@ void Quadtree::operator=(const Quadtree &other) {
     _outsideRoot = other._outsideRoot;
 
     if (other._pRootNode != nullptr) {
-        _pRootNode.reset(new QuadtreeNode());
+        _pRootNode.reset(new QuadtreeNodeTwo());
 
         recursiveCopy(_pRootNode.get(), other._pRootNode.get(), nullptr);
     }
@@ -32,7 +32,7 @@ void Quadtree::setQuadtree(QuadtreeOccupant* oc) {
     oc->_pQuadtree = this;
 }
 
-void Quadtree::recursiveCopy(QuadtreeNode* pThisNode, QuadtreeNode* pOtherNode, QuadtreeNode* pThisParent) {
+void Quadtree::recursiveCopy(QuadtreeNodeTwo* pThisNode, QuadtreeNodeTwo* pOtherNode, QuadtreeNodeTwo* pThisParent) {
     pThisNode->_hasChildren = pOtherNode->_hasChildren;
     pThisNode->_level = pOtherNode->_level;
     pThisNode->_numOccupantsBelow = pOtherNode->_numOccupantsBelow;
@@ -45,7 +45,7 @@ void Quadtree::recursiveCopy(QuadtreeNode* pThisNode, QuadtreeNode* pOtherNode, 
 
     if (pThisNode->_hasChildren)
         for (int i = 0; i < 4; i++) {
-            pThisNode->_children[i].reset(new QuadtreeNode());
+            pThisNode->_children[i].reset(new QuadtreeNodeTwo());
 
             recursiveCopy(pThisNode->_children[i].get(), pOtherNode->_children[i].get(), pThisNode);
         }
@@ -59,13 +59,13 @@ void Quadtree::queryRegion(std::vector<QuadtreeOccupant*> &result, const sf::Flo
             result.push_back(oc);
     }
 
-    std::list<QuadtreeNode*> open;
+    std::list<QuadtreeNodeTwo*> open;
 
     open.push_back(_pRootNode.get());
 
     while (!open.empty()) {
         // Depth-first (results in less memory usage), remove objects from open list
-        QuadtreeNode* pCurrent = open.back();
+        QuadtreeNodeTwo* pCurrent = open.back();
         open.pop_back();
 
         if (region.intersects(pCurrent->_region)) {
@@ -94,13 +94,13 @@ void Quadtree::queryPoint(std::vector<QuadtreeOccupant*> &result, const sf::Vect
             result.push_back(oc);
     }
 
-    std::list<QuadtreeNode*> open;
+    std::list<QuadtreeNodeTwo*> open;
 
     open.push_back(_pRootNode.get());
 
     while (!open.empty()) {
         // Depth-first (results in less memory usage), remove objects from open list
-        QuadtreeNode* pCurrent = open.back();
+        QuadtreeNodeTwo* pCurrent = open.back();
         open.pop_back();
 
         if (pCurrent->_region.contains(p)) {
@@ -131,13 +131,13 @@ void Quadtree::queryShape(std::vector<QuadtreeOccupant*> &result, const sf::Conv
             result.push_back(oc);
     }
 
-    std::list<QuadtreeNode*> open;
+    std::list<QuadtreeNodeTwo*> open;
 
     open.push_back(_pRootNode.get());
 
     while (!open.empty()) {
         // Depth-first (results in less memory usage), remove objects from open list
-        QuadtreeNode* pCurrent = open.back();
+        QuadtreeNodeTwo* pCurrent = open.back();
         open.pop_back();
 
         if (shapeIntersection(shapeFromRect(pCurrent->_region), shape)) {

@@ -19,11 +19,11 @@ namespace ltbl {
         DynamicQuadtree(const sf::FloatRect &rootRegion)
             : _minOutsideRoot(1), _maxOutsideRoot(8)
         {
-            _pRootNode = std::unique_ptr<QuadtreeNode>(new QuadtreeNode(rootRegion, 0, nullptr, this));
+            _pRootNode = std::unique_ptr<QuadtreeNodeTwo>(new QuadtreeNodeTwo(rootRegion, 0, nullptr, this));
         }
 
         void create(const sf::FloatRect &rootRegion) {
-            _pRootNode = std::unique_ptr<QuadtreeNode>(new QuadtreeNode(rootRegion, 0, nullptr, this));
+            _pRootNode = std::unique_ptr<QuadtreeNodeTwo>(new QuadtreeNodeTwo(rootRegion, 0, nullptr, this));
         }
 
         // Inherited from Quadtree

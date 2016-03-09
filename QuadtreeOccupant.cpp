@@ -1,6 +1,6 @@
 #include <QuadtreeOccupant.h>
 
-#include <QuadtreeNode.h>
+#include <QuadtreeNodeTwo.h>
 
 #include <Quadtree.h>
 
@@ -9,8 +9,8 @@
 using namespace ltbl;
 
 void QuadtreeOccupant::quadtreeUpdate() {
-    if (_pQuadtreeNode != nullptr)
-        _pQuadtreeNode->update(this);
+    if (_pQuadtreeNodeTwo != nullptr)
+        _pQuadtreeNodeTwo->update(this);
     else {
         _pQuadtree->_outsideRoot.erase(this);
 
@@ -19,8 +19,8 @@ void QuadtreeOccupant::quadtreeUpdate() {
 }
 
 void QuadtreeOccupant::quadtreeRemove() {
-    if (_pQuadtreeNode != nullptr)
-        _pQuadtreeNode->remove(this);
+    if (_pQuadtreeNodeTwo != nullptr)
+        _pQuadtreeNodeTwo->remove(this);
     else
         _pQuadtree->_outsideRoot.erase(this);
 }

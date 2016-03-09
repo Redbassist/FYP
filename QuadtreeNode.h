@@ -1,83 +1,106 @@
-#pragma once
+/*********************************************************************
+Matt Marchant 2013 - 2015
+SFML Tiled Map Loader - https://github.com/bjorn/tiled/wiki/TMX-Map-Format
+						http://trederia.blogspot.com/2013/05/tiled-map-loader-for-sfml.html
 
-#include <QuadtreeOccupant.h>
+The zlib license has been used to make this software fully compatible
+with SFML. See http://www.sfml-dev.org/license.php
 
+This software is provided 'as-is', without any express or
+implied warranty. In no event will the authors be held
+liable for any damages arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute
+it freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented;
+   you must not claim that you wrote the original software.
+   If you use this software in a product, an acknowledgment
+   in the product documentation would be appreciated but
+   is not required.
+
+2. Altered source versions must be plainly marked as such,
+   and must not be misrepresented as being the original software.
+
+3. This notice may not be removed or altered from any
+   source distribution.
+*********************************************************************/
+
+
+
+///Creates a node used to build quad trees for spatial partitioning of MapObjects///
+//Example usage: create a root node the size of the viewable area, and insert each
+//available map object. Then test the root node by calling retrieve passing for example
+//the AABB of a sprite. The resulting vector will contain pointers to any objects contained
+//in quads which are them selves contained, or intersected, by the sprites AABB. These can
+//then be collision tested.
+
+#ifndef QUADTREE_NODE_H_
+#define QUADTREE_NODE_H_
+
+#include <MapObject.h>
 #include <memory>
-#include <array>
-#include <unordered_set>
 
-namespace ltbl {
-    class QuadtreeNode : public sf::NonCopyable {
+namespace tmx
+{
+	class QuadTreeNode
+	{
+        friend class QuadTreeRoot;
+	public:
+		QuadTreeNode(sf::Uint16 level = 0, const sf::FloatRect& bounds = sf::FloatRect(0.f, 0.f, 1.f, 1.f));
+		virtual ~QuadTreeNode(){};
 
-        friend class QuadtreeOccupant;
-        friend class Quadtree;
-        friend class DynamicQuadtree;
+		//fills vector with references to all objects which
+		//appear in quads which are contained or intersect bounds.
+		std::vector<MapObject*> Retrieve(const sf::FloatRect& bounds, sf::Uint16& currentDepth);
+		//inserts a reference to the object into the node's object list
+		void Insert(const MapObject& object);
+	protected:
+		//maximum objects per node before splitting
+		const sf::Uint16 MAX_OBJECTS;
+		//maximum number of levels to split
+		const sf::Uint16 MAX_LEVELS;
 
-    private:
-        QuadtreeNode* _pParent;
-        class Quadtree* _pQuadtree;
+		sf::Uint16 m_level;
+		sf::FloatRect m_bounds;
+		std::vector<MapObject*> m_objects; //objects contained in current node
+		std::vector< std::shared_ptr<QuadTreeNode> > m_children; //vector of child nodes
 
-        bool _hasChildren = false;
+		//returns the index of the child node into which the givens bounds fits.
+		//returns -1 if doesn't completely fit a child. Numbered anti-clockwise
+		//from top right node.
+		sf::Int16 GetIndex(const sf::FloatRect& bounds);
 
-        std::array<std::unique_ptr<QuadtreeNode>, 4> _children;
-        std::unordered_set<QuadtreeOccupant*> _occupants;
+		//divides node by creating 4 children
+		void Split(void);
 
-        sf::FloatRect _region;
+        void GetVertices(std::vector<sf::Vertex>&);
 
-        int _level;
+	};
 
-        int _numOccupantsBelow = 0;
+	//specialisation of QuadTreeNode for counting tree depth
+    class QuadTreeRoot final : public QuadTreeNode, public sf::Drawable
+	{
+	public:
+		QuadTreeRoot(sf::Uint16 level = 0, const sf::FloatRect& bounds = sf::FloatRect(0.f, 0.f, 1.f, 1.f))
+			: QuadTreeNode(level, bounds), m_depth(0u), m_searchDepth(0u){};
 
-        void getPossibleOccupantPosition(QuadtreeOccupant* oc, sf::Vector2i &point);
+		//clears node and all children
+		void Clear(const sf::FloatRect& newBounds);
+		//retrieves all objects in quads which contains or intersect test area
+		std::vector<MapObject*> Retrieve(const sf::FloatRect& bounds)
+		{
+			return QuadTreeNode::Retrieve(bounds, m_searchDepth);
+		}
 
-        void addToThisLevel(QuadtreeOccupant* oc);
+	private:
+		//total depth of tree, and depth reached when querying
+		sf::Uint16 m_depth, m_searchDepth;
 
-        // Returns true if occupant was added to children
-        bool addToChildren(QuadtreeOccupant* oc);
+        void draw(sf::RenderTarget& rt, sf::RenderStates states) const;
+	};
+};
 
-        void destroyChildren() {
-            for (int i = 0; i < 4; i++)
-                _children[i].reset();
 
-            _hasChildren = false;
-        }
-
-        void getOccupants(std::unordered_set<QuadtreeOccupant*> &occupants);
-
-        void partition();
-
-        void merge();
-
-        void update(QuadtreeOccupant* oc);
-        void remove(QuadtreeOccupant* oc);
-
-        void removeForDeletion(std::unordered_set<QuadtreeOccupant*> &occupants);
-
-    public:
-        QuadtreeNode()
-            : _hasChildren(false), _numOccupantsBelow(0)
-        {}
-
-        QuadtreeNode(const sf::FloatRect &region, int level, QuadtreeNode* pParent, class Quadtree* pQuadtree);
-
-        // For use after using default constructor
-        void create(const sf::FloatRect &region, int level, QuadtreeNode* pParent, class Quadtree* pQuadtree);
-
-        class Quadtree* getTree() const {
-            return _pQuadtree;
-        }
-
-        void add(QuadtreeOccupant* oc);
-
-        const sf::FloatRect &getRegion() const {
-            return _region;
-        }
-
-        void getAllOccupantsBelow(std::vector<QuadtreeOccupant*> &occupants);
-        void getAllOccupantsBelow(std::unordered_set<QuadtreeOccupant*> &occupants);
-
-        int getNumOccupantsBelow() const {
-            return _numOccupantsBelow;
-        }
-    };
-}
+#endif //QUADTREE_NODE_H_

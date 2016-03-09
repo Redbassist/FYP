@@ -94,7 +94,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\SFML\lib;./lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Box2D.lib;sfml-audio-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibd.lib; zlibstaticd.lib; Box2D.lib;sfml-audio-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -166,11 +166,13 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="ContactListener.h" />
     <ClInclude Include="Container.h" />
+    <ClInclude Include="DebugShape.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="DynamicQuadtree.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Helpers.h" />
     <ClInclude Include="Hotbar.h" />
     <ClInclude Include="House.h" />
     <ClInclude Include="InputManager.h" />
@@ -180,12 +182,19 @@
     <ClInclude Include="LightPointEmission.h" />
     <ClInclude Include="LightShape.h" />
     <ClInclude Include="LightSystem.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="MapLayer.h" />
+    <ClInclude Include="MapLoader.h" />
+    <ClInclude Include="MapObject.h" />
     <ClInclude Include="newMath.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="NormalsSprite.h" />
     <ClInclude Include="pool.h" />
+    <ClInclude Include="pugiconfig.hpp" />
+    <ClInclude Include="pugixml.hpp" />
     <ClInclude Include="Quadtree.h" />
-    <ClInclude Include="QuadtreeNode.h" />
+    <ClInclude Include="QuadTreeNode.h" />
+    <ClInclude Include="QuadtreeNodeTwo.h" />
     <ClInclude Include="QuadtreeOccupant.h" />
     <ClInclude Include="RayCastCallback.h" />
     <ClInclude Include="RayCastManager.h" />
@@ -198,6 +207,7 @@
     <ClInclude Include="StaticQuadtree.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="tmx2box2d.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
@@ -207,6 +217,7 @@
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Container.cpp" />
+    <ClCompile Include="DebugShape.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="DynamicQuadtree.cpp" />
     <ClCompile Include="Effect.cpp" />
@@ -221,10 +232,16 @@
     <ClCompile Include="LightDirectionEmission.cpp" />
     <ClCompile Include="LightPointEmission.cpp" />
     <ClCompile Include="LightSystem.cpp" />
+    <ClCompile Include="MapLayer.cpp" />
+    <ClCompile Include="MapLoaderPrivate.cpp" />
+    <ClCompile Include="MapLoaderPublic.cpp" />
+    <ClCompile Include="MapObject.cpp" />
     <ClCompile Include="newMath.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="pugixml.cpp" />
     <ClCompile Include="Quadtree.cpp" />
-    <ClCompile Include="QuadtreeNode.cpp" />
+    <ClCompile Include="QuadTreeNode.cpp" />
+    <ClCompile Include="QuadtreeNodeTwo.cpp" />
     <ClCompile Include="QuadtreeOccupant.cpp" />
     <ClCompile Include="RayCastManager.cpp" />
     <ClCompile Include="SceneChanger.cpp" />
@@ -235,6 +252,7 @@
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="StaticQuadtree.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="tmx2box2d.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
