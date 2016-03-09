@@ -210,6 +210,9 @@
     <ClInclude Include="Helpers.h">
       <Filter>Header Files\Tiled</Filter>
     </ClInclude>
+    <ClInclude Include="FillerObject.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -340,6 +343,9 @@
     </ClCompile>
     <ClCompile Include="tmx2box2d.cpp">
       <Filter>Source Files\Tiled</Filter>
+    </ClCompile>
+    <ClCompile Include="FillerObject.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

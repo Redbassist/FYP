@@ -18,9 +18,35 @@ void World::CreateAssets() {
 void World::CreateLevel() {
 	View view = View(FloatRect(0, 0, 1280, 720));
 	view.zoom(0.7);
-	window->setView(view); 
-	player = new Player(Vector2f(0, 0));
-	houses.push_back(new House(Vector2f(0, 0), &items));
+	window->setView(view);  
+
+	for (auto layer = ml->GetLayers().begin(); layer != ml->GetLayers().end(); ++layer)
+	{
+		if (layer->name == "Player")
+		{
+			for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
+			{
+				player = new Player(Vector2f(object._Ptr->GetPosition()));
+				break;
+			}
+		}
+
+		if (layer->name == "Buildings")
+		{
+			for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
+			{
+				if (object._Ptr->GetName() == "House")
+					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 0));
+				else if (object._Ptr->GetName() == "House2") {
+					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 1));
+				}
+				else if (object._Ptr->GetName() == "Shop") {
+					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 2));
+				}
+			}
+		}
+	}
+
 } 
 
 void World::Update() {

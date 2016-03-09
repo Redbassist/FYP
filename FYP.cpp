@@ -63,8 +63,8 @@ int main()
 
 	SceneManager* sceneManager = new SceneManager();
 
-	tmx::MapLoader ml("Maps");
-	ml.Load("myMap.tmx");
+	ml = new tmx::MapLoader("Maps");
+	ml->Load("myMap.tmx");
 
 	while (window->isOpen())
 	{
@@ -93,7 +93,7 @@ int main()
 		//}  
 
 		window->clear();
-		window->draw(ml);
+		window->draw(*ml);
 		sceneManager->Draw();
 		//world->DrawDebugData();  
 

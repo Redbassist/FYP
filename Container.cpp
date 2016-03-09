@@ -1,19 +1,19 @@
 #include "Container.h" 
 
-Container::Container(Vector2f pos, float rot, std::vector<Item*>* i) :
+Container::Container(Vector2f pos, float rot, std::vector<Item*>* i, int type) :
 	m_pos(pos), rotation(rot), items(i)
 {
 	open = false;
 	invCols = 4;
 	invRows = 5;
 	invSize = 20;
-	LoadAssets();
+	LoadAssets(type);
 	SetupSlots();
 	GenerateItems();
 	createBox2dBody();
 }
 
-void Container::LoadAssets() {
+void Container::LoadAssets(int type) {
 	m_texture.loadFromFile("Sprites/container.png");
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
@@ -22,13 +22,24 @@ void Container::LoadAssets() {
 	//offset for where the container is drawing
 	offset.x = 0;
 
-	m_shapeTexture.loadFromFile("Sprites/cupboard.png");
-	m_shapeTexture.setSmooth(false);
-	m_shapeSprite.setTexture(m_shapeTexture);
-	m_shapeSprite.setTextureRect(sf::IntRect(0, 0, m_shapeTexture.getSize().x, m_shapeTexture.getSize().y));
-	m_shapeSprite.setOrigin(m_shapeTexture.getSize().x / 2, m_shapeTexture.getSize().y / 2);
-	m_shapeSprite.setScale(Vector2f(0.7, 0.7));
-	m_shapeSprite.setRotation(rotation);
+	if (type == 0) {
+		m_shapeTexture.loadFromFile("Sprites/cupboard.png");
+		m_shapeTexture.setSmooth(false);
+		m_shapeSprite.setTexture(m_shapeTexture);
+		m_shapeSprite.setTextureRect(sf::IntRect(0, 0, m_shapeTexture.getSize().x, m_shapeTexture.getSize().y));
+		m_shapeSprite.setOrigin(m_shapeTexture.getSize().x / 2, m_shapeTexture.getSize().y / 2);
+		m_shapeSprite.setScale(Vector2f(0.7, 0.7));
+		m_shapeSprite.setRotation(rotation);
+	}
+	if (type == 1) {
+		m_shapeTexture.loadFromFile("Sprites/cupboard2.png");
+		m_shapeTexture.setSmooth(false);
+		m_shapeSprite.setTexture(m_shapeTexture);
+		m_shapeSprite.setTextureRect(sf::IntRect(0, 0, m_shapeTexture.getSize().x, m_shapeTexture.getSize().y));
+		m_shapeSprite.setOrigin(m_shapeTexture.getSize().x / 2, m_shapeTexture.getSize().y / 2);
+		m_shapeSprite.setScale(Vector2f(0.7, 0.7));
+		m_shapeSprite.setRotation(rotation);
+	}
 }
 
 void Container::SetupSlots() {
@@ -72,22 +83,22 @@ void Container::GenerateItems() {
 		else if (item == 1) {
 			temp = new Item(WATER1, 1);
 			AddItem(temp);
-			items->push_back(temp); 
+			items->push_back(temp);
 		}
 		else if (item == 2) {
 			temp = new Item(WATER2, 1);
 			AddItem(temp);
-			items->push_back(temp); 
+			items->push_back(temp);
 		}
 		else if (item == 3) {
 			temp = new Item(AXE, 2);
 			AddItem(temp);
-			items->push_back(temp); 
+			items->push_back(temp);
 		}
 		else if (item == 4) {
 			temp = new Item(BAT, 2);
 			AddItem(temp);
-			items->push_back(temp); 
+			items->push_back(temp);
 		}
 		else if (item == 5) {
 			amount = rand() % 7 + 0;
@@ -140,7 +151,7 @@ bool Container::AddItem(Item* item, Vector2f dropPos) {
 	if ((dropPos.x > spritePos.x && dropPos.x < spritePos.x + width &&
 		dropPos.y > spritePos.y && dropPos.y < spritePos.y + height) || dropPos == Vector2f()) {
 
-		int size = slots.size(); 
+		int size = slots.size();
 
 		for (int i = 0; i < size; i++) {
 			if (item->GetSize() == 1 && !slots[i].full) {

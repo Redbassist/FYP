@@ -1,6 +1,6 @@
 #include "Door.h" 
 
-Door::Door(Vector2f pos, float r) : m_pos(pos), rotation(r) {
+Door::Door(Vector2f pos, float r, int t) : m_pos(pos), rotation(r), type(t){
 	int random = rand() % 2;
 	if (random == 1)
 		open = true;
@@ -12,7 +12,11 @@ Door::Door(Vector2f pos, float r) : m_pos(pos), rotation(r) {
 }
 
 void Door::LoadAssets() {
-	m_texture.loadFromFile("Sprites/door.png");
+	if (type == 0)
+		m_texture.loadFromFile("Sprites/door.png");
+	else if (type == 1)
+		m_texture.loadFromFile("Sprites/door2.png");
+
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
 	m_sprite.setTextureRect(sf::IntRect(0, 0, m_texture.getSize().x, m_texture.getSize().y));

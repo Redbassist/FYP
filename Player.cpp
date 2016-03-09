@@ -278,12 +278,12 @@ void Player::Draw() {
 		window->draw(animatedTopSprite);
 	}
 
-	View view1 = window->getView();
+	/*View view1 = window->getView();
 	ltbl::LightSystem::GetInstance()->render();
 	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
 	sprite.setPosition(view1.getCenter());
 	sprite.setOrigin(640, 360);
-	window->draw(sprite, *lightRenderStates);
+	window->draw(sprite, *lightRenderStates);*/
 
 	//drawing the inventory and its contents
 	inventory->Draw();
@@ -725,7 +725,7 @@ void Player::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
-	fixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR;
+	fixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR | FILLER;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);

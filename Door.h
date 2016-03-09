@@ -18,9 +18,10 @@ private:
 	float rotation;
 	bool open;
 	ltbl::LightShape* lightBlocker;
+	int type;
 
 public:
-	Door(Vector2f, float);
+	Door(Vector2f, float, int);
 	void LoadAssets();
 	void Draw();
 	void OpenClose();

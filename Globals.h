@@ -7,6 +7,7 @@ extern sf::Shader* unshadowShader;
 extern sf::Shader* lightOverShapeShader;
 extern sf::Shader* normalsShader;
 extern sf::RenderWindow* window; 
+extern tmx::MapLoader* ml;
 #define RADTODEG (180.0 / b2_pi)
 #define DEGTORAD (b2_pi / 180)
 
@@ -18,4 +19,5 @@ enum _entityCategory {
 	DOOR = 0x0024,
 	MELEE = 0x0028,
 	PUNCH = 0x0032,
+	FILLER = 0x0036,
 };

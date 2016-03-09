@@ -36,8 +36,8 @@ private:
 	std::vector<Item*>* items;
 
 public:
-	Container(Vector2f, float, std::vector<Item*>*);
-	void LoadAssets();
+	Container(Vector2f, float, std::vector<Item*>*, int);
+	void LoadAssets(int);
 	void SetupSlots();
 	void GenerateItems();
 	bool AddItem(Item*, Vector2f = Vector2f());
