@@ -24,22 +24,19 @@ void Container::LoadAssets(int type) {
 
 	if (type == 0) {
 		m_shapeTexture.loadFromFile("Sprites/cupboard.png");
-		m_shapeTexture.setSmooth(false);
-		m_shapeSprite.setTexture(m_shapeTexture);
-		m_shapeSprite.setTextureRect(sf::IntRect(0, 0, m_shapeTexture.getSize().x, m_shapeTexture.getSize().y));
-		m_shapeSprite.setOrigin(m_shapeTexture.getSize().x / 2, m_shapeTexture.getSize().y / 2);
-		m_shapeSprite.setScale(Vector2f(0.7, 0.7));
-		m_shapeSprite.setRotation(rotation);
 	}
-	if (type == 1) {
-		m_shapeTexture.loadFromFile("Sprites/cupboard2.png");
-		m_shapeTexture.setSmooth(false);
-		m_shapeSprite.setTexture(m_shapeTexture);
-		m_shapeSprite.setTextureRect(sf::IntRect(0, 0, m_shapeTexture.getSize().x, m_shapeTexture.getSize().y));
-		m_shapeSprite.setOrigin(m_shapeTexture.getSize().x / 2, m_shapeTexture.getSize().y / 2);
-		m_shapeSprite.setScale(Vector2f(0.7, 0.7));
-		m_shapeSprite.setRotation(rotation);
+	else if (type == 1) {
+		m_shapeTexture.loadFromFile("Sprites/cupboard2.png"); 
 	}
+	else if (type == 2) {
+		m_shapeTexture.loadFromFile("Sprites/shelf.png");
+	}
+	m_shapeTexture.setSmooth(false);
+	m_shapeSprite.setTexture(m_shapeTexture);
+	m_shapeSprite.setTextureRect(sf::IntRect(0, 0, m_shapeTexture.getSize().x, m_shapeTexture.getSize().y));
+	m_shapeSprite.setOrigin(m_shapeTexture.getSize().x / 2, m_shapeTexture.getSize().y / 2);
+	m_shapeSprite.setScale(Vector2f(0.7, 0.7));
+	m_shapeSprite.setRotation(rotation);
 }
 
 void Container::SetupSlots() {

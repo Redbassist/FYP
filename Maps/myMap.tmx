@@ -119,6 +119,6 @@
   <object id="119" name="Shop" x="2242.42" y="2924.24" width="900" height="700"/>
  </objectgroup>
  <objectgroup name="Player">
-  <object id="15" name="Player" x="2662" y="3230" width="80" height="96"/>
+  <object id="15" name="Player" x="2654" y="3262" width="80" height="96"/>
  </objectgroup>
 </map>

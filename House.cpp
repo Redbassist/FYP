@@ -100,21 +100,40 @@ void House::CreateWalls() {
 		walls.push_back(new Wall(m_pos + Vector2f(0, 685), Vector2f(150, 15)));
 		doors.push_back(new Door(m_pos + Vector2f(200, 692.5), 0, 1));
 		walls.push_back(new Wall(m_pos + Vector2f(250, 685), Vector2f(650, 15)));
-		//door
+		doors.push_back(new Door(m_pos + Vector2f(75, 257.5), 0, 0));
 		walls.push_back(new Wall(m_pos + Vector2f(0, 250), Vector2f(45, 15)));
-		//door
+		doors.push_back(new Door(m_pos + Vector2f(697.5, 80), 270, 0));
 		walls.push_back(new Wall(m_pos + Vector2f(105, 250), Vector2f(600, 15)));
 		walls.push_back(new Wall(m_pos + Vector2f(765, 250), Vector2f(135, 15)));
 		walls.push_back(new Wall(m_pos + Vector2f(765, 0), Vector2f(15, 50)));
-		//door
+		doors.push_back(new Door(m_pos + Vector2f(772.5, 80), 90, 0));
 		walls.push_back(new Wall(m_pos + Vector2f(765, 110), Vector2f(15, 140)));
 
 		walls.push_back(new Wall(m_pos + Vector2f(690, 0), Vector2f(15, 50)));
 		//door
 		walls.push_back(new Wall(m_pos + Vector2f(690, 110), Vector2f(15, 140)));
 
+		containers.push_back(new Container(m_pos + Vector2f(120, 470), 90, items, 2)); 
+		containers.push_back(new Container(m_pos + Vector2f(440, 470), 90, items, 2));
+		containers.push_back(new Container(m_pos + Vector2f(520, 470), 90, items, 2));
+		containers.push_back(new Container(m_pos + Vector2f(600, 470), 90, items, 2));
+		containers.push_back(new Container(m_pos + Vector2f(680, 470), 90, items, 2));
+		containers.push_back(new Container(m_pos + Vector2f(760, 470), 90, items, 2));
+		containers.push_back(new Container(m_pos + Vector2f(840, 470), 90, items, 2));
 
+		containers.push_back(new Container(m_pos + Vector2f(590, 25), 0, items, 0));
+		
+		fillers.push_back(new FillerObject(m_pos + Vector2f(300, 380), 0, "checkout"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(300, 460), 0, "checkout"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(300, 540), 0, "checkout"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(300, 620), 0, "checkout"));
 
+		fillers.push_back(new FillerObject(m_pos + Vector2f(850, 40), 0, "toilet"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(850, 100), 0, "toilet"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(850, 160), 0, "toilet"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(850, 220), 0, "toilet"));
+
+		fillers.push_back(new FillerObject(m_pos + Vector2f(600, 140), 90, "table"));
 	}
 
 }
