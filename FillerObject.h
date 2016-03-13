@@ -17,12 +17,16 @@ private:
 	Vector2f m_pos;
 	float rotation;  
 	std::string type;
+	shared_ptr<ltbl::LightPointEmission> light;
+	sf::Texture pointLightTexture;
+	float lightSize = 20;
 
 public:
 	~FillerObject();
-	FillerObject(Vector2f, float, std::string);
+	FillerObject(Vector2f, float, std::string, bool physical = true, bool light = false);
 	void LoadAssets();
 	void Draw(); 
+	void CreateLight();
 	void createBox2dBody();
 };
 

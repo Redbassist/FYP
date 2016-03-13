@@ -4,10 +4,13 @@ FillerObject::~FillerObject()
 {
 }
 
-FillerObject::FillerObject(Vector2f p, float r, std::string t) : m_pos(p), rotation(r), type(t)
+FillerObject::FillerObject(Vector2f p, float r, std::string t, bool physical, bool light) : m_pos(p), rotation(r), type(t)
 {
 	LoadAssets();
-	createBox2dBody();
+	if (physical)
+		createBox2dBody();
+	if (light)
+		CreateLight();
 }
 
 void FillerObject::LoadAssets()
@@ -27,6 +30,21 @@ void FillerObject::Draw()
 	window->draw(m_sprite);
 }
 
+void FillerObject::CreateLight()
+{
+	pointLightTexture.loadFromFile("assets/pointLightTexture.png");
+	pointLightTexture.setSmooth(true);
+
+	light = std::make_shared<ltbl::LightPointEmission>();
+	light->_emissionSprite.setOrigin(pointLightTexture.getSize().x * 0.5f, pointLightTexture.getSize().y * 0.5f);
+	light->_emissionSprite.setTexture(pointLightTexture);
+	lightSize = 9;
+	light->_emissionSprite.setScale(lightSize, lightSize);
+	light->_emissionSprite.setColor({ 203u, 236u, 247u });
+	light->_emissionSprite.setPosition(m_pos);
+	ltbl::LightSystem::GetInstance()->addLight(light);
+}
+
 void FillerObject::createBox2dBody()
 {
 	b2BodyDef bodyDef;
@@ -36,8 +54,8 @@ void FillerObject::createBox2dBody()
 	bodyDef.gravityScale = 1;
 	body = world->CreateBody(&bodyDef);
 	b2PolygonShape staticBox;
-	staticBox.SetAsBox((m_sprite.getGlobalBounds().width / 2.0f) / SCALE, (m_sprite.getGlobalBounds().height / 2.0f) / SCALE);
-	fixtureDef.shape = &staticBox; 
+	staticBox.SetAsBox((m_sprite.getTexture()->getSize().x / 2.0f) / SCALE, (m_sprite.getTexture()->getSize().y / 2.0f) / SCALE);
+	fixtureDef.shape = &staticBox;
 
 	fixtureDef.density = 1;
 	fixtureDef.friction = 0.3f;
@@ -48,4 +66,5 @@ void FillerObject::createBox2dBody()
 	fixtureDef.filter.maskBits = PLAYER | MELEE | PUNCH;
 
 	body->CreateFixture(&fixtureDef);
+	body->SetTransform(body->GetPosition(), rotation * DEGTORAD);
 }

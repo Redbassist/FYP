@@ -8,6 +8,7 @@
 #include "Container.h"
 #include "Item.h"
 #include "Player.h"
+#include "FillerObject.h"
 
 using namespace sf;
 
@@ -18,7 +19,8 @@ private:
 	Sprite m_sprite;  
 	std::vector<House*> houses;
 	std::vector<Container*> containers;
-	std::vector<Item*> items;	
+	std::vector<Item*> items;
+	std::vector<FillerObject*> fillers;
 		
 public:
 	World();

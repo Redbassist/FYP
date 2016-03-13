@@ -43,6 +43,17 @@ void World::CreateLevel() {
 				else if (object._Ptr->GetName() == "Shop") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 2));
 				}
+				else if (object._Ptr->GetName() == "Cabin") {
+					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 3));
+				}
+			}
+		}
+
+		if (layer->name == "Lights")
+		{
+			for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
+			{
+				fillers.push_back(new FillerObject(object._Ptr->GetPosition(), 0, object._Ptr->GetName(), true, true));
 			}
 		}
 	}
@@ -75,4 +86,9 @@ void World::Draw() {
 	}
 
 	player->Draw();
+
+	size = fillers.size();
+	for (int i = 0; i < size; i++) {
+		fillers[i]->Draw();
+	}
 }

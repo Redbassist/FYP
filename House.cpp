@@ -55,7 +55,7 @@ void House::CreateWalls() {
 	}
 
 	//house facing up
-	if (type == 1) {
+	else if (type == 1) {
 		walls.push_back(new Wall(m_pos + Vector2f(0, 385), Vector2f(325, 15)));
 		walls.push_back(new Wall(m_pos + Vector2f(385, 0), Vector2f(15, 400)));
 		walls.push_back(new Wall(m_pos + Vector2f(250, 0), Vector2f(150, 15)));
@@ -90,7 +90,7 @@ void House::CreateWalls() {
 	}
 
 	//shop facing downwards
-	if (type == 2) {
+	else if (type == 2) {
 		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(400, 15)));
 		doors.push_back(new Door(m_pos + Vector2f(450, 7.5), 0, 1));
 		walls.push_back(new Wall(m_pos + Vector2f(500, 0), Vector2f(400, 15)));
@@ -133,9 +133,43 @@ void House::CreateWalls() {
 		fillers.push_back(new FillerObject(m_pos + Vector2f(850, 160), 0, "toilet"));
 		fillers.push_back(new FillerObject(m_pos + Vector2f(850, 220), 0, "toilet"));
 
-		fillers.push_back(new FillerObject(m_pos + Vector2f(600, 140), 90, "table"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(600, 140), 96, "table"));
+
+		fillers.push_back(new FillerObject(m_pos + Vector2f(80, 40), 30, "palletTruck"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(120, 70), 110, "palletTruck"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(350, 200), 290, "palletTruck"));
+
+		fillers.push_back(new FillerObject(m_pos + Vector2f(150, 200), 290, "box1"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(50, 210), 50, "box2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(270, 100), 41, "box3"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(220, 80), 81, "box1"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(270, 100), 41, "box2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(310, 140), 10, "box1"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(260, 140), 130, "box3"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(410, 200), 290, "box3"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(410, 160), 200, "box1"));
 	}
 
+	//cabin facing right
+	else if (type == 3) {
+		walls.push_back(new Wall(m_pos + Vector2f(150, 0), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(150, 0), Vector2f(15, 175)));
+		walls.push_back(new Wall(m_pos + Vector2f(335, 0), Vector2f(15, 175)));
+		walls.push_back(new Wall(m_pos + Vector2f(150, 235), Vector2f(200, 15)));
+		doors.push_back(new Door(m_pos + Vector2f(342.5, 205), 90, 0));
+		 
+		walls.push_back(new Wall(m_pos + Vector2f(0, 100), Vector2f(150, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(0, 100), Vector2f(15, 150)));
+		walls.push_back(new Wall(m_pos + Vector2f(0, 235), Vector2f(165, 15)));
+		doors.push_back(new Door(m_pos + Vector2f(157.5, 205), 90, 0));
+
+		containers.push_back(new Container(m_pos + Vector2f(65, 125), 0, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(325, 35), 90, items, 1));
+
+		fillers.push_back(new FillerObject(m_pos + Vector2f(250, 130), 73, "table"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(205, 30), 0, "counter"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(65, 194 ), 17, "bed"));
+	}
 }
 
 void House::Draw() {
