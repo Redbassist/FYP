@@ -14,7 +14,9 @@ struct HotbarSlot {
 class Hotbar {
 private:
 	Texture m_texture;
+	Texture m_textureSelected;
 	Sprite m_sprite;
+	Sprite m_spriteSelected;
 	std::vector<HotbarSlot> slots;
 	int numberSlots; //number of slots on the hotbar
 	float xOffset; //Offset for the drawing of slots

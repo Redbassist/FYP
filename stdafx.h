@@ -23,5 +23,6 @@
 #include "SettingsManager.h"
 #include "RayCastManager.h" 
 #include "EffectManager.h"  
+#include "VoiceReceiver.h"
 
 // TODO: reference additional headers your program requires here

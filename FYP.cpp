@@ -66,6 +66,8 @@ int main()
 	ml = new tmx::MapLoader("Maps");
 	ml->Load("myMap.tmx");
 
+	VoiceReceiver::GetInstance()->WriteTextToFile(std::string("The lawnmower goes shererererererer"));
+
 	while (window->isOpen())
 	{
 		//while (myClock.now() - timeOfLastTick >= timePerTick) {

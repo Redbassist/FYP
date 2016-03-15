@@ -62,6 +62,36 @@ void AudioManager::playSound(const std::string& name, const sf::Vector2f& pos)
 	mPlaying.push_back(snd);
 }
 
+void AudioManager::playVoice(const sf::Vector2f & pos)
+{
+	string name = "test";
+	//checking if there are any buffers for the sound already
+	bool loaded = mBuffers.count(name) > 0;
+	sf::SoundBuffer& buf = mBuffers[name];
+	if (!loaded)
+		if (!buf.loadFromFile("test.wav"))
+		{
+			mBuffers.erase(name);
+			return;
+		}
+
+	sf::Sound* snd = new sf::Sound();
+	snd->setBuffer(buf);
+
+	if (pos != sf::Vector2f())
+	{
+		snd->setRelativeToListener(false);
+		snd->setPosition(pos.x, pos.y, 0);
+	}
+
+	//use later to set the volume of the music using SETTINGS
+	snd->setVolume(SettingsManager::GetInstance()->EffectVolume());
+
+	snd->play();
+
+	mPlaying.push_back(snd);
+}
+
 void AudioManager::addMusic(const std::string& name)
 {
 	sf::Music* m;

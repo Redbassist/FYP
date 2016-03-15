@@ -46,6 +46,9 @@ void World::CreateLevel() {
 				else if (object._Ptr->GetName() == "Cabin") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 3));
 				}
+				else if (object._Ptr->GetName() == "Military") {
+					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 4));
+				}
 			}
 		}
 

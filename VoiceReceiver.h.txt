@@ -1,0 +1,32 @@
+#pragma once
+ 
+#include <string> 
+#include <sapi.h> 
+#include <atlbase.h> 
+#include <sphelper.h> 
+#include <atlcom.h> 
+
+class VoiceReceiver {
+private:
+
+	CComPtr <ISpVoice>		cpVoice;
+	CComPtr <ISpStream>		cpStream;
+	CSpStreamFormat			cAudioFmt;
+	HRESULT hr;
+
+	//Create a SAPI Voice
+	ISpVoice * voice;
+
+public:
+	static VoiceReceiver* GetInstance();
+
+	VoiceReceiver() ;
+
+	void Reset() ;
+
+	void ReleaseVoice();
+	
+	void CloseStream();
+
+	void WriteTextToFile(std::string text);
+};

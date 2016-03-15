@@ -209,6 +209,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tmx2box2d.h" />
+    <ClInclude Include="VoiceReceiver.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
@@ -255,6 +256,7 @@
     <ClCompile Include="StaticQuadtree.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="tmx2box2d.cpp" />
+    <ClCompile Include="VoiceReceiver.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>

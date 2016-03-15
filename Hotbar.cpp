@@ -15,7 +15,12 @@ void Hotbar::LoadAssets()
 	m_sprite.setTexture(m_texture);
 	m_sprite.setTextureRect(sf::IntRect(0, 0, m_texture.getSize().x, m_texture.getSize().y));
 	m_sprite.setScale(0.45, 0.45);
-	//offset for where the container is drawing
+
+	m_textureSelected.loadFromFile("Sprites/hotbarSlotSelected.png");
+	m_textureSelected.setSmooth(false);
+	m_spriteSelected.setTexture(m_textureSelected);
+	m_spriteSelected.setTextureRect(sf::IntRect(0, 0, m_textureSelected.getSize().x, m_textureSelected.getSize().y));
+	m_spriteSelected.setScale(0.45, 0.45);
 }
 
 void Hotbar::CreateSlots()
@@ -36,19 +41,23 @@ void Hotbar::Draw()
 	for (int i = 0; i < numberSlots; i++) {
 		spritePos.x = center.x - (size.x / 2.3) + (xOffset * i);
 		m_sprite.setPosition(spritePos);
+		m_spriteSelected.setPosition(spritePos);
 		if (slots[i].item != NULL) { slots[i].item->DrawInHotbar(spritePos); }
-		window->draw(m_sprite);
+		if (slots[i].selected)
+			window->draw(m_spriteSelected);
+		else
+			window->draw(m_sprite);
 	}
 }
 
 bool Hotbar::AddItem(Vector2f dropPos, Item* item)
 {
 	int slot = CheckSprite(dropPos);
-	
+
 	if (slot < 0) {
 		return false;
 	}
-	else if (item->GetType() == AMMOPISTOL || item->GetType() == AMMORIFLE || item->GetType() == AMMOSHOTGUN ) {
+	else if (item->GetType() == AMMOPISTOL || item->GetType() == AMMORIFLE || item->GetType() == AMMOSHOTGUN) {
 		return false;
 	}
 	else if (item->inHotBar == false) {
@@ -99,5 +108,10 @@ void Hotbar::RemoveItem(int slot)
 
 Item * Hotbar::SelectItem(int i)
 {
-	return slots[i].item; 
-} 
+	int size = slots.size();
+	for (int j = 0; j < size; j++) {
+		slots[j].selected = false;
+	}
+	slots[i].selected = true;
+	return slots[i].item;
+}
