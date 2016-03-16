@@ -64,9 +64,7 @@ int main()
 	SceneManager* sceneManager = new SceneManager();
 
 	ml = new tmx::MapLoader("Maps");
-	ml->Load("myMap.tmx");
-
-	VoiceReceiver::GetInstance()->WriteTextToFile(std::string("The lawnmower goes shererererererer"));
+	ml->Load("myMap.tmx"); 
 
 	while (window->isOpen())
 	{

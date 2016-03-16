@@ -380,7 +380,8 @@ void Player::Movement() {
 
 	//updating the player listener to the position of the player
 	float tempRot = orientation;
-	tempRot += 180;
+	//tempRot += 180;
+	tempRot = 90;
 	AudioManager::GetInstance()->setListener(m_pos, tempRot);
 
 	light->_emissionSprite.setPosition(m_pos);
