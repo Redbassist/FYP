@@ -9,6 +9,7 @@
 #include "Item.h"
 #include "Player.h"
 #include "FillerObject.h"
+#include "Tree.h"
 
 using namespace sf;
 
@@ -20,6 +21,7 @@ private:
 	std::vector<House*> houses;
 	std::vector<Container*> containers;
 	std::vector<Item*> items;
+	std::vector<Tree*> trees;
 	std::vector<FillerObject*> fillers;
 		
 public:

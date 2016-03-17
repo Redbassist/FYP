@@ -59,12 +59,25 @@ void World::CreateLevel() {
 				fillers.push_back(new FillerObject(object._Ptr->GetPosition(), 0, object._Ptr->GetName(), true, true));
 			}
 		}
+
+		if (layer->name == "Trees")
+		{
+			for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
+			{
+				trees.push_back(new Tree(object._Ptr->GetPosition()));
+			}
+		}
 	}
 
 } 
 
 void World::Update() {
 	player->Update();
+
+	int size = trees.size();
+	for (int i = 0; i < size; i++) {
+		trees[i]->FadeOut(player->GetPosition());
+	}
 }
 
 void World::Draw() {
@@ -93,5 +106,10 @@ void World::Draw() {
 	size = fillers.size();
 	for (int i = 0; i < size; i++) {
 		fillers[i]->Draw();
+	}
+
+	size = trees.size();
+	for (int i = 0; i < size; i++) {
+		trees[i]->Draw();
 	}
 }

@@ -31,6 +31,9 @@ void Container::LoadAssets(int type) {
 	else if (type == 2) {
 		m_shapeTexture.loadFromFile("Sprites/shelf.png");
 	}
+	else if (type == 3) {
+		m_shapeTexture.loadFromFile("Sprites/crate.png");
+	}
 	m_shapeTexture.setSmooth(false);
 	m_shapeSprite.setTexture(m_shapeTexture);
 	m_shapeSprite.setTextureRect(sf::IntRect(0, 0, m_shapeTexture.getSize().x, m_shapeTexture.getSize().y));

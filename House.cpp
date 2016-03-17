@@ -173,88 +173,167 @@ void House::CreateWalls() {
 
 	//military base
 	else if (type == 4) {
-		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(2400, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(2900, 0), Vector2f(100, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(15, 2000)));
-		walls.push_back(new Wall(m_pos + Vector2f(0, 1985), Vector2f(150, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(220, 1985), Vector2f(2780, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(2985, 0), Vector2f(15, 2000)));
+		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(2000, 15))); 
+		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(15, 1600)));
+		walls.push_back(new Wall(m_pos + Vector2f(0, 1585), Vector2f(150, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(220, 1585), Vector2f(2080, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(2285, 0), Vector2f(15, 1600)));
 
 		//dorm1
-		walls.push_back(new Wall(m_pos + Vector2f(100, 1100), Vector2f(200, 15)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(360, 1100), Vector2f(90, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(435, 1100), Vector2f(15, 800)));
-		walls.push_back(new Wall(m_pos + Vector2f(100, 1100), Vector2f(15, 800)));
-		walls.push_back(new Wall(m_pos + Vector2f(100, 1885), Vector2f(350, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(100, 600), Vector2f(200, 15)));
+		doors.push_back(new Door(m_pos + Vector2f(345, 607.5), 0, 0));
+		walls.push_back(new Wall(m_pos + Vector2f(375, 600), Vector2f(55, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(415, 600), Vector2f(15, 800)));
+		walls.push_back(new Wall(m_pos + Vector2f(100, 600), Vector2f(15, 800)));
+		walls.push_back(new Wall(m_pos + Vector2f(100, 1385), Vector2f(330, 15)));
 
-		walls.push_back(new Wall(m_pos + Vector2f(300, 1100), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(300, 1285), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(300, 1485), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(300, 1685), Vector2f(15, 140)));
-		//door
+		walls.push_back(new Wall(m_pos + Vector2f(300, 600), Vector2f(15, 125)));
+		doors.push_back(new Door(m_pos + Vector2f(307.5, 755), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 640), 3, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 700), 354, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 760), 9, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(290, 660), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(240, 635), 5, items, 3));
 
-		walls.push_back(new Wall(m_pos + Vector2f(100, 1285), Vector2f(200, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(100, 1485), Vector2f(200, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(100, 1685), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(300, 785), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(307.5, 955), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 840), 353, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 900), 4, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 960), 0, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(290, 860), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(240, 825), 2, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(300, 985), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(307.5, 1155), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 1040), 0, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 1100), 352, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 1160), 6, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(290, 1060), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(240, 1025), 5, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(300, 1185), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(307.5, 1355), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 1240), 3, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 1300), 357, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(160, 1360), 0, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(290, 1260), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(240, 1225), 357, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(100, 785), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(100, 985), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(100, 1185), Vector2f(200, 15)));
 
 		//dorm2
-		walls.push_back(new Wall(m_pos + Vector2f(600, 1100), Vector2f(200, 15)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(860, 1100), Vector2f(90, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(935, 1100), Vector2f(15, 800)));
-		walls.push_back(new Wall(m_pos + Vector2f(600, 1100), Vector2f(15, 800)));
-		walls.push_back(new Wall(m_pos + Vector2f(600, 1885), Vector2f(350, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(600, 600), Vector2f(200, 15)));
+		doors.push_back(new Door(m_pos + Vector2f(845, 607.5), 0, 0));
+		walls.push_back(new Wall(m_pos + Vector2f(875, 600), Vector2f(55, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(915, 600), Vector2f(15, 800)));
+		walls.push_back(new Wall(m_pos + Vector2f(600, 600), Vector2f(15, 800)));
+		walls.push_back(new Wall(m_pos + Vector2f(600, 1385), Vector2f(330, 15)));
 
-		walls.push_back(new Wall(m_pos + Vector2f(800, 1100), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(800, 1285), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(800, 1485), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(800, 1685), Vector2f(15, 140)));
-		//door
+		walls.push_back(new Wall(m_pos + Vector2f(800, 600), Vector2f(15, 125)));
+		doors.push_back(new Door(m_pos + Vector2f(807.5, 755), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 640), 3, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 700), 354, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 760), 9, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(790, 660), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(740, 635), 5, items, 3));
 
-		walls.push_back(new Wall(m_pos + Vector2f(600, 1285), Vector2f(200, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(600, 1485), Vector2f(200, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(600, 1685), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(800, 785), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(807.5, 955), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 840), 353, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 900), 4, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 960), 0, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(790, 860), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(740, 825), 2, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(800, 985), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(807.5, 1155), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 1040), 0, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 1100), 352, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 1160), 6, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(790, 1060), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(740, 1025), 5, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(800, 1185), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(807.5, 1355), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 1240), 3, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 1300), 357, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(660, 1360), 0, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(790, 1260), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(740, 1225), 357, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(600, 785), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(600, 985), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(600, 1185), Vector2f(200, 15)));
 
 		//dorm3
-		walls.push_back(new Wall(m_pos + Vector2f(1100, 1100), Vector2f(200, 15)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(1360, 1100), Vector2f(90, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(1435, 1100), Vector2f(15, 800)));
-		walls.push_back(new Wall(m_pos + Vector2f(1100, 1100), Vector2f(15, 800)));
-		walls.push_back(new Wall(m_pos + Vector2f(1100, 1885), Vector2f(350, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(1100, 600), Vector2f(200, 15)));
+		doors.push_back(new Door(m_pos + Vector2f(1345, 607.5), 0, 0));
+		walls.push_back(new Wall(m_pos + Vector2f(1375, 600), Vector2f(55, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(1415, 600), Vector2f(15, 800)));
+		walls.push_back(new Wall(m_pos + Vector2f(1100, 600), Vector2f(15, 800)));
+		walls.push_back(new Wall(m_pos + Vector2f(1100, 1385), Vector2f(330, 15)));
 
-		walls.push_back(new Wall(m_pos + Vector2f(1300, 1100), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(1300, 1285), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(1300, 1485), Vector2f(15, 140)));
-		//door
-		walls.push_back(new Wall(m_pos + Vector2f(1300, 1685), Vector2f(15, 140)));
-		//door
+		walls.push_back(new Wall(m_pos + Vector2f(1300, 600), Vector2f(15, 125)));
+		doors.push_back(new Door(m_pos + Vector2f(1307.5, 755), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 640), 3, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 700), 354, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 760), 9, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(1290, 660), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(1240, 635), 5, items, 3));
 
-		walls.push_back(new Wall(m_pos + Vector2f(1100, 1285), Vector2f(200, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(1100, 1485), Vector2f(200, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(1100, 1685), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(1300, 785), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(1307.5, 955), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 840), 353, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 900), 4, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 960), 0, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(1290, 860), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(1240, 825), 2, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(1300, 985), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(1307.5, 1155), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 1040), 0, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 1100), 352, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 1160), 6, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(1290, 1060), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(1240, 1025), 5, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(1300, 1185), Vector2f(15, 140)));
+		doors.push_back(new Door(m_pos + Vector2f(1307.5, 1355), 90, 0));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 1240), 3, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 1300), 357, "bed2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(1160, 1360), 0, "bed2"));
+		containers.push_back(new Container(m_pos + Vector2f(1290, 1260), 90, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(1240, 1225), 357, items, 3));
+
+		walls.push_back(new Wall(m_pos + Vector2f(1100, 785), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(1100, 985), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(1100, 1185), Vector2f(200, 15)));
 
 		//outhouse
 		walls.push_back(new Wall(m_pos + Vector2f(100, 100), Vector2f(700, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(100, 100), Vector2f(15, 350)));
-		walls.push_back(new Wall(m_pos + Vector2f(100, 435), Vector2f(700, 15)));
-		walls.push_back(new Wall(m_pos + Vector2f(785, 100), Vector2f(15, 275)));
-		//door 
+		walls.push_back(new Wall(m_pos + Vector2f(100, 100), Vector2f(15, 200)));
+		walls.push_back(new Wall(m_pos + Vector2f(100, 285), Vector2f(700, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(785, 100), Vector2f(15, 125)));
+		doors.push_back(new Door(m_pos + Vector2f(792.5, 255), 90, 0));
 		//toilet cubicles
+		fillers.push_back(new FillerObject(m_pos + Vector2f(145, 150), 270, "toilet"));
 		walls.push_back(new Wall(m_pos + Vector2f(195, 100), Vector2f(15, 90)));
-		walls.push_back(new Wall(m_pos + Vector2f(275, 100), Vector2f(15, 90)));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(235, 150), 270, "toilet"));
+		walls.push_back(new Wall(m_pos + Vector2f(275, 100), Vector2f(15, 90))); 
 		walls.push_back(new Wall(m_pos + Vector2f(355, 100), Vector2f(15, 90)));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(395, 150), 270, "toilet"));
 		walls.push_back(new Wall(m_pos + Vector2f(435, 100), Vector2f(15, 90)));
 
+		fillers.push_back(new FillerObject(m_pos + Vector2f(155, 270), 180, "counter2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(235, 270), 180, "counter2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(315, 270), 180, "counter2"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(395, 270), 180, "counter2"));
+
+		containers.push_back(new Container(m_pos + Vector2f(465, 275), 180, items, 1));
+		containers.push_back(new Container(m_pos + Vector2f(505, 275), 180, items, 1));
+		containers.push_back(new Container(m_pos + Vector2f(180, 160), 91, items, 3));
 	}
 }
 

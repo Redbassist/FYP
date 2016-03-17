@@ -181,6 +181,7 @@ public:
 	void SetStats();
 	void WatchUIPosition();
 	void DrawWatch();
+	Vector2f GetPosition() { return m_pos; }
 };
 
 #endif
