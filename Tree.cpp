@@ -44,7 +44,9 @@ void Tree::FadeOut(Vector2f pos)
 {
 	float distance = Distance(m_pos, pos);
 	if (distance < maxDistance) {
-		float alpha = 255 - ((maxDistance - distance) / maxDistance) * 255; 
+		float alpha = 405 - ((maxDistance - distance) / maxDistance) * 255; 
+		if (alpha > 255)
+			alpha = 255;
 		m_sprite.setColor(sf::Color(255, 255, 255, alpha));
 	}
 	else {

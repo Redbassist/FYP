@@ -39,6 +39,7 @@ public:
 	int SearchAmmo(ItemType, int);
 	Item* DropItem(Item*, int);
 	Item* DragItem(Vector2f);
+	void UseItem(int);
 	void Open();
 	void Close();
 	bool CheckOpen();

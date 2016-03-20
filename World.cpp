@@ -43,11 +43,14 @@ void World::CreateLevel() {
 				else if (object._Ptr->GetName() == "Shop") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 2));
 				}
-				else if (object._Ptr->GetName() == "Cabin") {
+				else if (object._Ptr->GetName() == "CabinR") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 3));
 				}
-				else if (object._Ptr->GetName() == "Military") {
+				else if (object._Ptr->GetName() == "CabinL") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 4));
+				}
+				else if (object._Ptr->GetName() == "Military") {
+					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 5));
 				}
 			}
 		}

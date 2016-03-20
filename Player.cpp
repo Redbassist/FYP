@@ -16,6 +16,14 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	fullHealth = 1000;
 	health = fullHealth / 100;
 	heartBeatX = 0;
+
+	hunger = 50;
+	thirst = 50;
+	hungerTick = time(&timer);
+	thirstTick = time(&timer);
+	hungerRate = 1;
+	thirstRate = 0.5;
+
 	currentHours = 12;
 	currentMinutes = 0;
 	nextMinute = 0;
@@ -37,7 +45,7 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	shotgun = false;
 
 	reloadTime = 1;
-	reloadTimer = time(&timer); 
+	reloadTimer = time(&timer);
 	lastShot = Clock::now();
 	rifleShootSpeed = 100;
 	shotgunShootSpeed = 1100;
@@ -119,6 +127,15 @@ void Player::LoadAssets() {
 	heartBeatSprite.setTextureRect(sf::IntRect(0, 0, heartBeatTexture.getSize().x, heartBeatTexture.getSize().y));
 	heartBeatSprite.setScale(0.3f, 0.3f);
 
+	statusBarTexture.loadFromFile("Sprites/statusBar.png");
+	statusBarTexture.setSmooth(false);
+	foodBarSprite.setTexture(statusBarTexture);
+	foodBarSprite.setTextureRect(sf::IntRect(0, 0, statusBarTexture.getSize().x, statusBarTexture.getSize().y));
+	foodBarSprite.setScale(0.3f, 0.3f);
+	drinkBarSprite.setTexture(statusBarTexture);
+	drinkBarSprite.setTextureRect(sf::IntRect(0, 0, statusBarTexture.getSize().x, statusBarTexture.getSize().y));
+	drinkBarSprite.setScale(0.3f, 0.3f);
+
 	//setting the text inside the button
 	watchFont.loadFromFile("digital.ttf");
 
@@ -174,6 +191,7 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->BindSingleMousePress(&actions.swing, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.punch, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleMousePress(&actions.fire, Mouse::Button::Left);
+	InputManager::GetInstance()->BindSingleMousePress(&actions.use, Mouse::Button::Left);
 	InputManager::GetInstance()->Bind(&actions.autoFire, Mouse::Button::Left);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar1, Keyboard::Key::Num1);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar2, Keyboard::Key::Num2);
@@ -181,7 +199,6 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar4, Keyboard::Key::Num4);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar5, Keyboard::Key::Num5);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.reload, Keyboard::Key::R);
-
 }
 
 void Player::Draw() {
@@ -278,12 +295,12 @@ void Player::Draw() {
 		window->draw(animatedTopSprite);
 	}
 
-	View view1 = window->getView();
+	/*View view1 = window->getView();
 	ltbl::LightSystem::GetInstance()->render();
 	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
 	sprite.setPosition(view1.getCenter());
 	sprite.setOrigin(640, 360);
-	window->draw(sprite, *lightRenderStates);
+	window->draw(sprite, *lightRenderStates);*/
 
 	//drawing the inventory and its contents
 	inventory->Draw();
@@ -539,7 +556,7 @@ void Player::Interaction() {
 			actions.punch = false;
 		}
 	}
-	
+
 	if (!inventory->CheckOpen()) {
 		if (actions.autoFire && rifle && !reloading) {
 			if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > rifleShootSpeed) {
@@ -633,6 +650,7 @@ void Player::Interaction() {
 		actions.hotbar5 = false;
 	}
 
+	//reloading the current weapon
 	if (actions.reload && hotbarItem != NULL && (pistol || rifle || shotgun) && !reloading) {
 		hotbarItem->AddAmmo(inventory->SearchAmmo(hotbarItem->GetType(), hotbarItem->MissingAmmo()));
 		reloadTimer = time(&timer);
@@ -650,6 +668,27 @@ void Player::Interaction() {
 		}
 		reloading = true;
 		actions.reload = false;
+	}
+
+	if (actions.use && hotbarItem != NULL) { 
+		if (hotbarItem->GetType() == FOOD1 || hotbarItem->GetType() == FOOD2 || hotbarItem->GetType() == FOOD3) {
+			hunger -= 30;
+			hunger = (hunger < 0) ? 0 : hunger;
+			hotbar->RemoveItem(hotbarItem->GetHotbarSlot());
+			inventory->UseItem(hotbarItem->GetSlot());
+			hotbarItem = NULL;
+		}
+		else if (hotbarItem->GetType() == WATER1 || hotbarItem->GetType() == WATER2) {
+			thirst -= 70;
+			thirst = (thirst < 0) ? 0 : thirst;
+			hotbar->RemoveItem(hotbarItem->GetHotbarSlot());
+			inventory->UseItem(hotbarItem->GetSlot());
+			hotbarItem = NULL;
+		}
+		actions.use = false;
+	}
+	else {
+		actions.use = false;
 	}
 
 	if (difftime(time(&timer), reloadTimer) > reloadTime && reloading) {
@@ -810,6 +849,25 @@ void Player::SetStats() {
 	int heartRateForText = 85 + (10 * heartRate);
 	heartRateText.setString(to_string(heartRateForText));
 
+	//Handling the hunger and thirst of the player
+	if (difftime(time(&timer), hungerTick) / 60 > hungerRate) {
+		hunger += 5;
+		hunger = (hunger > 100) ? 100 : hunger;
+		hungerTick = time(&timer);
+	}
+
+	if (difftime(time(&timer), thirstTick) / 60 > thirstRate) {
+		thirst += 5;
+		thirst = (thirst > 100) ? 100 : thirst;
+		thirstTick = time(&timer);
+	}
+
+	float foodBarLength = (100 - hunger) / 100;
+	float drinkBarLength = (100 - thirst) / 100;
+
+	foodBarSprite.setScale(0.3 * foodBarLength, 0.3);
+	drinkBarSprite.setScale(0.3 * drinkBarLength, 0.3);
+
 	//current time on the watch 1 second = 1 minute
 	nextMinute++;
 
@@ -853,6 +911,8 @@ void Player::WatchUIPosition() {
 	watchBGSprite.setPosition(center.x + size.x / 3.1 + watchBGOffset.x, center.y + watchBGOffset.y);
 	heartBeatSprite.setPosition((center.x + size.x / 3.1 + heartBeatOffset.x) + heartBeatX, center.y + heartBeatOffset.y);
 	watchSprite.setPosition(center.x + size.x / 3.1, center.y);
+	foodBarSprite.setPosition(center.x + size.x / 3.1 + timeTextOffset.x + 15, center.y + timeTextOffset.y - 9);
+	drinkBarSprite.setPosition(center.x + size.x / 3.1 + timeTextOffset.x + 54, center.y + timeTextOffset.y - 9);
 	heartRateText.setPosition(center.x + size.x / 3.1 + heartRateTextOffset.x, center.y + heartRateTextOffset.y);
 	currentTime.setPosition(center.x + size.x / 3.1 + timeTextOffset.x, center.y + timeTextOffset.y);
 
@@ -867,6 +927,8 @@ void Player::DrawWatch() {
 	window->draw(watchBGSprite);
 	window->draw(heartBeatSprite);
 	window->draw(watchSprite);
+	window->draw(foodBarSprite);
+	window->draw(drinkBarSprite);
 	window->draw(heartRateText);
 	window->draw(currentTime);
 }

@@ -29,6 +29,7 @@ struct keyActions {
 	bool fire = false;
 	bool autoFire = false;
 	bool reload = false;
+	bool use = false;
 	bool hotbar1 = false;
 	bool hotbar2 = false;
 	bool hotbar3 = false;
@@ -41,9 +42,15 @@ private:
 	//player stats
 	float fullHealth;
 	float health;
-	float hunger;
-	float thirst;
 	bool bleeding = false;
+
+	float hunger;
+	time_t hungerTick; 
+	float hungerRate = 1;
+	float thirst;
+	time_t thirstTick;
+	float thirstRate = 0.5;
+
 
 	keyActions actions;
 	Texture m_AnimationLegsTexture;
@@ -86,6 +93,9 @@ private:
 	Sprite watchBGSprite;
 	Texture heartBeatTexture;
 	Sprite heartBeatSprite;
+	Texture statusBarTexture;
+	Sprite foodBarSprite;
+	Sprite drinkBarSprite;
 	Font watchFont;
 	Text heartRateText;
 	Text currentTime;

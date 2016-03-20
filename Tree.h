@@ -18,7 +18,7 @@ private:
 	b2FixtureDef fixtureDef;
 	Vector2f m_pos;
 	float rotation; 
-	float maxDistance = 300;
+	float maxDistance = 500;
 
 public:
 	~Tree();

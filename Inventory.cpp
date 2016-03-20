@@ -181,6 +181,13 @@ Item * Inventory::DragItem(Vector2f clickPos)
 	return NULL;
 }
 
+void Inventory::UseItem(int slot)
+{
+	slots[slot].item->destroy = true;
+	slots[slot].item = NULL;
+	slots[slot].full = false;
+}
+
 void Inventory::Open() {
 	open = true;
 }

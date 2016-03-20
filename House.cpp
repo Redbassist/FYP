@@ -171,8 +171,30 @@ void House::CreateWalls() {
 		fillers.push_back(new FillerObject(m_pos + Vector2f(65, 194 ), 17, "bed"));
 	}
 
-	//military base
+	//cabin facing right
 	else if (type == 4) {
+		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(200, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(15, 175)));
+		walls.push_back(new Wall(m_pos + Vector2f(185, 0), Vector2f(15, 175)));
+		walls.push_back(new Wall(m_pos + Vector2f(0, 235), Vector2f(200, 15)));
+		doors.push_back(new Door(m_pos + Vector2f(7.5, 205), 90, 0));
+
+
+		walls.push_back(new Wall(m_pos + Vector2f(200, 100), Vector2f(150, 15)));
+		walls.push_back(new Wall(m_pos + Vector2f(335, 100), Vector2f(15, 150)));
+		walls.push_back(new Wall(m_pos + Vector2f(185, 235), Vector2f(165, 15)));
+		doors.push_back(new Door(m_pos + Vector2f(192.5, 205), 90, 0));
+
+		containers.push_back(new Container(m_pos + Vector2f(260, 125), 0, items, 0));
+		containers.push_back(new Container(m_pos + Vector2f(25, 36), 270, items, 1)); 
+
+		fillers.push_back(new FillerObject(m_pos + Vector2f(90, 130), 56, "table"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(130, 30), 0, "counter"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(280, 194), 193, "bed"));
+	}
+
+	//military base
+	else if (type == 5) {
 		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(2000, 15))); 
 		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(15, 1600)));
 		walls.push_back(new Wall(m_pos + Vector2f(0, 1585), Vector2f(150, 15)));
