@@ -52,6 +52,9 @@ void World::CreateLevel() {
 				else if (object._Ptr->GetName() == "Military") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 5));
 				}
+				else if (object._Ptr->GetName() == "Enemy") {
+					enemies.push_back(new Enemy(Vector2f(object._Ptr->GetPosition())));
+				}
 			}
 		}
 
@@ -76,10 +79,15 @@ void World::CreateLevel() {
 
 void World::Update() {
 	player->Update();
-
+	
 	int size = trees.size();
 	for (int i = 0; i < size; i++) {
 		trees[i]->FadeOut(player->GetPosition());
+	}
+
+	size = enemies.size();
+	for (int i = 0; i < size; i++) {
+		enemies[i]->Update();
 	}
 }
 
@@ -105,6 +113,11 @@ void World::Draw() {
 	}
 
 	player->Draw();
+
+	size = enemies.size();
+	for (int i = 0; i < size; i++) {
+		enemies[i]->Draw();
+	}
 
 	size = fillers.size();
 	for (int i = 0; i < size; i++) {

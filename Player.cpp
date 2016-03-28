@@ -765,7 +765,7 @@ void Player::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
-	fixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR | FILLER;
+	fixtureDef.filter.maskBits = ENEMY | ITEM | CONTAINER | WALL | DOOR | FILLER;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);
@@ -791,7 +791,7 @@ void Player::createPunchBox2dBody()
 	punchfixtureDef.restitution = b2MixRestitution(0, 0);
 
 	punchfixtureDef.filter.categoryBits = PUNCH;
-	punchfixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR | PLAYER;
+	punchfixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR | PLAYER | ENEMY;
 
 	punchbody->CreateFixture(&punchfixtureDef);
 	punchbody->SetFixedRotation(false);
@@ -816,7 +816,7 @@ void Player::createMeleeBox2dBody()
 	meleefixtureDef.restitution = b2MixRestitution(0, 0);
 
 	meleefixtureDef.filter.categoryBits = MELEE;
-	meleefixtureDef.filter.maskBits = CONTAINER | WALL | DOOR | PLAYER;
+	meleefixtureDef.filter.maskBits = CONTAINER | WALL | DOOR | PLAYER | ENEMY;
 
 	meleebody->CreateFixture(&meleefixtureDef);
 	meleebody->SetFixedRotation(false);

@@ -9,6 +9,7 @@
 #include "Item.h"
 #include "Player.h"
 #include "FillerObject.h"
+#include "Enemy.h"
 #include "Tree.h"
 
 using namespace sf;
@@ -23,6 +24,7 @@ private:
 	std::vector<Item*> items;
 	std::vector<Tree*> trees;
 	std::vector<FillerObject*> fillers;
+	std::vector<Enemy*> enemies;
 		
 public:
 	World();

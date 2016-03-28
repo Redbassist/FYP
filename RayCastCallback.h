@@ -5,17 +5,26 @@
 #include "stdafx.h"
 
 class RayCastCallBack : public b2RayCastCallback {
-public:
-	RayCastCallBack()
+public: 
+	RayCastCallBack(RayCastCallBack* rc = NULL)
 	{
-		distance = 10000;
-	}
+		if (rc == NULL) {
+			distance = 10000;
+		}
+		else {
+			distance = rc->distance;
+			m_point = rc->m_point;
+			m_normal = rc->m_normal;
+			data = rc->data;
+			objectName = rc->objectName;
+		}
+	} 
 
 	float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) {
 		void* d = fixture->GetBody()->GetUserData();
-		void* userData = fixture->GetUserData();
+		void* userData = fixture->GetUserData(); 
 
-		if (distance > fraction) {
+		if (distance > fraction && (userData != "MeleeWeapon" && userData != "Punch")) {
 			distance = fraction;
 			m_point = point;
 			m_normal = normal;

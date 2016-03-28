@@ -16,10 +16,11 @@ RayCastManager::RayCastManager()
 	callBack = new RayCastCallBack();
 }
 
-void RayCastManager::CastRay(b2Vec2 p1, b2Vec2 p2) {
+RayCastCallBack* RayCastManager::CastRay(b2Vec2 p1, b2Vec2 p2) { 
 	callBack->Reset();
 	world->RayCast(callBack, p1, p2);
-	HitReaction();
+	//HitReaction();
+	return callBack;
 }
 
 void RayCastManager::HitReaction()
