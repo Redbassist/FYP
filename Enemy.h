@@ -27,9 +27,18 @@ private:
 
 	sf::Clock frameClock;
 	time_t timer;
+	time_t doorSearchTimer;
 
 	vector<std::pair<b2RayCastInput, RayCastCallBack>> visionRays;
 	int numberRays;
+
+	bool search = false;
+	bool walk = true;
+	bool door = false;
+	bool searchDoor = true;
+	bool stop = false;
+
+	int searchDirection;
 
 public:
 	Enemy(Vector2f);
@@ -42,6 +51,8 @@ public:
 	void Draw();
 	void Movement();
 	void SampleAI();
+	void SampleAIFunction(bool, int);
+	void SearchDoor();
 	float GetRotationAngle();
 	Vector2f Normalize(Vector2f);
 	float Distance(Vector2f, Vector2f);

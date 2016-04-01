@@ -106,3 +106,8 @@ void Door::createBox2dBody() {
 
 	body->CreateFixture(&fixtureDef);
 }
+
+Vector2f Door::GetOrigin()
+{
+	return m_sprite.getPosition();
+}

@@ -26,6 +26,7 @@ public:
 	void Draw();
 	void OpenClose();
 	void createBox2dBody();
+	Vector2f GetOrigin();
 };
 
 #endif

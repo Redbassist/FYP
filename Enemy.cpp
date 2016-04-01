@@ -1,13 +1,14 @@
 #include "Enemy.h"
 
 Enemy::Enemy(Vector2f p) : m_pos(p)
-{ 
+{
 	LoadAssets();
 	createBox2dBody();
 	numberRays = 11;
 	CreateRays();
 	speed = 2;
-	orientation = GetRotationAngle(); 
+	orientation = GetRotationAngle();
+	doorSearchTimer = time(&timer);
 }
 
 Enemy::~Enemy()
@@ -52,12 +53,20 @@ void Enemy::Update()
 {
 	UpdateRays();
 	SampleAI();
-	Movement(); 
+	Movement();
+
+	if (door) {
+		doorSearchTimer = time(&timer);
+	}
+
+	else if (difftime(time(&timer), doorSearchTimer) > 5) {
+		searchDoor = true;
+	}
 }
 
 void Enemy::CreateRays()
 {
-	for (int i = 0; i < numberRays; i++) { 
+	for (int i = 0; i < numberRays; i++) {
 		std::pair<b2RayCastInput, RayCastCallBack*> temp;
 		visionRays.push_back(temp);
 	}
@@ -68,12 +77,12 @@ void Enemy::UpdateRays()
 	b2Vec2 position = body->GetPosition();
 	b2Vec2 orientationPoint;
 	float rayAngle = 0;
-	float angleIncrement = 18;
+	float angleIncrement = 180 / (numberRays - 1);
 
-	for(int i = 0; i < numberRays; i++) {
+	for (int i = 0; i < numberRays; i++) {
 		rayAngle = angleIncrement * i;
 		orientationPoint = b2Vec2((float)cos((orientation - 90) * DEGTORAD + rayAngle * DEGTORAD), (float)sin((orientation - 90) * DEGTORAD + rayAngle * DEGTORAD));
-		visionRays[i].first.p1 = position + b2Vec2(orientationPoint.x * 0.4, orientationPoint.y * 0.5);
+		visionRays[i].first.p1 = position + b2Vec2(orientationPoint.x * 0.1, orientationPoint.y * 0.1);
 		visionRays[i].first.p2 = position + b2Vec2(orientationPoint.x * 14.5, orientationPoint.y * 14.5);
 		visionRays[i].first.maxFraction = 1;
 		visionRays[i].second = RayCastCallBack(RayCastManager::GetInstance()->CastRay(visionRays[i].first.p1, visionRays[i].first.p2));
@@ -92,7 +101,7 @@ void Enemy::Draw()
 		line[0].position = sf::Vector2f(visionRays[i].first.p1.x * SCALE, visionRays[i].first.p1.y * SCALE);
 		if (visionRays[i].second.objectName != NULL)
 			line[0].color = sf::Color::Green;
-		else 
+		else
 			line[0].color = sf::Color::Red;
 		line[1].position = sf::Vector2f(visionRays[i].first.p2.x * SCALE, visionRays[i].first.p2.y * SCALE);
 		if (visionRays[i].second.objectName != NULL)
@@ -106,26 +115,214 @@ void Enemy::Draw()
 
 void Enemy::Movement()
 {
-	orientation = GetRotationAngle();
-
 	b2Vec2 position = body->GetPosition();
+	int centre = numberRays / 2;
 
-	if (Distance(m_pos, movementTarget) > 40) {
+	if (stop) {
+		if (searchDirection == 0)
+			orientation += 0.5;
+		else
+			orientation -= 0.5;
+
+		for (int i = 0; i < numberRays; i++) {
+			if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80) {
+				movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
+				orientation = GetRotationAngle();
+				stop = false;
+			}
+		}
+	}
+
+	else if (Distance(m_pos, movementTarget) > 40 && !stop) {
+		orientation = GetRotationAngle();
+
 		Vector2f directionVector((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
 		//directionVector = Normalize(directionVector);
 		directionVector *= speed;
 
 		position += b2Vec2(directionVector.x / SCALE, directionVector.y / SCALE);
 	}
+	/*if (visionRays[centre].second.objectName == NULL
+		&& search && Distance(m_pos, Vector2f(visionRays[centre + 1].second.m_point.x * SCALE, visionRays[centre + 1].second.m_point.y * SCALE)) > 50
+		&& search && Distance(m_pos, Vector2f(visionRays[centre - 1].second.m_point.x * SCALE, visionRays[centre - 1].second.m_point.y * SCALE)) > 50)
+		movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);*/
+
+	else {
+		int centre = numberRays / 2;
+		movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
+	}
+
 	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
 	body->SetTransform(position, orientation + DEGTORAD);
 }
 
 void Enemy::SampleAI()
 {
-	for (int i = 0; i < numberRays; i++) {
+	/*for (int i = 0; i < numberRays; i++) {
 		if (visionRays[i].second.objectName == "Player") {
 			movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
+		}
+	}*/
+
+	int centre = numberRays / 2;
+
+	if (door) {
+		movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
+		bool foundDoor = false;
+		for (int i = 4; i < 7; i++) {
+			if (visionRays[i].second.objectName == "Door") { 
+				foundDoor = true;
+			}
+		}
+		if (!foundDoor)
+			door = false;
+	}
+	else {
+		if (visionRays[centre].second.objectName != NULL) {
+			int direction = rand() % 2;
+			SampleAIFunction(false, direction);
+		}
+
+		if (search && Distance(m_pos, Vector2f(visionRays[centre].second.m_point.x * SCALE, visionRays[centre].second.m_point.y * SCALE)) < 50) {
+			int direction = rand() % 2;
+			SampleAIFunction(true, direction);
+		}
+	}
+	if (searchDoor) {
+		SearchDoor();
+	}
+}
+
+void Enemy::SampleAIFunction(bool close, int direction)
+{
+	int centre = numberRays / 2;
+	int above = 1;
+	int below = 1;
+	bool breakOut = false;
+	if (direction == 0) {
+		if (close) {
+			int distance = 50;
+			while ((below < centre && above < centre) && !breakOut) {
+				if (Distance(m_pos, Vector2f(visionRays[centre + above].second.m_point.x * SCALE, visionRays[centre + above].second.m_point.y * SCALE)) > distance) {
+					movementTarget = Vector2f(visionRays[centre + above].first.p2.x * SCALE, visionRays[centre + above].first.p2.y * SCALE);
+					breakOut = true;
+				}
+				else if (Distance(m_pos, Vector2f(visionRays[centre - below].second.m_point.x * SCALE, visionRays[centre - below].second.m_point.y * SCALE)) > distance) {
+					movementTarget = Vector2f(visionRays[centre - below].first.p2.x * SCALE, visionRays[centre - below].first.p2.y * SCALE);
+					breakOut = true;
+				}
+				else {
+					above++;
+					below++;
+				}
+			}
+
+			if (!breakOut && !stop) {
+				searchDirection = rand() % 2;
+				stop = true;
+			}
+		}
+		else {
+			while ((below < centre && above < centre) && !breakOut) {
+				if (visionRays[centre + above].second.objectName == NULL) {
+					movementTarget = Vector2f(visionRays[centre + above].first.p2.x * SCALE, visionRays[centre + above].first.p2.y * SCALE);
+					breakOut = true;
+					search = false;
+				}
+				else if (visionRays[centre - below].second.objectName == NULL) {
+					movementTarget = Vector2f(visionRays[centre - below].first.p2.x * SCALE, visionRays[centre - below].first.p2.y * SCALE);
+					breakOut = true;
+					search = false;
+				}
+				else {
+					above++;
+					below++;
+				}
+			}
+			if (!breakOut) {
+				search = true;
+			}
+		}
+	}
+	else {
+		if (close) {
+			int distance = 50;
+			while ((below < centre && above < centre) && !breakOut) {
+				if (Distance(m_pos, Vector2f(visionRays[centre - below].second.m_point.x * SCALE, visionRays[centre - below].second.m_point.y * SCALE)) > distance) {
+					movementTarget = Vector2f(visionRays[centre - below].first.p2.x * SCALE, visionRays[centre - below].first.p2.y * SCALE);
+					breakOut = true;
+				}
+				else if (Distance(m_pos, Vector2f(visionRays[centre + above].second.m_point.x * SCALE, visionRays[centre + above].second.m_point.y * SCALE)) > distance) {
+					movementTarget = Vector2f(visionRays[centre + above].first.p2.x * SCALE, visionRays[centre + above].first.p2.y * SCALE);
+					breakOut = true;
+				}
+				else {
+					above++;
+					below++;
+				}
+			}
+
+			if (!breakOut && !stop) {
+				searchDirection = rand() % 2;
+				stop = true;
+			}
+		}
+		else {
+			while ((below < centre && above < centre) && !breakOut) {
+				if (visionRays[centre - below].second.objectName == NULL) {
+					movementTarget = Vector2f(visionRays[centre - below].first.p2.x * SCALE, visionRays[centre - below].first.p2.y * SCALE);
+					breakOut = true;
+					search = false;
+				}
+				else if (visionRays[centre + above].second.objectName == NULL) {
+					movementTarget = Vector2f(visionRays[centre + above].first.p2.x * SCALE, visionRays[centre + above].first.p2.y * SCALE);
+					breakOut = true;
+					search = false;
+				}
+				else {
+					above++;
+					below++;
+				}
+			}
+			if (!breakOut)
+				search = true;
+		}
+	}
+}
+
+void Enemy::SearchDoor()
+{
+	int centre = numberRays / 2;
+	int above = 1;
+	int below = 1;
+	bool breakOut = false;
+
+	if (visionRays[centre].second.objectName == "Door") {
+		//movementTarget = static_cast<Door*>(visionRays[centre].second.data)->GetOrigin();
+		movementTarget = static_cast<Door*>(visionRays[centre].second.data)->GetOrigin();
+		breakOut = true;
+		searchDoor = false;
+		door = true;
+	}
+
+	while ((below < centre && above < centre) && !breakOut) {
+		if (visionRays[centre + above].second.objectName == "Door") {
+			//movementTarget = static_cast<Door*>(visionRays[centre + above].second.data)->GetOrigin();
+			movementTarget = static_cast<Door*>(visionRays[centre + above].second.data)->GetOrigin();
+			breakOut = true;
+			searchDoor = false;
+			door = true;
+		}
+		else if (visionRays[centre - below].second.objectName == "Door") {
+			//movementTarget = static_cast<Door*>(visionRays[centre - below].second.data)->GetOrigin();
+			movementTarget = static_cast<Door*>(visionRays[centre - below].second.data)->GetOrigin();
+			breakOut = true;
+			searchDoor = false;
+			door = true;
+		}
+		else {
+			above++;
+			below++;
 		}
 	}
 }
