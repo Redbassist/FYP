@@ -63,7 +63,7 @@ void FillerObject::createBox2dBody()
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = FILLER;
-	fixtureDef.filter.maskBits = PLAYER | MELEE | PUNCH;
+	fixtureDef.filter.maskBits = PLAYER | MELEE | PUNCH | ENEMY;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetTransform(body->GetPosition(), rotation * DEGTORAD);

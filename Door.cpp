@@ -52,6 +52,16 @@ void Door::OpenClose() {
 	}
 }
 
+void Door::Open()
+{
+	m_sprite.setPosition(Vector2f(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE));
+	if (!open) {
+		open = true;
+		ltbl::LightSystem::GetInstance()->removeShape(lightBlocker);
+		body->GetFixtureList()->SetSensor(true);
+	}
+}
+
 void Door::createBox2dBody() {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_staticBody;
@@ -102,7 +112,7 @@ void Door::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = DOOR;
-	fixtureDef.filter.maskBits = PLAYER | MELEE | PUNCH;
+	fixtureDef.filter.maskBits = PLAYER | MELEE | PUNCH | ENEMY;
 
 	body->CreateFixture(&fixtureDef);
 }

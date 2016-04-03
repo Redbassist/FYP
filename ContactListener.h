@@ -55,6 +55,19 @@ public:
 				static_cast<Player*>(bodyUserData1)->TouchingDoor(static_cast<Door*>(bodyUserData2));
 			}
 		} 
+		else if (fixAType == "Enemy" && fixBType == "Door"
+			|| fixAType == "Door" && fixBType == "Enemy") {
+			if (fixAType == "Door") {
+				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
+				static_cast<Door*>(bodyUserData1)->Open();
+			}
+			else if (fixBType == "Door") {
+				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
+				static_cast<Door*>(bodyUserData1)->Open();
+			}
+		}
 	}
 
 	void EndContact(b2Contact* contact) {

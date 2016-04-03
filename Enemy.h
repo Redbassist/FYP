@@ -7,6 +7,7 @@
 #include "Animation.h"
 #include "AnimatedSprite.h" 
 #include "Door.h"
+#include "Player.h"
  
 class Enemy {
 private:
@@ -16,6 +17,7 @@ private:
 
 	Vector2f m_pos;
 	float orientation;
+	float searchOrientation;
 	float speed;
 	Vector2f movementTarget;
 
@@ -31,14 +33,18 @@ private:
 
 	vector<std::pair<b2RayCastInput, RayCastCallBack>> visionRays;
 	int numberRays;
+	std::pair<b2RayCastInput, RayCastCallBack> spottedRay;
 
 	bool search = false;
 	bool walk = true;
 	bool door = false;
 	bool searchDoor = true;
 	bool stop = false;
+	bool playerSpotted = false;
+	bool chasing = false;
 
 	int searchDirection;
+	Player* spottedPlayer;
 
 public:
 	Enemy(Vector2f);
@@ -53,6 +59,8 @@ public:
 	void SampleAI();
 	void SampleAIFunction(bool, int);
 	void SearchDoor();
+	void SearchPlayer();
+	void SpottedAI();
 	float GetRotationAngle();
 	Vector2f Normalize(Vector2f);
 	float Distance(Vector2f, Vector2f);

@@ -51,6 +51,7 @@ void Enemy::createBox2dBody()
 
 void Enemy::Update()
 {
+	SearchPlayer();
 	UpdateRays();
 	SampleAI();
 	Movement();
@@ -78,6 +79,12 @@ void Enemy::UpdateRays()
 	b2Vec2 orientationPoint;
 	float rayAngle = 0;
 	float angleIncrement = 180 / (numberRays - 1);
+
+	spottedRay.first.p1 = position;
+	if (playerSpotted && spottedPlayer != NULL) {
+		spottedRay.first.p2 = b2Vec2(spottedPlayer->GetPosition().x / SCALE, spottedPlayer->GetPosition().y / SCALE);
+	}
+	spottedRay.second = RayCastCallBack(RayCastManager::GetInstance()->CastRay(spottedRay.first.p1, spottedRay.first.p2));
 
 	for (int i = 0; i < numberRays; i++) {
 		rayAngle = angleIncrement * i;
@@ -166,11 +173,14 @@ void Enemy::SampleAI()
 
 	int centre = numberRays / 2;
 
-	if (door) {
+	if (chasing) {
+		SpottedAI();
+	}
+	else if (door) {
 		movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
 		bool foundDoor = false;
 		for (int i = 4; i < 7; i++) {
-			if (visionRays[i].second.objectName == "Door") { 
+			if (visionRays[i].second.objectName == "Door") {
 				foundDoor = true;
 			}
 		}
@@ -188,7 +198,7 @@ void Enemy::SampleAI()
 			SampleAIFunction(true, direction);
 		}
 	}
-	if (searchDoor) {
+	if (searchDoor && !chasing) {
 		SearchDoor();
 	}
 }
@@ -298,7 +308,6 @@ void Enemy::SearchDoor()
 	bool breakOut = false;
 
 	if (visionRays[centre].second.objectName == "Door") {
-		//movementTarget = static_cast<Door*>(visionRays[centre].second.data)->GetOrigin();
 		movementTarget = static_cast<Door*>(visionRays[centre].second.data)->GetOrigin();
 		breakOut = true;
 		searchDoor = false;
@@ -307,14 +316,12 @@ void Enemy::SearchDoor()
 
 	while ((below < centre && above < centre) && !breakOut) {
 		if (visionRays[centre + above].second.objectName == "Door") {
-			//movementTarget = static_cast<Door*>(visionRays[centre + above].second.data)->GetOrigin();
 			movementTarget = static_cast<Door*>(visionRays[centre + above].second.data)->GetOrigin();
 			breakOut = true;
 			searchDoor = false;
 			door = true;
 		}
 		else if (visionRays[centre - below].second.objectName == "Door") {
-			//movementTarget = static_cast<Door*>(visionRays[centre - below].second.data)->GetOrigin();
 			movementTarget = static_cast<Door*>(visionRays[centre - below].second.data)->GetOrigin();
 			breakOut = true;
 			searchDoor = false;
@@ -323,6 +330,67 @@ void Enemy::SearchDoor()
 		else {
 			above++;
 			below++;
+		}
+	}
+}
+
+void Enemy::SearchPlayer()
+{
+	int centre = numberRays / 2;
+	int above = 1;
+	int below = 1;
+	bool breakOut = false;
+
+	if (visionRays[centre].second.objectName == "Player") {
+		//movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
+		playerSpotted = true;
+		spottedPlayer = static_cast<Player*>(visionRays[centre].second.data);
+		breakOut = true;
+	}
+
+	while ((below < centre && above < centre) && !breakOut) {
+		if (visionRays[centre + above].second.objectName == "Player") {
+			//movementTarget = Vector2f(visionRays[centre + above].first.p2.x * SCALE, visionRays[centre + above].first.p2.y * SCALE); 
+			playerSpotted = true;
+			chasing = true;
+			spottedPlayer = static_cast<Player*>(visionRays[centre + above].second.data);
+			breakOut = true;
+		}
+		else if (visionRays[centre - below].second.objectName == "Player") {
+			//movementTarget = Vector2f(visionRays[centre - below].first.p2.x * SCALE, visionRays[centre - below].first.p2.y * SCALE);
+			playerSpotted = true;
+			chasing = true;
+			spottedPlayer = static_cast<Player*>(visionRays[centre - below].second.data);
+			breakOut = true;
+		}
+		else {
+			above++;
+			below++;
+		}
+	}
+}
+
+void Enemy::SpottedAI()
+{ 
+	int distance = 40;
+
+	if (spottedRay.second.objectName != "Player") {
+		spottedPlayer = false;
+		if (Distance(m_pos, Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE)) < distance) {
+			chasing = false;
+			searchDoor = true;
+		}
+		else {
+			movementTarget = Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE);
+		}
+	}
+
+	else if (spottedRay.second.objectName == "Player") {
+		if (Distance(m_pos, Vector2f(spottedRay.second.m_point.x * SCALE, spottedRay.second.m_point.y * SCALE)) < distance) {
+			cout << "Hitting Player" << endl;
+		}
+		else {
+			movementTarget = Vector2f(spottedRay.second.m_point.x * SCALE, spottedRay.second.m_point.y * SCALE);
 		}
 	}
 }
