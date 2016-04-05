@@ -23,12 +23,20 @@ private:
 	bool walk = true;
 	bool door = false;
 	bool searchDoor = true;
+	bool searchPlayer = false;
 	bool stop = false;
 	bool playerSpotted = false;
 	bool chasing = false;
+	bool lookAround = false;
+	bool lookRight = false;
+	bool nearDoor = false;
+	bool nearLastSpot = false;
+	bool lostPlayer = false;
 
 	int searchDirection;
 	Player* spottedPlayer;
+
+	sf::Vector2f doorLocation;
 
 public:
 	Stalker(Vector2f);
@@ -42,7 +50,8 @@ public:
 	void Movement();
 	void AI();
 	void AIFunction(bool, int);
-	void SearchDoor();
+	void LookAround();
+	void SearchDoor(bool onlyFind);
 	void SearchPlayer();
 	void SpottedAI();
 };

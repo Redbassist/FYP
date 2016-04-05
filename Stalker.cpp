@@ -7,6 +7,7 @@ Stalker::Stalker(Vector2f p) : Enemy(p)
 	numberRays = 11;
 	CreateRays();
 	speed = 2;
+	searchOrientation = 0;
 	orientation = GetRotationAngle();
 	doorSearchTimer = time(&timer);
 }
@@ -88,7 +89,7 @@ void Stalker::UpdateRays()
 
 	for (int i = 0; i < numberRays; i++) {
 		rayAngle = angleIncrement * i;
-		orientationPoint = b2Vec2((float)cos((orientation - 90) * DEGTORAD + rayAngle * DEGTORAD), (float)sin((orientation - 90) * DEGTORAD + rayAngle * DEGTORAD));
+		orientationPoint = b2Vec2((float)cos((orientation + searchOrientation - 90) * DEGTORAD + rayAngle * DEGTORAD), (float)sin((orientation + searchOrientation - 90) * DEGTORAD + rayAngle * DEGTORAD));
 		visionRays[i].first.p1 = position + b2Vec2(orientationPoint.x * 0.1, orientationPoint.y * 0.1);
 		visionRays[i].first.p2 = position + b2Vec2(orientationPoint.x * 14.5, orientationPoint.y * 14.5);
 		visionRays[i].first.maxFraction = 1;
@@ -126,22 +127,28 @@ void Stalker::Movement()
 	int centre = numberRays / 2;
 
 	if (stop) {
-		if (searchDirection == 0)
-			orientation += 0.5;
-		else
-			orientation -= 0.5;
+		LookAround();
 
 		for (int i = 0; i < numberRays; i++) {
 			if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80) {
 				movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
 				orientation = GetRotationAngle();
 				stop = false;
+				lookAround = false;
+				lookRight = false;
+				searchOrientation = 0;
 			}
 		}
 	}
 
-	else if (Distance(m_pos, movementTarget) > 40 && !stop) {
-		orientation = GetRotationAngle();
+	else if (lookAround) {
+		LookAround();
+	}
+
+	else if (Distance(m_pos, movementTarget) > 40 || door) {
+
+		if (!door)
+			orientation = GetRotationAngle();
 
 		Vector2f directionVector((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
 		//directionVector = Normalize(directionVector);
@@ -154,7 +161,7 @@ void Stalker::Movement()
 	&& search && Distance(m_pos, Vector2f(visionRays[centre - 1].second.m_point.x * SCALE, visionRays[centre - 1].second.m_point.y * SCALE)) > 50)
 	movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);*/
 
-	else {
+	else if (!door) {
 		int centre = numberRays / 2;
 		movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
 	}
@@ -173,19 +180,33 @@ void Stalker::AI()
 
 	int centre = numberRays / 2;
 
-	if (chasing) {
+	if (lookAround) {
+
+	}
+
+	else if (chasing) {
 		SpottedAI();
 	}
+
 	else if (door) {
-		movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
+		int d = Distance(m_pos, movementTarget);
+		if (d < 40 && !nearDoor) {
+			nearDoor = true;
+		}
+		else if (d > 60) {
+			door = false;
+			nearDoor = false;
+		}
+
+		/*movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
 		bool foundDoor = false;
-		for (int i = 4; i < 7; i++) {
+		for (int i = 0; i < numberRays; i++) {
 			if (visionRays[i].second.objectName == "Door") {
 				foundDoor = true;
 			}
 		}
 		if (!foundDoor)
-			door = false;
+			door = false;*/
 	}
 	else {
 		if (visionRays[centre].second.objectName != NULL) {
@@ -198,8 +219,12 @@ void Stalker::AI()
 			AIFunction(true, direction);
 		}
 	}
+
 	if (searchDoor && !chasing) {
-		SearchDoor();
+		if (searchPlayer)
+			SearchDoor(true);
+		else
+			SearchDoor(false);
 	}
 }
 
@@ -229,6 +254,7 @@ void Stalker::AIFunction(bool close, int direction)
 
 			if (!breakOut && !stop) {
 				searchDirection = rand() % 2;
+				lookAround = true;
 				stop = true;
 			}
 		}
@@ -274,6 +300,7 @@ void Stalker::AIFunction(bool close, int direction)
 
 			if (!breakOut && !stop) {
 				searchDirection = rand() % 2;
+				lookAround = true;
 				stop = true;
 			}
 		}
@@ -300,7 +327,29 @@ void Stalker::AIFunction(bool close, int direction)
 	}
 }
 
-void Stalker::SearchDoor()
+void Stalker::LookAround()
+{
+	if (!lookRight) {
+		searchOrientation -= 2;
+		if (searchOrientation <= -90)
+			lookRight = true;
+	}
+	else {
+		searchOrientation += 2;
+		if (searchOrientation >= 90) {
+			lookRight = false;
+			lookAround = false;
+			searchOrientation = 0;
+			if (searchPlayer) {
+				movementTarget = doorLocation;
+				door = true;
+				searchPlayer = false;
+			}
+		}
+	}
+}
+
+void Stalker::SearchDoor(bool onlyFind)
 {
 	int centre = numberRays / 2;
 	int above = 1;
@@ -308,24 +357,39 @@ void Stalker::SearchDoor()
 	bool breakOut = false;
 
 	if (visionRays[centre].second.objectName == "Door") {
-		movementTarget = static_cast<Door*>(visionRays[centre].second.data)->GetOrigin();
+		if (!onlyFind) {
+			movementTarget = static_cast<Door*>(visionRays[centre].second.data)->GetOrigin();
+			door = true;
+		}
+		else {
+			doorLocation = static_cast<Door*>(visionRays[centre].second.data)->GetOrigin();
+		}
 		breakOut = true;
 		searchDoor = false;
-		door = true;
 	}
 
 	while ((below < centre && above < centre) && !breakOut) {
 		if (visionRays[centre + above].second.objectName == "Door") {
-			movementTarget = static_cast<Door*>(visionRays[centre + above].second.data)->GetOrigin();
+			if (!onlyFind) {
+				movementTarget = static_cast<Door*>(visionRays[centre + above].second.data)->GetOrigin();
+				door = true;
+			}
+			else {
+				doorLocation = static_cast<Door*>(visionRays[centre + above].second.data)->GetOrigin();
+			}
 			breakOut = true;
 			searchDoor = false;
-			door = true;
 		}
 		else if (visionRays[centre - below].second.objectName == "Door") {
-			movementTarget = static_cast<Door*>(visionRays[centre - below].second.data)->GetOrigin();
+			if (!onlyFind) {
+				movementTarget = static_cast<Door*>(visionRays[centre - below].second.data)->GetOrigin();
+				door = true;
+			}
+			else {
+				doorLocation = static_cast<Door*>(visionRays[centre - below].second.data)->GetOrigin();
+			}
 			breakOut = true;
 			searchDoor = false;
-			door = true;
 		}
 		else {
 			above++;
@@ -345,6 +409,8 @@ void Stalker::SearchPlayer()
 		//movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
 		playerSpotted = true;
 		spottedPlayer = static_cast<Player*>(visionRays[centre].second.data);
+		lookAround = false;
+		searchOrientation = 0;
 		breakOut = true;
 	}
 
@@ -354,6 +420,8 @@ void Stalker::SearchPlayer()
 			playerSpotted = true;
 			chasing = true;
 			spottedPlayer = static_cast<Player*>(visionRays[centre + above].second.data);
+			lookAround = false;
+			searchOrientation = 0;
 			breakOut = true;
 		}
 		else if (visionRays[centre - below].second.objectName == "Player") {
@@ -361,6 +429,8 @@ void Stalker::SearchPlayer()
 			playerSpotted = true;
 			chasing = true;
 			spottedPlayer = static_cast<Player*>(visionRays[centre - below].second.data);
+			lookAround = false;
+			searchOrientation = 0;
 			breakOut = true;
 		}
 		else {
@@ -378,6 +448,8 @@ void Stalker::SpottedAI()
 		spottedPlayer = false;
 		if (Distance(m_pos, Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE)) < distance) {
 			chasing = false;
+			lookAround = true;
+			searchPlayer = true;
 			searchDoor = true;
 		}
 		else {

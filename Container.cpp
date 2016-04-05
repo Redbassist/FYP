@@ -290,7 +290,7 @@ void Container::createBox2dBody() {
 	fixtureDef.userData = "Container";
 
 	fixtureDef.filter.categoryBits = CONTAINER;
-	fixtureDef.filter.maskBits = PLAYER;
+	fixtureDef.filter.maskBits = PLAYER | ENEMY;
 
 	body->CreateFixture(&fixtureDef);
 }
