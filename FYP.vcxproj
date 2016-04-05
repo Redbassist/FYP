@@ -206,6 +206,7 @@
     <ClInclude Include="SettingsManager.h" />
     <ClInclude Include="SFMLDebugDraw.h" />
     <ClInclude Include="Slider.h" />
+    <ClInclude Include="Stalker.h" />
     <ClInclude Include="StaticQuadtree.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="SettingsManager.cpp" />
     <ClCompile Include="SFMLDebugDraw.cpp" />
     <ClCompile Include="Slider.cpp" />
+    <ClCompile Include="Stalker.cpp" />
     <ClCompile Include="StaticQuadtree.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="tmx2box2d.cpp" />

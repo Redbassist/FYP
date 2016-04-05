@@ -53,7 +53,7 @@ void World::CreateLevel() {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 5));
 				}
 				else if (object._Ptr->GetName() == "Enemy") {
-					enemies.push_back(new Enemy(Vector2f(object._Ptr->GetPosition())));
+					stalkers.push_back(new Stalker(Vector2f(object._Ptr->GetPosition())));
 				}
 			}
 		}
@@ -85,9 +85,9 @@ void World::Update() {
 		trees[i]->FadeOut(player->GetPosition());
 	}
 
-	size = enemies.size();
+	size = stalkers.size();
 	for (int i = 0; i < size; i++) {
-		enemies[i]->Update();
+		stalkers[i]->Update();
 	}
 }
 
@@ -114,9 +114,9 @@ void World::Draw() {
 
 	player->Draw();
 
-	size = enemies.size();
+	size = stalkers.size();
 	for (int i = 0; i < size; i++) {
-		enemies[i]->Draw();
+		stalkers[i]->Draw();
 	}
 
 	size = fillers.size();
