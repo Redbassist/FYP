@@ -765,7 +765,7 @@ void Player::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
-	fixtureDef.filter.maskBits = ENEMY | ITEM | CONTAINER | WALL | DOOR | FILLER;
+	fixtureDef.filter.maskBits = ENEMY | ENEMYPUNCH | ITEM | CONTAINER | WALL | DOOR | FILLER;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);
@@ -931,6 +931,15 @@ void Player::DrawWatch() {
 	window->draw(drinkBarSprite);
 	window->draw(heartRateText);
 	window->draw(currentTime);
+}
+
+void Player::TakeDamage(int type)
+{
+	//punched
+	if (type == 0) {
+		health -= 1.5f;
+		AudioManager::GetInstance()->playSound("groan", m_pos);
+	}
 }
 
 float Player::getRotationAngle() {

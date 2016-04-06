@@ -4,12 +4,17 @@ Stalker::Stalker(Vector2f p) : Enemy(p)
 {
 	LoadAssets();
 	createBox2dBody();
+	createPunchBox2dBody();
 	numberRays = 11;
 	CreateRays();
 	speed = 2;
 	searchOrientation = 0;
+	avoidDistance = 15;
 	orientation = GetRotationAngle();
 	doorSearchTimer = time(&timer);
+	playerChaseTimer = time(&timer);
+	spottedPlayer = NULL;
+	nearDoor = false;
 }
 
 Stalker::~Stalker()
@@ -48,6 +53,32 @@ void Stalker::createBox2dBody()
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);
+}
+
+void Stalker::createPunchBox2dBody()
+{
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	//bodyDef.position.Set(m_pos.x / SCALE, m_pos.y / SCALE);
+	bodyDef.userData = this;
+	bodyDef.gravityScale = 1;
+	punchbody = world->CreateBody(&bodyDef);
+
+	b2PolygonShape dynamicBox;
+	dynamicBox.SetAsBox(7.5 / SCALE, 7.5 / SCALE, b2Vec2(0 / SCALE, 0), 0);
+	punchfixtureDef.shape = &dynamicBox;
+
+	punchfixtureDef.isSensor = true;
+	punchfixtureDef.density = 1;
+	punchfixtureDef.friction = 0.3f;
+	punchfixtureDef.userData = "EnemyPunch";
+	punchfixtureDef.restitution = b2MixRestitution(0, 0);
+
+	punchfixtureDef.filter.categoryBits = ENEMYPUNCH;
+	punchfixtureDef.filter.maskBits = PLAYER;
+
+	punchbody->CreateFixture(&punchfixtureDef);
+	punchbody->SetFixedRotation(false);
 }
 
 void Stalker::CreateRays()
@@ -141,13 +172,21 @@ void Stalker::Movement()
 		}
 	}
 
+	else if (avoid) {
+		Vector2f directionVector((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
+		//directionVector = Normalize(directionVector);
+		directionVector *= speed;
+
+		position += b2Vec2(directionVector.x / SCALE, directionVector.y / SCALE);
+	}
+
 	else if (lookAround) {
 		LookAround();
 	}
 
 	else if (Distance(m_pos, movementTarget) > 40 || door) {
 
-		if (!door)
+		if (!nearDoor)
 			orientation = GetRotationAngle();
 
 		Vector2f directionVector((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
@@ -156,10 +195,6 @@ void Stalker::Movement()
 
 		position += b2Vec2(directionVector.x / SCALE, directionVector.y / SCALE);
 	}
-	/*if (visionRays[centre].second.objectName == NULL
-	&& search && Distance(m_pos, Vector2f(visionRays[centre + 1].second.m_point.x * SCALE, visionRays[centre + 1].second.m_point.y * SCALE)) > 50
-	&& search && Distance(m_pos, Vector2f(visionRays[centre - 1].second.m_point.x * SCALE, visionRays[centre - 1].second.m_point.y * SCALE)) > 50)
-	movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);*/
 
 	else if (!door) {
 		int centre = numberRays / 2;
@@ -167,46 +202,49 @@ void Stalker::Movement()
 	}
 
 	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
+
+	b2Vec2 orientationPoint = b2Vec2((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
+	b2Vec2 punchTemp = orientationPoint;
+	punchTemp.x /= 100;
+	punchTemp.y /= 100;
+	punchTemp.x *= punchDistance;
+	punchTemp.y *= punchDistance;
+
+	body->SetTransform(position, orientation * DEGTORAD);
+	punchbody->SetTransform(body->GetPosition() + punchTemp, orientation * DEGTORAD);
+
 	body->SetTransform(position, orientation + DEGTORAD);
 }
 
 void Stalker::AI()
 {
-	/*for (int i = 0; i < numberRays; i++) {
-	if (visionRays[i].second.objectName == "Player") {
-	movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
-	}
-	}*/
-
 	int centre = numberRays / 2;
 
-	if (lookAround) {
-
+	if (chasing) {
+		SpottedAI();
 	}
 
-	else if (chasing) {
-		SpottedAI();
+	else if (lookAround) {
+		if (searchDoor && !chasing) {
+			if (searchPlayer)
+				SearchDoor(true);
+			else
+				SearchDoor(false);
+		}
 	}
 
 	else if (door) {
 		int d = Distance(m_pos, movementTarget);
-		if (d < 40 && !nearDoor) {
+		if (d < 25 && !nearDoor) {
 			nearDoor = true;
 		}
-		else if (d > 60) {
+		else if (d > 40 && nearDoor) {
 			door = false;
 			nearDoor = false;
+			lookAround = true;
+			movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
+			doorSearchTimer = time(&timer);
 		}
-
-		/*movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
-		bool foundDoor = false;
-		for (int i = 0; i < numberRays; i++) {
-			if (visionRays[i].second.objectName == "Door") {
-				foundDoor = true;
-			}
-		}
-		if (!foundDoor)
-			door = false;*/
 	}
 	else {
 		if (visionRays[centre].second.objectName != NULL) {
@@ -218,14 +256,20 @@ void Stalker::AI()
 			int direction = rand() % 2;
 			AIFunction(true, direction);
 		}
+
+		if (searchDoor && !chasing) {
+			if (searchPlayer)
+				SearchDoor(true);
+			else
+				SearchDoor(false);
+		}
 	}
 
-	if (searchDoor && !chasing) {
-		if (searchPlayer)
-			SearchDoor(true);
-		else
-			SearchDoor(false);
+	if (punch) {
+		HittingPlayer();
 	}
+
+	//AvoidObstacles();
 }
 
 void Stalker::AIFunction(bool close, int direction)
@@ -327,6 +371,36 @@ void Stalker::AIFunction(bool close, int direction)
 	}
 }
 
+void Stalker::AvoidObstacles()
+{
+	//avoid = false; 
+
+	avoidanceRays.clear();
+	avoidanceRays.push_back(visionRays[0]);
+	avoidanceRays.push_back(visionRays[5]);
+	avoidanceRays.push_back(visionRays[10]);
+
+	if (!avoid) {
+		for (int i = 0; i < 3; i++) {
+			float d = Distance(m_pos, Vector2f(avoidanceRays[i].second.m_point.x * SCALE, avoidanceRays[i].second.m_point.y * SCALE));
+			if (d < avoidDistance) {
+				if (i == 0)
+					orientation = VectorToAngle(avoidanceRays[i].second.m_normal);
+				else
+					orientation = VectorToAngle(avoidanceRays[i].second.m_normal) + 180;
+				avoidPoint = Vector2f(avoidanceRays[i].second.m_point.x * SCALE, avoidanceRays[i].second.m_point.y * SCALE);
+				avoid = true;
+				break;
+			}
+		}
+	}
+	else {
+		if (Distance(m_pos, avoidPoint) > 20) {
+			avoid = false;
+		}
+	}
+}
+
 void Stalker::LookAround()
 {
 	if (!lookRight) {
@@ -342,7 +416,7 @@ void Stalker::LookAround()
 			searchOrientation = 0;
 			if (searchPlayer) {
 				movementTarget = doorLocation;
-				door = true;
+				searchDoor = true;
 				searchPlayer = false;
 			}
 		}
@@ -405,32 +479,18 @@ void Stalker::SearchPlayer()
 	int below = 1;
 	bool breakOut = false;
 
-	if (visionRays[centre].second.objectName == "Player") {
-		//movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
-		playerSpotted = true;
+	if (visionRays[centre].second.objectName == "Player") { 
 		spottedPlayer = static_cast<Player*>(visionRays[centre].second.data);
-		lookAround = false;
-		searchOrientation = 0;
 		breakOut = true;
 	}
 
-	while ((below < centre && above < centre) && !breakOut) {
-		if (visionRays[centre + above].second.objectName == "Player") {
-			//movementTarget = Vector2f(visionRays[centre + above].first.p2.x * SCALE, visionRays[centre + above].first.p2.y * SCALE); 
-			playerSpotted = true;
-			chasing = true;
+	while ((below <= centre && above <= centre) && !breakOut) {
+		if (visionRays[centre + above].second.objectName == "Player") { 
 			spottedPlayer = static_cast<Player*>(visionRays[centre + above].second.data);
-			lookAround = false;
-			searchOrientation = 0;
 			breakOut = true;
 		}
-		else if (visionRays[centre - below].second.objectName == "Player") {
-			//movementTarget = Vector2f(visionRays[centre - below].first.p2.x * SCALE, visionRays[centre - below].first.p2.y * SCALE);
-			playerSpotted = true;
-			chasing = true;
+		else if (visionRays[centre - below].second.objectName == "Player") { 
 			spottedPlayer = static_cast<Player*>(visionRays[centre - below].second.data);
-			lookAround = false;
-			searchOrientation = 0;
 			breakOut = true;
 		}
 		else {
@@ -438,31 +498,88 @@ void Stalker::SearchPlayer()
 			below++;
 		}
 	}
+
+	if (breakOut) {
+		playerSpotted = true; 
+		lookAround = false;
+		chasing = true;
+		searchOrientation = 0;
+		breakOut = true;
+	}
 }
 
 void Stalker::SpottedAI()
 {
-	int distance = 40;
+	int distance = 20;
+	
+	if (spottedRay.second.objectName == "Player" || difftime(time(&timer), playerChaseTimer) < 3) {
+		nearDoor = false;
+		if (Distance(m_pos, Vector2f(spottedRay.second.m_point.x * SCALE, spottedRay.second.m_point.y * SCALE)) < distance) {
+			speed = 0.0;
+			if (!punch) {
+				punch = true;
+				cout << "Hitting Player" << endl;
+			}
+		}
+		else {
+			speed = 2;
+			movementTarget = Vector2f(spottedRay.second.m_point.x * SCALE, spottedRay.second.m_point.y * SCALE);
+		}
+	}
 
-	if (spottedRay.second.objectName != "Player") {
-		spottedPlayer = false;
-		if (Distance(m_pos, Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE)) < distance) {
+	else if (spottedRay.second.objectName != "Player") {
+		if (difftime(time(&timer), playerChaseTimer) > 4)
+			playerChaseTimer = time(&timer);
+
+		//if (Distance(m_pos, Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE)) < distance) {
+		if (difftime(time(&timer), playerChaseTimer) > 3) {
+			speed = 2;
+			spottedPlayer = NULL;
 			chasing = false;
-			lookAround = true;
-			searchPlayer = true;
+			//lookAround = true;
+			searchPlayer = false;
 			searchDoor = true;
+			door = false;
+			playerSpotted = false;
 		}
 		else {
 			movementTarget = Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE);
 		}
 	}
 
-	else if (spottedRay.second.objectName == "Player") {
-		if (Distance(m_pos, Vector2f(spottedRay.second.m_point.x * SCALE, spottedRay.second.m_point.y * SCALE)) < distance) {
-			cout << "Hitting Player" << endl;
+}
+
+void Stalker::HittingPlayer()
+{
+	if (punchDistance < maxPunchDistance) {
+		punchDistance += 5;
+	}
+	else {
+		punchDirection = (punchDirection == 0) ? 1 : 0;
+		/*if (punchDirection == 0) {
+			animatedPunchLeft.stop();
+			animatedPunchRight.play(punchRight);
 		}
 		else {
-			movementTarget = Vector2f(spottedRay.second.m_point.x * SCALE, spottedRay.second.m_point.y * SCALE);
-		}
+			animatedPunchRight.stop();
+			animatedPunchLeft.play(punchLeft);
+		}*/
+		punchDistance = 0;
+		punch = false;
 	}
+}
+
+bool Stalker::HitPlayer()
+{
+	if (punch) {
+		punch = false;
+		punchDistance = 0;
+		return true;
+	}
+	return false;
+}
+
+float Stalker::VectorToAngle(b2Vec2 vec)
+{
+	return atan2(vec.x, vec.y) * RADTODEG;
 }

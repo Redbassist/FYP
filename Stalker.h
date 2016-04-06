@@ -14,8 +14,10 @@ private:
 	sf::Clock frameClock;
 	time_t timer;
 	time_t doorSearchTimer;
+	time_t playerChaseTimer;
 
 	vector<std::pair<b2RayCastInput, RayCastCallBack>> visionRays;
+	vector<std::pair<b2RayCastInput, RayCastCallBack>> avoidanceRays;
 	int numberRays;
 	std::pair<b2RayCastInput, RayCastCallBack> spottedRay;
 
@@ -32,17 +34,29 @@ private:
 	bool nearDoor = false;
 	bool nearLastSpot = false;
 	bool lostPlayer = false;
+	bool avoid = false;
 
 	int searchDirection;
 	Player* spottedPlayer;
 
+	int avoidDistance;
+	Vector2f avoidPoint;
+
 	sf::Vector2f doorLocation;
+
+	b2Body* punchbody;
+	b2FixtureDef punchfixtureDef;
+	bool punch = false;
+	int punchDirection = 0;
+	int punchDistance = 0;
+	int maxPunchDistance = 55;
 
 public:
 	Stalker(Vector2f);
 	~Stalker();
 	void LoadAssets();
 	void createBox2dBody();
+	void createPunchBox2dBody();
 	void CreateRays();
 	void Update();
 	void UpdateRays();
@@ -50,10 +64,14 @@ public:
 	void Movement();
 	void AI();
 	void AIFunction(bool, int);
+	void AvoidObstacles();
 	void LookAround();
 	void SearchDoor(bool onlyFind);
 	void SearchPlayer();
 	void SpottedAI();
+	void HittingPlayer();
+	bool HitPlayer();
+	float VectorToAngle(b2Vec2 vec);
 };
 
 #endif

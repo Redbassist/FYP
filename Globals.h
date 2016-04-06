@@ -21,4 +21,5 @@ enum _entityCategory {
 	PUNCH = 0x0032,
 	FILLER = 0x0036,
 	ENEMY = 0X0040,
+	ENEMYPUNCH = 0X0044,
 };

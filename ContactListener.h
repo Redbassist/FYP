@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Item.h"
 #include "Container.h"
+#include "Stalker.h"
 
 class ContactListener : public b2ContactListener { 
 public: 
@@ -55,6 +56,23 @@ public:
 				static_cast<Player*>(bodyUserData1)->TouchingDoor(static_cast<Door*>(bodyUserData2));
 			}
 		} 
+		else if (fixAType == "Player" && fixBType == "EnemyPunch"
+			|| fixAType == "EnemyPunch" && fixBType == "Player") {
+			if (fixAType == "Player") {
+				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
+				if (static_cast<Stalker*>(bodyUserData2)->HitPlayer()) {
+					static_cast<Player*>(bodyUserData1)->TakeDamage(0);
+				}
+			}
+			else if (fixBType == "Player") {
+				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
+				if (static_cast<Stalker*>(bodyUserData2)->HitPlayer()) {
+					static_cast<Player*>(bodyUserData1)->TakeDamage(0);
+				}
+			}
+		}
 		else if (fixAType == "Enemy" && fixBType == "Door"
 			|| fixAType == "Door" && fixBType == "Enemy") {
 			if (fixAType == "Door") {
