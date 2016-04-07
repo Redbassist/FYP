@@ -11,6 +11,13 @@ private:
 	float SCALE = 30.0f; 
 	float searchOrientation;  
 
+	Texture m_AnimationLegsTexture;
+	Animation legsIdle;
+	Animation legsMoving;
+	Animation* currentLegAnimation;
+	AnimatedSprite animatedLegSprite;
+
+
 	sf::Clock frameClock;
 	time_t timer;
 	time_t doorSearchTimer;
@@ -36,6 +43,8 @@ private:
 	bool lostPlayer = false;
 	bool avoid = false;
 
+	bool moving;
+
 	int searchDirection;
 	Player* spottedPlayer;
 
@@ -55,6 +64,8 @@ public:
 	Stalker(Vector2f);
 	~Stalker();
 	void LoadAssets();
+	void EasyLoadAssetsAnimation(Texture * t, string file, Animation * anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current);
+	void EasyLoadAssetsAnimation(Texture * t, string file, Animation * anim, int frames, int columns, int rows, int individualWidth, int individualHeight);
 	void createBox2dBody();
 	void createPunchBox2dBody();
 	void CreateRays();

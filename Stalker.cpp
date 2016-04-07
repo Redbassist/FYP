@@ -23,11 +23,36 @@ Stalker::~Stalker()
 
 void Stalker::LoadAssets()
 {
+	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "stalkerLegs", &legsIdle, 1, 1, 1, 36, 35, currentLegAnimation);
+	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "stalkerLegs", &legsMoving, 12, 12, 1, 36, 35);
+
+	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
+	animatedLegSprite.setOrigin(9, 17);
+	animatedLegSprite.setPosition(m_pos);
+	animatedLegSprite.setScale(1.8, 1.3);
+
 	phTexture.loadFromFile("Sprites/phEnemy.png");
 	phTexture.setSmooth(false);
 	phSprite.setTexture(phTexture);
 	phSprite.setTextureRect(sf::IntRect(0, 0, phTexture.getSize().x, phTexture.getSize().y));
 	phSprite.setOrigin(phTexture.getSize().x / 2, phTexture.getSize().y / 2);
+}
+
+void Stalker::EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current)
+{
+	t->loadFromFile("Sprites/" + file + ".png");
+	t->setSmooth(false);
+	anim->setSpriteSheet(*t);
+	anim->addFrames(frames, columns, rows, individualWidth, individualHeight);
+	current = anim;
+}
+
+void Stalker::EasyLoadAssetsAnimation(Texture*t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight)
+{
+	t->loadFromFile("Sprites/" + file + ".png");
+	t->setSmooth(false);
+	anim->setSpriteSheet(*t);
+	anim->addFrames(frames, columns, rows, individualWidth, individualHeight);
 }
 
 void Stalker::createBox2dBody()
@@ -103,6 +128,9 @@ void Stalker::Update()
 	else if (difftime(time(&timer), doorSearchTimer) > 5) {
 		searchDoor = true;
 	}
+
+	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	animatedLegSprite.setRotation(orientation);
 }
 
 void Stalker::UpdateRays()
@@ -130,10 +158,26 @@ void Stalker::UpdateRays()
 
 void Stalker::Draw()
 {
-	phSprite.setPosition(m_pos);
+	sf::Time frameTime = frameClock.restart();
+
+	if (moving) {
+
+		currentLegAnimation = &legsMoving;
+	}
+	else {
+		currentLegAnimation = &legsIdle;
+	}
+
+	animatedLegSprite.play(*currentLegAnimation);
+	animatedLegSprite.update(frameTime);
+
+	window->draw(animatedLegSprite);
+
+	/*phSprite.setPosition(m_pos);
 	phSprite.setRotation(orientation);
-	window->draw(phSprite);
-	for (int i = 0; i < numberRays; i++) {
+	window->draw(phSprite);*/
+
+	/*for (int i = 0; i < numberRays; i++) {
 		sf::VertexArray line(sf::LinesStrip, 2);
 
 		// define the position of the triangle's points
@@ -149,11 +193,12 @@ void Stalker::Draw()
 			line[1].color = sf::Color::Red;
 
 		window->draw(line);
-	}
+	}*/
 }
 
 void Stalker::Movement()
 {
+	moving = false;
 	b2Vec2 position = body->GetPosition();
 	int centre = numberRays / 2;
 
@@ -177,6 +222,7 @@ void Stalker::Movement()
 		//directionVector = Normalize(directionVector);
 		directionVector *= speed;
 
+		moving = true;
 		position += b2Vec2(directionVector.x / SCALE, directionVector.y / SCALE);
 	}
 
@@ -193,6 +239,7 @@ void Stalker::Movement()
 		//directionVector = Normalize(directionVector);
 		directionVector *= speed;
 
+		moving = true;
 		position += b2Vec2(directionVector.x / SCALE, directionVector.y / SCALE);
 	}
 

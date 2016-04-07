@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="64" tileheight="64" nextobjectid="1070">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="64" tileheight="64" nextobjectid="1130">
  <tileset firstgid="1" name="tiles" tilewidth="64" tileheight="64" tilecount="70" columns="14">
   <image source="tiles.png" width="896" height="320"/>
  </tileset>
@@ -125,6 +125,66 @@
   <object id="753" name="CabinL" x="5525" y="1019" width="350" height="250"/>
   <object id="754" name="CabinL" x="5465" y="1803" width="350" height="250"/>
   <object id="757" name="Enemy" x="2374.54" y="3392.48" width="32" height="32"/>
+  <object id="1070" name="Enemy" x="2477.94" y="3644.61" width="32" height="32"/>
+  <object id="1071" name="Enemy" x="2923.39" y="3508.24" width="32" height="32"/>
+  <object id="1072" name="Enemy" x="2920.36" y="3462.79" width="32" height="32"/>
+  <object id="1073" name="Enemy" x="2920.36" y="3459.76" width="32" height="32"/>
+  <object id="1074" name="Enemy" x="2935.52" y="3468.85" width="32" height="32"/>
+  <object id="1075" name="Enemy" x="2962.79" y="3532.48" width="32" height="32"/>
+  <object id="1076" name="Enemy" x="2977.94" y="3611.27" width="32" height="32"/>
+  <object id="1077" name="Enemy" x="2977.94" y="3690.06" width="32" height="32"/>
+  <object id="1078" name="Enemy" x="2953.7" y="3711.27" width="32" height="32"/>
+  <object id="1079" name="Enemy" x="2884" y="3723.39" width="32" height="32"/>
+  <object id="1080" name="Enemy" x="2799.15" y="3747.64" width="32" height="32"/>
+  <object id="1081" name="Enemy" x="2750.67" y="3738.55" width="32" height="32"/>
+  <object id="1082" name="Enemy" x="2665.82" y="3699.15" width="32" height="32"/>
+  <object id="1083" name="Enemy" x="2629.45" y="3687.03" width="32" height="32"/>
+  <object id="1084" name="Enemy" x="2626.42" y="3680.97" width="32" height="32"/>
+  <object id="1085" name="Enemy" x="2608.24" y="3635.52" width="32" height="32"/>
+  <object id="1086" name="Enemy" x="2571.88" y="3577.94" width="32" height="32"/>
+  <object id="1087" name="Enemy" x="2565.82" y="3556.73" width="32" height="32"/>
+  <object id="1088" name="Enemy" x="2562.79" y="3493.09" width="32" height="32"/>
+  <object id="1089" name="Enemy" x="2580.97" y="3429.45" width="32" height="32"/>
+  <object id="1090" name="Enemy" x="2617.33" y="3396.12" width="32" height="32"/>
+  <object id="1091" name="Enemy" x="2647.64" y="3393.09" width="32" height="32"/>
+  <object id="1092" name="Enemy" x="2668.85" y="3426.42" width="32" height="32"/>
+  <object id="1093" name="Enemy" x="2677.94" y="3480.97" width="32" height="32"/>
+  <object id="1094" name="Enemy" x="2677.94" y="3580.97" width="32" height="32"/>
+  <object id="1095" name="Enemy" x="2665.82" y="3629.45" width="32" height="32"/>
+  <object id="1096" name="Enemy" x="2632.48" y="3641.58" width="32" height="32"/>
+  <object id="1097" name="Enemy" x="2547.64" y="3668.85" width="32" height="32"/>
+  <object id="1098" name="Enemy" x="2484" y="3677.94" width="32" height="32"/>
+  <object id="1099" name="Enemy" x="2453.7" y="3677.94" width="32" height="32"/>
+  <object id="1100" name="Enemy" x="2423.39" y="3671.88" width="32" height="32"/>
+  <object id="1101" name="Enemy" x="2411.27" y="3668.85" width="32" height="32"/>
+  <object id="1102" name="Enemy" x="2405.21" y="3665.82" width="32" height="32"/>
+  <object id="1103" name="Enemy" x="2384" y="3650.67" width="32" height="32"/>
+  <object id="1104" name="Enemy" x="2359.76" y="3623.39" width="32" height="32"/>
+  <object id="1105" name="Enemy" x="2362.79" y="3547.64" width="32" height="32"/>
+  <object id="1106" name="Enemy" x="2387.03" y="3484" width="32" height="32"/>
+  <object id="1107" name="Enemy" x="2414.3" y="3468.85" width="32" height="32"/>
+  <object id="1108" name="Enemy" x="2487.03" y="3462.79" width="32" height="32"/>
+  <object id="1109" name="Enemy" x="2599.15" y="3462.79" width="32" height="32"/>
+  <object id="1110" name="Enemy" x="2708.24" y="3490.06" width="32" height="32"/>
+  <object id="1111" name="Enemy" x="2808.24" y="3562.79" width="32" height="32"/>
+  <object id="1112" name="Enemy" x="2877.94" y="3620.36" width="32" height="32"/>
+  <object id="1113" name="Enemy" x="2871.88" y="3659.76" width="32" height="32"/>
+  <object id="1114" name="Enemy" x="2832.48" y="3714.3" width="32" height="32"/>
+  <object id="1115" name="Enemy" x="2787.03" y="3735.52" width="32" height="32"/>
+  <object id="1116" name="Enemy" x="2753.7" y="3747.64" width="32" height="32"/>
+  <object id="1117" name="Enemy" x="2690.06" y="3765.82" width="32" height="32"/>
+  <object id="1118" name="Enemy" x="2638.55" y="3787.03" width="32" height="32"/>
+  <object id="1119" name="Enemy" x="2626.42" y="3790.06" width="32" height="32"/>
+  <object id="1120" name="Enemy" x="2599.15" y="3799.15" width="32" height="32"/>
+  <object id="1121" name="Enemy" x="2584" y="3799.15" width="32" height="32"/>
+  <object id="1122" name="Enemy" x="2577.94" y="3799.15" width="32" height="32"/>
+  <object id="1123" name="Enemy" x="2547.64" y="3793.09" width="32" height="32"/>
+  <object id="1124" name="Enemy" x="2532.48" y="3790.06" width="32" height="32"/>
+  <object id="1125" name="Enemy" x="2523.39" y="3787.03" width="32" height="32"/>
+  <object id="1126" name="Enemy" x="2499.15" y="3784" width="32" height="32"/>
+  <object id="1127" name="Enemy" x="2484" y="3784" width="32" height="32"/>
+  <object id="1128" name="Enemy" x="2484" y="3784" width="32" height="32"/>
+  <object id="1129" name="Enemy" x="2438.55" y="3780.97" width="32" height="32"/>
  </objectgroup>
  <objectgroup name="Player">
   <object id="15" name="Player" x="2504.24" y="3365.03" width="80" height="96"/>
