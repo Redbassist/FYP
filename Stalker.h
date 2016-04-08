@@ -17,6 +17,12 @@ private:
 	Animation* currentLegAnimation;
 	AnimatedSprite animatedLegSprite;
 
+	Texture m_AnimationWalkTexture;
+	Animation topIdle;
+	Animation topMoving;
+	Animation* currentTopAnimation;
+	AnimatedSprite animatedTopSprite;
+
 
 	sf::Clock frameClock;
 	time_t timer;

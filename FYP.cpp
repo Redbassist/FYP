@@ -95,7 +95,7 @@ int main()
 		window->clear();
 		window->draw(*ml);
 		sceneManager->Draw();
-		//world->DrawDebugData();  
+		world->DrawDebugData();  
 
 		window->display();
 

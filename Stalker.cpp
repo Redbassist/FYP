@@ -29,13 +29,15 @@ void Stalker::LoadAssets()
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(9, 17);
 	animatedLegSprite.setPosition(m_pos);
-	animatedLegSprite.setScale(1.8, 1.3);
+	animatedLegSprite.setScale(1.8, 1.3); 
 
-	phTexture.loadFromFile("Sprites/phEnemy.png");
-	phTexture.setSmooth(false);
-	phSprite.setTexture(phTexture);
-	phSprite.setTextureRect(sf::IntRect(0, 0, phTexture.getSize().x, phTexture.getSize().y));
-	phSprite.setOrigin(phTexture.getSize().x / 2, phTexture.getSize().y / 2);
+	EasyLoadAssetsAnimation(&m_AnimationWalkTexture, "stalkerWalk", &topIdle, 1, 1, 1, 36, 35, currentTopAnimation);
+	//EasyLoadAssetsAnimation(&m_AnimationWalkTexture, "stalkerWalk", &legsMoving, 12, 12, 1, 36, 35);
+
+	animatedTopSprite = AnimatedSprite(sf::seconds(0.08), true, false);
+	animatedTopSprite.setOrigin(9, 17);
+	animatedTopSprite.setPosition(m_pos);
+	animatedTopSprite.setScale(1.8, 1.3);
 }
 
 void Stalker::EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current)
@@ -131,6 +133,8 @@ void Stalker::Update()
 
 	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedLegSprite.setRotation(orientation);
+	animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	animatedTopSprite.setRotation(orientation);
 }
 
 void Stalker::UpdateRays()
@@ -161,17 +165,22 @@ void Stalker::Draw()
 	sf::Time frameTime = frameClock.restart();
 
 	if (moving) {
-
+		currentTopAnimation = &topIdle;
 		currentLegAnimation = &legsMoving;
 	}
 	else {
+		currentTopAnimation = &topIdle;
 		currentLegAnimation = &legsIdle;
 	}
 
 	animatedLegSprite.play(*currentLegAnimation);
 	animatedLegSprite.update(frameTime);
 
+	animatedTopSprite.play(*currentTopAnimation);
+	animatedTopSprite.update(frameTime);
+
 	window->draw(animatedLegSprite);
+	window->draw(animatedTopSprite);
 
 	/*phSprite.setPosition(m_pos);
 	phSprite.setRotation(orientation);
