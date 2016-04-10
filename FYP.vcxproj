@@ -173,6 +173,7 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="FillerObject.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Helpers.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="FillerObject.cpp" />
     <ClCompile Include="FYP.cpp" />
     <ClCompile Include="Globals.cpp" />

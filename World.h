@@ -8,8 +8,8 @@
 #include "Container.h"
 #include "Item.h"
 #include "Player.h"
-#include "FillerObject.h"
-#include "Stalker.h"
+#include "FillerObject.h" 
+#include "EnemyManager.h"
 #include "Tree.h"
 
 using namespace sf;
@@ -17,14 +17,14 @@ using namespace sf;
 class World {
 private:
 	Player* player;
+	EnemyManager enemyManager;
 	Texture m_texture;
 	Sprite m_sprite;  
 	std::vector<House*> houses;
 	std::vector<Container*> containers;
 	std::vector<Item*> items;
 	std::vector<Tree*> trees;
-	std::vector<FillerObject*> fillers;
-	std::vector<Stalker*> stalkers;
+	std::vector<FillerObject*> fillers; 
 		
 public:
 	World();

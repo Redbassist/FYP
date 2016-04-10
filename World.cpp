@@ -13,11 +13,13 @@ void World::CreateAssets() {
 	m_sprite.setOrigin(m_texture.getSize().x / 2, m_texture.getSize().y / 2);
 	m_sprite.setScale(Vector2f(0.4, 0.4));
 	m_sprite.setPosition(0, 0);
+
+	enemyManager = EnemyManager();
 }
 
 void World::CreateLevel() {
 	View view = View(FloatRect(0, 0, 1280, 720));
-	view.zoom(0.7);
+	view.zoom(5);
 	window->setView(view);  
 
 	for (auto layer = ml->GetLayers().begin(); layer != ml->GetLayers().end(); ++layer)
@@ -51,10 +53,7 @@ void World::CreateLevel() {
 				}
 				else if (object._Ptr->GetName() == "Military") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 5));
-				}
-				else if (object._Ptr->GetName() == "Enemy") {
-					stalkers.push_back(new Stalker(Vector2f(object._Ptr->GetPosition())));
-				}
+				} 
 			}
 		}
 
@@ -74,21 +73,16 @@ void World::CreateLevel() {
 			}
 		}
 	}
-
 } 
 
 void World::Update() {
 	player->Update();
+	enemyManager.Update(player);
 	
 	int size = trees.size();
 	for (int i = 0; i < size; i++) {
 		trees[i]->FadeOut(player->GetPosition());
-	}
-
-	size = stalkers.size();
-	for (int i = 0; i < size; i++) {
-		stalkers[i]->Update();
-	}
+	} 
 }
 
 void World::Draw() {
@@ -112,19 +106,9 @@ void World::Draw() {
 			items[i]->Draw();
 	}
 
-	player->Draw();
+	enemyManager.Draw();
 
-	size = stalkers.size();
-	for (int i = 0; i < size; i++) {
-		if (stalkers[i]->destroy) {
-			delete stalkers[i];
-			stalkers.erase(stalkers.begin() + i);
-			size = stalkers.size();
-			i--;
-		}
-		else
-			stalkers[i]->Draw();
-	}
+	player->Draw(); 
 
 	size = fillers.size();
 	for (int i = 0; i < size; i++) {
