@@ -6,6 +6,7 @@
 #include "Globals.h"
 #include "Animation.h"
 #include "AnimatedSprite.h" 
+#include "AudioManager.h"
 #include "Door.h"
 #include "Player.h"
  
@@ -27,6 +28,9 @@ protected:
 	b2FixtureDef fixtureDef; 
 
 public:
+	bool alive = true;
+	bool destroy = false;
+
 	Enemy(Vector2f); 
 	~Enemy();
 	virtual void LoadAssets();
@@ -34,6 +38,7 @@ public:
 	virtual void Update(); 
 	virtual void Draw();
 	virtual void Movement();   
+	void DropHealth(int amount);
 	float GetRotationAngle();
 	Vector2f Normalize(Vector2f);
 	float Distance(Vector2f, Vector2f);

@@ -136,6 +136,13 @@ void Player::LoadAssets() {
 	drinkBarSprite.setTextureRect(sf::IntRect(0, 0, statusBarTexture.getSize().x, statusBarTexture.getSize().y));
 	drinkBarSprite.setScale(0.3f, 0.3f);
 
+	bloodScreenTexture.loadFromFile("Sprites/bloodScreen.png");
+	bloodScreenTexture.setSmooth(true);
+	bloodScreenSprite.setTexture(bloodScreenTexture);
+	bloodScreenSprite.setTextureRect(sf::IntRect(0, 0, bloodScreenTexture.getSize().x, bloodScreenTexture.getSize().y));
+	bloodScreenSprite.setColor(sf::Color(255, 255, 255, 0));
+	bloodScreenSprite.setScale(0.7, 0.7);
+
 	//setting the text inside the button
 	watchFont.loadFromFile("digital.ttf");
 
@@ -321,6 +328,8 @@ void Player::Draw() {
 	if (touchedContainer != NULL) {
 		touchedContainer->DrawUI();
 	}
+
+	window->draw(bloodScreenSprite);
 }
 
 void Player::Update() {
@@ -328,6 +337,7 @@ void Player::Update() {
 	Movement();
 	Interaction();
 	SetStats();
+	UpdateBloodMask();
 
 	//setting the position of the sprite to the physics body
 	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
@@ -512,6 +522,10 @@ void Player::Interaction() {
 	}
 
 	if (actions.swing && (meleeAxe || meleeBat)) {
+		if (!doDamage) {
+			doDamage = true;
+			doingMeleeDamage = true;
+		}
 		if (swingDirection == 0) {
 			meleeAngle += swingSpeed;
 		}
@@ -519,6 +533,8 @@ void Player::Interaction() {
 			meleeAngle -= swingSpeed;
 		}
 		if (meleeAngle >= 160) {
+			doDamage = false;
+			doingMeleeDamage = false;
 			swingDirection = 1;
 			animatedSwingAxeRight.stop();
 			if (meleeAxe)
@@ -539,10 +555,17 @@ void Player::Interaction() {
 	}
 
 	if (actions.punch && punch) {
+		if (!doDamage) {
+			doDamage = true;
+			doingPunchDamage = true;
+		}
+
 		if (punchDistance < maxPunchDistance) {
 			punchDistance += 5;
 		}
 		else {
+			doDamage = false;
+			doingPunchDamage = false;
 			punchDirection = (punchDirection == 0) ? 1 : 0;
 			if (punchDirection == 0) {
 				animatedPunchLeft.stop();
@@ -562,7 +585,7 @@ void Player::Interaction() {
 			if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > rifleShootSpeed) {
 				if (hotbarItem->RemoveAmmo(1).first) {
 					AudioManager::GetInstance()->playSound("rifleshot", m_pos);
-					RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+					RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
 				}
 				else {
 					AudioManager::GetInstance()->playSound("pistoldry", m_pos);
@@ -576,11 +599,11 @@ void Player::Interaction() {
 				if (hotbarItem->RemoveAmmo(1).first) {
 					if (pistol) {
 						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
-						RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+						RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
 					}
 					else if (shotgun && std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shotgunShootSpeed) {
 						AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
-						RayCastManager::GetInstance()->CastRay(gunRay.p1, gunRay.p2);
+						RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
 						lastShot = Clock::now();
 					}
 				}
@@ -921,6 +944,9 @@ void Player::WatchUIPosition() {
 	}
 	else
 		heartBeatX = 0;
+
+	//drawing the blood mask in the right place
+	bloodScreenSprite.setPosition(center - Vector2f(size.x /2, size.y / 2));
 }
 
 void Player::DrawWatch() {
@@ -939,7 +965,26 @@ void Player::TakeDamage(int type)
 	if (type == 0) {
 		health -= 1.5f;
 		AudioManager::GetInstance()->playSound("groan", m_pos);
+		BloodMask();
 	}
+}
+
+void Player::BloodMask()
+{ 
+	bloodScreenAlpha = 255;
+	bloodScreenSprite.setColor((sf::Color(255, 255, 255, bloodScreenAlpha)));
+}
+
+void Player::UpdateBloodMask()
+{
+	//fading out the blood mask
+	float alpha = bloodScreenSprite.getColor().a;
+	float desiredAlpha = 150 - (150 * (health / 10));
+
+	if (alpha > desiredAlpha)
+		alpha -= 1;
+
+	bloodScreenSprite.setColor((sf::Color(255, 255, 255, alpha)));
 }
 
 float Player::getRotationAngle() {

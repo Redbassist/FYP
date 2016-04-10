@@ -51,7 +51,6 @@ private:
 	time_t thirstTick;
 	float thirstRate = 0.5;
 
-
 	keyActions actions;
 	Texture m_AnimationLegsTexture;
 	Texture m_AnimationTopTexture;
@@ -100,6 +99,10 @@ private:
 	Text heartRateText;
 	Text currentTime;
 
+	Texture bloodScreenTexture;
+	Sprite bloodScreenSprite;
+	int bloodScreenAlpha = 0;
+
 	sf::Texture pointLightTexture;
 	shared_ptr<ltbl::LightPointEmission> light;
 	float lightSize = 20;
@@ -119,6 +122,7 @@ private:
 	b2FixtureDef meleefixtureDef;
 	b2RevoluteJointDef meleeJointDef;
 
+	bool doDamage = false;
 	bool punch = false;
 	int punchDirection = 0;
 	int punchDistance = 0;
@@ -163,6 +167,9 @@ private:
 	time_t timer;
 
 public:
+	bool doingPunchDamage = false;
+	bool doingMeleeDamage = false;
+
 	Player(Vector2f);
 	void LoadAssets();
 	void EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight);
@@ -192,6 +199,8 @@ public:
 	void WatchUIPosition();
 	void DrawWatch();
 	void TakeDamage(int type);
+	void BloodMask();
+	void UpdateBloodMask();
 	Vector2f GetPosition() { return m_pos; }
 };
 

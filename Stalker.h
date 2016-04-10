@@ -11,6 +11,9 @@ private:
 	float SCALE = 30.0f; 
 	float searchOrientation;  
 
+	Texture headTexture;
+	Sprite headSprite;
+
 	Texture m_AnimationLegsTexture;
 	Animation legsIdle;
 	Animation legsMoving;
@@ -23,6 +26,17 @@ private:
 	Animation* currentTopAnimation;
 	AnimatedSprite animatedTopSprite;
 
+	Texture m_PunchLeftTexture;
+	Animation punchLeft; 
+	AnimatedSprite animatedPunchLeft;
+
+	Texture m_PunchRightTexture;
+	Animation punchRight;
+	AnimatedSprite animatedPunchRight;
+
+	Texture m_deathTexture;
+	Animation death;
+	AnimatedSprite animatedDeath;
 
 	sf::Clock frameClock;
 	time_t timer;
@@ -62,9 +76,15 @@ private:
 	b2Body* punchbody;
 	b2FixtureDef punchfixtureDef;
 	bool punch = false;
+	bool damage = true;
 	int punchDirection = 0;
 	int punchDistance = 0;
-	int maxPunchDistance = 55;
+	int maxPunchDistance;
+
+	time_t punchTimer;
+
+	time_t deathTimer;
+	bool collapse;
 
 public:
 	Stalker(Vector2f);

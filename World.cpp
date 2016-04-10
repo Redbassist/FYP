@@ -116,7 +116,14 @@ void World::Draw() {
 
 	size = stalkers.size();
 	for (int i = 0; i < size; i++) {
-		stalkers[i]->Draw();
+		if (stalkers[i]->destroy) {
+			delete stalkers[i];
+			stalkers.erase(stalkers.begin() + i);
+			size = stalkers.size();
+			i--;
+		}
+		else
+			stalkers[i]->Draw();
 	}
 
 	size = fillers.size();

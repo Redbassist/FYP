@@ -13,8 +13,11 @@ Stalker::Stalker(Vector2f p) : Enemy(p)
 	orientation = GetRotationAngle();
 	doorSearchTimer = time(&timer);
 	playerChaseTimer = time(&timer);
+	punchTimer = time(&timer);
+	maxPunchDistance = 80;
 	spottedPlayer = NULL;
 	nearDoor = false;
+	collapse = false;
 }
 
 Stalker::~Stalker()
@@ -29,15 +32,51 @@ void Stalker::LoadAssets()
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(9, 17);
 	animatedLegSprite.setPosition(m_pos);
-	animatedLegSprite.setScale(1.8, 1.3); 
+	animatedLegSprite.setScale(1.6, 1.0);
 
 	EasyLoadAssetsAnimation(&m_AnimationWalkTexture, "stalkerWalk", &topIdle, 1, 1, 1, 36, 35, currentTopAnimation);
-	//EasyLoadAssetsAnimation(&m_AnimationWalkTexture, "stalkerWalk", &legsMoving, 12, 12, 1, 36, 35);
+	EasyLoadAssetsAnimation(&m_AnimationWalkTexture, "stalkerWalk", &topMoving, 12, 4, 3, 36, 35);
 
 	animatedTopSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedTopSprite.setOrigin(9, 17);
 	animatedTopSprite.setPosition(m_pos);
 	animatedTopSprite.setScale(1.8, 1.3);
+
+	EasyLoadAssetsAnimation(&m_PunchRightTexture, "stalkerRightPunch", &punchRight, 5, 5, 1, 36, 35);
+	EasyLoadAssetsAnimation(&m_PunchLeftTexture, "stalkerLeftPunch", &punchLeft, 5, 5, 1, 36, 35);
+
+	animatedPunchRight = AnimatedSprite(sf::seconds(0.03), true, false);
+	animatedPunchRight.setOrigin(9, 17);
+	animatedPunchRight.setPosition(m_pos);
+	animatedPunchRight.setScale(1.8, 1.3);
+	animatedPunchRight.play(punchRight);
+
+	animatedPunchLeft = AnimatedSprite(sf::seconds(0.03), true, false);
+	animatedPunchLeft.setOrigin(9, 17);
+	animatedPunchLeft.setPosition(m_pos);
+	animatedPunchLeft.setScale(1.8, 1.3);
+	animatedPunchLeft.play(punchLeft);
+
+	animatedPunchLeft = AnimatedSprite(sf::seconds(0.03), true, false);
+	animatedPunchLeft.setOrigin(9, 17);
+	animatedPunchLeft.setPosition(m_pos);
+	animatedPunchLeft.setScale(1.8, 1.3);
+	animatedPunchLeft.play(punchLeft);
+
+	EasyLoadAssetsAnimation(&m_deathTexture, "stalkerDeath", &death, 3, 3, 1, 45, 35);
+
+	animatedDeath = AnimatedSprite(sf::seconds(0.5), true, true);
+	animatedDeath.setOrigin(9, 17);
+	animatedDeath.setPosition(m_pos);
+	animatedDeath.setScale(1.8, 1.3);
+	animatedDeath.play(death);
+
+	headTexture.loadFromFile("Sprites/stalkerHead.png");
+	headTexture.setSmooth(false);
+	headSprite.setTexture(headTexture);
+	headSprite.setTextureRect(sf::IntRect(0, 0, headTexture.getSize().x, headTexture.getSize().y));
+	headSprite.setOrigin(13, 17);
+	headSprite.setScale(1.8, 1.3);
 }
 
 void Stalker::EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current)
@@ -67,7 +106,7 @@ void Stalker::createBox2dBody()
 	body = world->CreateBody(&bodyDef);
 
 	b2CircleShape circle;
-	circle.m_radius = 7 / SCALE;
+	circle.m_radius = 15 / SCALE;
 	fixtureDef.shape = &circle;
 
 	fixtureDef.density = 1;
@@ -118,23 +157,33 @@ void Stalker::CreateRays()
 
 void Stalker::Update()
 {
-	SearchPlayer();
-	UpdateRays();
-	AI();
-	Movement();
+	if (alive) {
+		SearchPlayer();
+		UpdateRays();
+		AI();
+		Movement();
 
-	if (door) {
-		doorSearchTimer = time(&timer);
+		if (door) {
+			doorSearchTimer = time(&timer);
+		}
+
+		else if (difftime(time(&timer), doorSearchTimer) > 5) {
+			searchDoor = true;
+		}
+
+		headSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+		headSprite.setRotation(orientation + searchOrientation);
+		animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+		animatedLegSprite.setRotation(orientation);
+		animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+		animatedTopSprite.setRotation(orientation);
+		animatedPunchLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+		animatedPunchLeft.setRotation(orientation);
+		animatedPunchRight.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+		animatedPunchRight.setRotation(orientation);
+		animatedDeath.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+		animatedDeath.setRotation(orientation);
 	}
-
-	else if (difftime(time(&timer), doorSearchTimer) > 5) {
-		searchDoor = true;
-	}
-
-	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
-	animatedLegSprite.setRotation(orientation);
-	animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
-	animatedTopSprite.setRotation(orientation);
 }
 
 void Stalker::UpdateRays()
@@ -164,27 +213,59 @@ void Stalker::Draw()
 {
 	sf::Time frameTime = frameClock.restart();
 
-	if (moving) {
-		currentTopAnimation = &topIdle;
-		currentLegAnimation = &legsMoving;
+	if (alive) {
+		if (moving) {
+			if (punch) {
+				currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
+			}
+			else {
+				currentTopAnimation = &topMoving;
+			}
+			currentLegAnimation = &legsMoving;
+		}
+		else {
+			if (punch) {
+				currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
+			}
+			else {
+				currentTopAnimation = &topIdle;
+			}
+			currentLegAnimation = &legsIdle;
+		}
+
+		animatedLegSprite.play(*currentLegAnimation);
+		animatedLegSprite.update(frameTime);
+		window->draw(animatedLegSprite);
+
+		if (punch) {
+			if (punchDirection == 0) {
+				window->draw(animatedPunchRight);
+				animatedPunchRight.update(frameTime);
+			}
+			else {
+				window->draw(animatedPunchLeft);
+				animatedPunchLeft.update(frameTime);
+			}
+		}
+		else {
+			animatedTopSprite.play(*currentTopAnimation);
+			animatedTopSprite.update(frameTime);
+			window->draw(animatedTopSprite);
+		}
+
+		window->draw(headSprite);
 	}
 	else {
-		currentTopAnimation = &topIdle;
-		currentLegAnimation = &legsIdle;
+		if (!collapse) { 
+			collapse = true; 
+			body->GetFixtureList()->SetUserData("Destroy");
+			punchbody->GetFixtureList()->SetUserData("Destroy");
+		}
+		else {
+			animatedDeath.update(frameTime);
+		}
+		window->draw(animatedDeath);
 	}
-
-	animatedLegSprite.play(*currentLegAnimation);
-	animatedLegSprite.update(frameTime);
-
-	animatedTopSprite.play(*currentTopAnimation);
-	animatedTopSprite.update(frameTime);
-
-	window->draw(animatedLegSprite);
-	window->draw(animatedTopSprite);
-
-	/*phSprite.setPosition(m_pos);
-	phSprite.setRotation(orientation);
-	window->draw(phSprite);*/
 
 	/*for (int i = 0; i < numberRays; i++) {
 		sf::VertexArray line(sf::LinesStrip, 2);
@@ -215,17 +296,42 @@ void Stalker::Movement()
 		LookAround();
 
 		for (int i = 0; i < numberRays; i++) {
-			if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80) {
-				movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
-				orientation = GetRotationAngle();
-				stop = false;
-				lookAround = false;
-				lookRight = false;
-				searchOrientation = 0;
+			if (i == 0) {
+				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
+					&& Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 30) {
+					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
+					orientation = GetRotationAngle();
+					stop = false;
+					lookAround = false;
+					lookRight = false;
+					searchOrientation = 0;
+				}
+			}
+			else if (i == numberRays - 1) {
+				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
+					&& Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 30) {
+					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
+					orientation = GetRotationAngle();
+					stop = false;
+					lookAround = false;
+					lookRight = false;
+					searchOrientation = 0;
+				}
+			}
+			else {
+				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
+					&& (Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 45
+						|| Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 45)) {
+					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
+					orientation = GetRotationAngle();
+					stop = false;
+					lookAround = false;
+					lookRight = false;
+					searchOrientation = 0;
+				}
 			}
 		}
 	}
-
 	else if (avoid) {
 		Vector2f directionVector((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
 		//directionVector = Normalize(directionVector);
@@ -239,16 +345,17 @@ void Stalker::Movement()
 		LookAround();
 	}
 
-	else if (Distance(m_pos, movementTarget) > 40 || door) {
+	else if (Distance(m_pos, movementTarget) > 40 || door || chasing) {
 
-		if (!nearDoor)
+		if (!nearDoor && !punch)
 			orientation = GetRotationAngle();
 
 		Vector2f directionVector((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
 		//directionVector = Normalize(directionVector);
 		directionVector *= speed;
 
-		moving = true;
+		if (speed > 0)
+			moving = true;
 		position += b2Vec2(directionVector.x / SCALE, directionVector.y / SCALE);
 	}
 
@@ -308,7 +415,9 @@ void Stalker::AI()
 			AIFunction(false, direction);
 		}
 
-		if (search && Distance(m_pos, Vector2f(visionRays[centre].second.m_point.x * SCALE, visionRays[centre].second.m_point.y * SCALE)) < 50) {
+		if (search && (Distance(m_pos, Vector2f(visionRays[centre].second.m_point.x * SCALE, visionRays[centre].second.m_point.y * SCALE)) < 50)
+			|| (Distance(m_pos, Vector2f(visionRays[centre + 1].second.m_point.x * SCALE, visionRays[centre + 1].second.m_point.y * SCALE)) < 50)
+			|| (Distance(m_pos, Vector2f(visionRays[centre - 1].second.m_point.x * SCALE, visionRays[centre - 1].second.m_point.y * SCALE)) < 50)) {
 			int direction = rand() % 2;
 			AIFunction(true, direction);
 		}
@@ -535,17 +644,17 @@ void Stalker::SearchPlayer()
 	int below = 1;
 	bool breakOut = false;
 
-	if (visionRays[centre].second.objectName == "Player") { 
+	if (visionRays[centre].second.objectName == "Player") {
 		spottedPlayer = static_cast<Player*>(visionRays[centre].second.data);
 		breakOut = true;
 	}
 
 	while ((below <= centre && above <= centre) && !breakOut) {
-		if (visionRays[centre + above].second.objectName == "Player") { 
+		if (visionRays[centre + above].second.objectName == "Player") {
 			spottedPlayer = static_cast<Player*>(visionRays[centre + above].second.data);
 			breakOut = true;
 		}
-		else if (visionRays[centre - below].second.objectName == "Player") { 
+		else if (visionRays[centre - below].second.objectName == "Player") {
 			spottedPlayer = static_cast<Player*>(visionRays[centre - below].second.data);
 			breakOut = true;
 		}
@@ -556,7 +665,7 @@ void Stalker::SearchPlayer()
 	}
 
 	if (breakOut) {
-		playerSpotted = true; 
+		playerSpotted = true;
 		lookAround = false;
 		chasing = true;
 		searchOrientation = 0;
@@ -566,29 +675,32 @@ void Stalker::SearchPlayer()
 
 void Stalker::SpottedAI()
 {
-	int distance = 20;
-	
-	if (spottedRay.second.objectName == "Player" || difftime(time(&timer), playerChaseTimer) < 3) {
+	int distance = 30;
+	int pDistance = 55;
+
+	if (spottedRay.second.objectName == "Player" || difftime(time(&timer), playerChaseTimer) < 1) {
 		nearDoor = false;
-		if (Distance(m_pos, Vector2f(spottedRay.second.m_point.x * SCALE, spottedRay.second.m_point.y * SCALE)) < distance) {
-			speed = 0.0;
-			if (!punch) {
+		if (Distance(m_pos, Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE)) < pDistance) {
+			if (!punch && difftime(time(&timer), punchTimer) > 1) {
 				punch = true;
 				cout << "Hitting Player" << endl;
 			}
 		}
+		if (Distance(m_pos, Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE)) < distance) {
+			speed = 0.0;
+		}
 		else {
 			speed = 2;
-			movementTarget = Vector2f(spottedRay.second.m_point.x * SCALE, spottedRay.second.m_point.y * SCALE);
+			movementTarget = Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE);
 		}
 	}
 
 	else if (spottedRay.second.objectName != "Player") {
-		if (difftime(time(&timer), playerChaseTimer) > 4)
+		if (difftime(time(&timer), playerChaseTimer) > 2)
 			playerChaseTimer = time(&timer);
 
 		//if (Distance(m_pos, Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE)) < distance) {
-		if (difftime(time(&timer), playerChaseTimer) > 3) {
+		if (difftime(time(&timer), playerChaseTimer) > 1) {
 			speed = 2;
 			spottedPlayer = NULL;
 			chasing = false;
@@ -596,6 +708,7 @@ void Stalker::SpottedAI()
 			searchPlayer = false;
 			searchDoor = true;
 			door = false;
+			doorSearchTimer = time(&timer);
 			playerSpotted = false;
 		}
 		else {
@@ -611,25 +724,26 @@ void Stalker::HittingPlayer()
 		punchDistance += 5;
 	}
 	else {
+		punchTimer = time(&timer);
 		punchDirection = (punchDirection == 0) ? 1 : 0;
-		/*if (punchDirection == 0) {
+		if (punchDirection == 0) {
 			animatedPunchLeft.stop();
 			animatedPunchRight.play(punchRight);
 		}
 		else {
 			animatedPunchRight.stop();
 			animatedPunchLeft.play(punchLeft);
-		}*/
+		}
 		punchDistance = 0;
 		punch = false;
+		damage = true;
 	}
 }
 
 bool Stalker::HitPlayer()
 {
-	if (punch) {
-		punch = false;
-		punchDistance = 0;
+	if (damage) {
+		damage = false;
 		return true;
 	}
 	return false;

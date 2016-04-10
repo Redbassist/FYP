@@ -61,6 +61,9 @@
     <Filter Include="Source Files\Enemies">
       <UniqueIdentifier>{e119b5ce-ff3b-4c94-9a5b-24769a71e177}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\RayCastCallbacks">
+      <UniqueIdentifier>{1a2aa5e7-f39f-47eb-a86b-1e0b716e5329}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -133,9 +136,6 @@
       <Filter>Header Files\Player</Filter>
     </ClInclude>
     <ClInclude Include="SFMLDebugDraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RayCastCallback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RayCastManager.h">
@@ -230,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="Stalker.h">
       <Filter>Header Files\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCastCallback.h">
+      <Filter>Header Files\RayCastCallbacks</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletRayCastCallback.h">
+      <Filter>Header Files\RayCastCallbacks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

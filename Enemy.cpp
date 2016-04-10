@@ -2,6 +2,7 @@
 
 Enemy::Enemy(Vector2f p) : m_pos(p)
 {
+	health = 100;
 }
 
 Enemy::~Enemy()
@@ -60,6 +61,24 @@ void Enemy::Movement()
 	orientation = GetRotationAngle();
 	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
 	body->SetTransform(position, orientation + DEGTORAD);
+}
+
+void Enemy::DropHealth(int amount)
+{
+	health -= amount;
+	if (health < 0) {
+		alive = false;
+		health = 0;
+	}
+	if (alive) {
+		int randomNoise = rand() % 2;
+		if (randomNoise == 0) {
+			AudioManager::GetInstance()->playSound("alienHit1", m_pos);
+		}
+		else {
+			AudioManager::GetInstance()->playSound("alienHit2", m_pos);
+		}
+	}
 }
   
 float Enemy::GetRotationAngle() {
