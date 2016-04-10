@@ -52,13 +52,16 @@ void EnemyManager::SpawnStalkers(Player * player)
 		bool spawned = false;
 
 		while (!spawned) {
-			float randX = rand() % (int)p4.x + (int)p3.x;
-			float randY = rand() % (int)p4.y + (int)p3.y;
+			float randX = rand() % (int)(p4.x - p3.x + 1) + (int)p3.x;
+			float randY = rand() % (int)(p4.y - p3.y + 1) + (int)p3.y;
 
-			if ((randX < p2.x || randX > p2.x + width) && (randY < p2.y || randY > p2.y + height)) {
-				stalkers.push_back(new Stalker(Vector2f(randX, randY)));
-				spawned = true;
+			if (randX > p2.x && randX < p2.x + width && randY > p2.y && randY < p2.y + height) {
+
 			}
+			else {
+				stalkers.push_back(new Stalker(Vector2f(randX, randY), player));
+				spawned = true;
+			} 
 		}
 
 		spawnDelay = rand() % 10 + 1;

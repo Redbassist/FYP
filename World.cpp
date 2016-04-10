@@ -19,7 +19,7 @@ void World::CreateAssets() {
 
 void World::CreateLevel() {
 	View view = View(FloatRect(0, 0, 1280, 720));
-	view.zoom(5);
+	view.zoom(0.7);
 	window->setView(view);  
 
 	for (auto layer = ml->GetLayers().begin(); layer != ml->GetLayers().end(); ++layer)

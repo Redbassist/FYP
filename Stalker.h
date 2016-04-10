@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "Globals.h" 
 #include "Enemy.h"
+#include "Player.h"
 
 class Stalker : public Enemy {
 private:
@@ -87,7 +88,7 @@ private:
 	bool collapse;
 
 public:
-	Stalker(Vector2f);
+	Stalker(Vector2f, Player* );
 	~Stalker();
 	void LoadAssets();
 	void EasyLoadAssetsAnimation(Texture * t, string file, Animation * anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current);

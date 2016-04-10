@@ -8,7 +8,7 @@ Effect::Effect(Texture * t, Vector2f pos, int frames, int columns, int rows, int
 {
 	animation.setSpriteSheet(*t);
 	animation.addFrames(frames, columns, rows, individualWidth, individualHeight);
-	animatedSprite = AnimatedSprite(sf::seconds(speed), true, false);
+	animatedSprite = AnimatedSprite(sf::seconds(speed), true, true);
 	animatedSprite.setOrigin(t->getSize().x / 2 / columns,t->getSize().y / 2 / rows);
 	animatedSprite.setPosition(pos);
 	animatedSprite.setScale(scale, scale);

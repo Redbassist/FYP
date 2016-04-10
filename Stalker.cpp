@@ -1,6 +1,6 @@
 #include "Stalker.h"
 
-Stalker::Stalker(Vector2f p) : Enemy(p)
+Stalker::Stalker(Vector2f pos, Player* p) : Enemy(pos)
 {
 	LoadAssets();
 	createBox2dBody();
@@ -10,7 +10,9 @@ Stalker::Stalker(Vector2f p) : Enemy(p)
 	speed = 2;
 	searchOrientation = 0;
 	avoidDistance = 15;
-	orientation = GetRotationAngle();
+	orientation = atan2(p->GetPosition().y - m_pos.y, p->GetPosition().x - m_pos.x) * RADTODEG;
+	movementTarget = m_pos + Vector2f((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
+	//orientation = GetRotationAngle();
 	doorSearchTimer = time(&timer);
 	playerChaseTimer = time(&timer);
 	punchTimer = time(&timer);
