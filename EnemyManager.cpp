@@ -3,7 +3,7 @@
 EnemyManager::EnemyManager()
 {
 	spawnTimer = time(&timer);
-	spawnDelay = 0;
+	spawnDelay = 110000;
 }
 
 EnemyManager::~EnemyManager()

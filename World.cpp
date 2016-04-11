@@ -55,9 +55,9 @@ void World::CreateLevel() {
 				else if (object._Ptr->GetName() == "Military") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 5));
 				} 
-				/*else if (object._Ptr->GetName() == "Enemy") {
+				else if (object._Ptr->GetName() == "Enemy") {
 					enemyManager.AddStalker(new Stalker(Vector2f(object._Ptr->GetPosition())));
-				}*/
+				}
 			}
 		}
 
