@@ -24,6 +24,7 @@ public:
 	void Draw();
 	void SpawnStalkers(Player*);
 	void DespawnStalker(Player*);
+	void AddStalker(Stalker*);
 };
 
 #endif

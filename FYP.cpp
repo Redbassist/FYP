@@ -66,6 +66,14 @@ int main()
 	ml = new tmx::MapLoader("Maps");
 	ml->Load("myMap.tmx"); 
 
+	/*//network shtuff
+	sf::TcpSocket socket;
+	sf::Socket::Status status = socket.connect("127.0.0.1", 8080);
+	if (status != sf::Socket::Done)
+	{
+		// error...
+	}*/
+
 	while (window->isOpen())
 	{
 		//while (myClock.now() - timeOfLastTick >= timePerTick) {

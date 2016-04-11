@@ -134,6 +134,7 @@ private:
 	float meleeAngle = 0;
 	int swingSpeed;
 
+	bool shot;
 	bool pistol;
 	bool shotgun;
 	bool rifle;

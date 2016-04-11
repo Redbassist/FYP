@@ -1,5 +1,27 @@
 #include "Stalker.h"
 
+Stalker::Stalker(Vector2f pos) : Enemy(pos)
+{
+	LoadAssets();
+	createBox2dBody();
+	createPunchBox2dBody();
+	numberRays = 11;
+	CreateRays();
+	speed = 2;
+	searchOrientation = 0;
+	avoidDistance = 15;
+	orientation = 50;
+	movementTarget = m_pos + Vector2f((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
+	//orientation = GetRotationAngle();
+	doorSearchTimer = time(&timer);
+	playerChaseTimer = time(&timer);
+	punchTimer = time(&timer);
+	maxPunchDistance = 80;
+	spottedPlayer = NULL;
+	nearDoor = false;
+	collapse = false;
+}
+
 Stalker::Stalker(Vector2f pos, Player* p) : Enemy(pos)
 {
 	LoadAssets();
@@ -108,7 +130,7 @@ void Stalker::createBox2dBody()
 	body = world->CreateBody(&bodyDef);
 
 	b2CircleShape circle;
-	circle.m_radius = 15 / SCALE;
+	circle.m_radius = 7 / SCALE;
 	fixtureDef.shape = &circle;
 
 	fixtureDef.density = 1;
@@ -164,6 +186,7 @@ void Stalker::Update()
 		UpdateRays();
 		AI();
 		Movement();
+		RotateOrientation();
 
 		if (door) {
 			doorSearchTimer = time(&timer);
@@ -268,8 +291,8 @@ void Stalker::Draw()
 		}
 		window->draw(animatedDeath);
 	}
-
-	/*for (int i = 0; i < numberRays; i++) {
+	/*
+	for (int i = 0; i < numberRays; i++) {
 		sf::VertexArray line(sf::LinesStrip, 2);
 
 		// define the position of the triangle's points
@@ -300,9 +323,9 @@ void Stalker::Movement()
 		for (int i = 0; i < numberRays; i++) {
 			if (i == 0) {
 				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
-					&& Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 30) {
+					&& Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 60) {
 					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
-					orientation = GetRotationAngle();
+					desiredOrientation = GetRotationAngle();
 					stop = false;
 					lookAround = false;
 					lookRight = false;
@@ -311,9 +334,9 @@ void Stalker::Movement()
 			}
 			else if (i == numberRays - 1) {
 				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
-					&& Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 30) {
+					&& Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 60) {
 					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
-					orientation = GetRotationAngle();
+					desiredOrientation = GetRotationAngle();
 					stop = false;
 					lookAround = false;
 					lookRight = false;
@@ -322,10 +345,10 @@ void Stalker::Movement()
 			}
 			else {
 				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
-					&& (Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 45
-						|| Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 45)) {
+					&& (Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 50
+						|| Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 50)) {
 					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
-					orientation = GetRotationAngle();
+					desiredOrientation = GetRotationAngle();
 					stop = false;
 					lookAround = false;
 					lookRight = false;
@@ -350,7 +373,7 @@ void Stalker::Movement()
 	else if (Distance(m_pos, movementTarget) > 40 || door || chasing) {
 
 		if (!nearDoor && !punch)
-			orientation = GetRotationAngle();
+			desiredOrientation = GetRotationAngle();
 
 		Vector2f directionVector((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
 		//directionVector = Normalize(directionVector);
@@ -381,6 +404,59 @@ void Stalker::Movement()
 	body->SetTransform(position, orientation + DEGTORAD);
 }
 
+void Stalker::RotateOrientation()
+{
+	float facingMinusTarget = orientation - desiredOrientation;
+	float angleDiff = facingMinusTarget;
+	
+	if (abs(facingMinusTarget) > 180)
+	{
+		if (orientation > desiredOrientation)
+		{
+			angleDiff = -1 * ((360 - orientation) + desiredOrientation);
+		}
+		else
+		{
+			angleDiff = (360 - orientation) + desiredOrientation;
+		}
+	}
+
+	if (angleDiff < 0)
+	{
+		if (angleDiff < -10)
+			orientation += 10;
+		else if (angleDiff < -5)
+			orientation += 5;
+		else if (angleDiff < -2)
+			orientation += 2;
+		else if (angleDiff < -1)
+			orientation += 1;
+		else
+			orientation += 0.5;
+
+	}
+	else if (angleDiff > 0)
+	{
+		if (angleDiff > 10)
+			orientation -= 10;
+		else if (angleDiff > 5)
+			orientation -= 5;
+		else if (angleDiff > 2)
+			orientation -= 2;
+		else if (angleDiff > 1)
+			orientation -= 1;
+		else
+			orientation -= 0.5;
+	}
+
+	if (orientation < 0) 
+		orientation = 360 + orientation;
+	
+	else if (orientation > 360)
+		orientation = 0 + orientation;
+
+}
+
 void Stalker::AI()
 {
 	int centre = numberRays / 2;
@@ -403,7 +479,7 @@ void Stalker::AI()
 		if (d < 25 && !nearDoor) {
 			nearDoor = true;
 		}
-		else if (d > 40 && nearDoor) {
+		else if (d > 30 && nearDoor) {
 			door = false;
 			nearDoor = false;
 			lookAround = true;
@@ -552,9 +628,9 @@ void Stalker::AvoidObstacles()
 			float d = Distance(m_pos, Vector2f(avoidanceRays[i].second.m_point.x * SCALE, avoidanceRays[i].second.m_point.y * SCALE));
 			if (d < avoidDistance) {
 				if (i == 0)
-					orientation = VectorToAngle(avoidanceRays[i].second.m_normal);
+					desiredOrientation = VectorToAngle(avoidanceRays[i].second.m_normal);
 				else
-					orientation = VectorToAngle(avoidanceRays[i].second.m_normal) + 180;
+					desiredOrientation = VectorToAngle(avoidanceRays[i].second.m_normal) + 180;
 				avoidPoint = Vector2f(avoidanceRays[i].second.m_point.x * SCALE, avoidanceRays[i].second.m_point.y * SCALE);
 				avoid = true;
 				break;

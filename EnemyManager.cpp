@@ -3,7 +3,7 @@
 EnemyManager::EnemyManager()
 {
 	spawnTimer = time(&timer);
-	spawnDelay = 10;
+	spawnDelay = 0;
 }
 
 EnemyManager::~EnemyManager()
@@ -64,11 +64,16 @@ void EnemyManager::SpawnStalkers(Player * player)
 			} 
 		}
 
-		spawnDelay = rand() % 10 + 1;
+		spawnDelay = rand() % 20 + 10;
 		spawnTimer = time(&timer);
 	}
 }
 
 void EnemyManager::DespawnStalker(Player *)
 {
+}
+
+void EnemyManager::AddStalker(Stalker * s)
+{
+	stalkers.push_back(s);
 }

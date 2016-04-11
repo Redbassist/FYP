@@ -14,6 +14,8 @@
 
 using namespace sf;
 
+class Stalker;
+
 class World {
 private:
 	Player* player;

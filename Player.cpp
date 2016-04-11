@@ -36,6 +36,7 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	createMeleeBox2dBody();
 	createJoint();
 
+	shot = false;
 	swingSpeed = 10;
 	punch = false;
 	meleeAxe = false;
@@ -209,6 +210,19 @@ void Player::LoadBinds() {
 }
 
 void Player::Draw() {
+	if (shot) {
+		sf::VertexArray line(sf::LinesStrip, 2);
+
+		// define the position of the triangle's points
+		line[0].position = sf::Vector2f(gunRay.p1.x * SCALE, gunRay.p1.y * SCALE);
+		line[0].color = sf::Color(255, 255, 255, 50);
+
+		line[1].position = sf::Vector2f(gunRay.p2.x * SCALE, gunRay.p2.y * SCALE);
+		line[1].color = sf::Color(255, 255, 255, 50);
+
+		window->draw(line);
+	}
+
 	//frame time which is used for updating the animation
 	sf::Time frameTime = frameClock.restart();
 
@@ -415,6 +429,8 @@ void Player::Movement() {
 }
 
 void Player::Interaction() {
+	shot = false;
+
 	Vector2i mousePos = Mouse::getPosition(*window);
 	//used to convert to view coordinates
 	sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
@@ -586,6 +602,7 @@ void Player::Interaction() {
 				if (hotbarItem->RemoveAmmo(1).first) {
 					AudioManager::GetInstance()->playSound("rifleshot", m_pos);
 					RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
+					shot = true;
 				}
 				else {
 					AudioManager::GetInstance()->playSound("pistoldry", m_pos);
@@ -600,10 +617,12 @@ void Player::Interaction() {
 					if (pistol) {
 						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
 						RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
+						shot = true;
 					}
 					else if (shotgun && std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shotgunShootSpeed) {
 						AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
 						RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
+						shot = true;
 						lastShot = Clock::now();
 					}
 				}
@@ -693,7 +712,7 @@ void Player::Interaction() {
 		actions.reload = false;
 	}
 
-	if (actions.use && hotbarItem != NULL) { 
+	if (actions.use && hotbarItem != NULL) {
 		if (hotbarItem->GetType() == FOOD1 || hotbarItem->GetType() == FOOD2 || hotbarItem->GetType() == FOOD3) {
 			hunger -= 30;
 			hunger = (hunger < 0) ? 0 : hunger;
@@ -946,7 +965,7 @@ void Player::WatchUIPosition() {
 		heartBeatX = 0;
 
 	//drawing the blood mask in the right place
-	bloodScreenSprite.setPosition(center - Vector2f(size.x /2, size.y / 2));
+	bloodScreenSprite.setPosition(center - Vector2f(size.x / 2, size.y / 2));
 }
 
 void Player::DrawWatch() {
@@ -970,7 +989,7 @@ void Player::TakeDamage(int type)
 }
 
 void Player::BloodMask()
-{ 
+{
 	bloodScreenAlpha = 255;
 	bloodScreenSprite.setColor((sf::Color(255, 255, 255, bloodScreenAlpha)));
 }

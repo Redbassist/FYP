@@ -88,6 +88,7 @@ private:
 	bool collapse;
 
 public:
+	Stalker(Vector2f);
 	Stalker(Vector2f, Player* );
 	~Stalker();
 	void LoadAssets();
@@ -100,6 +101,7 @@ public:
 	void UpdateRays();
 	void Draw();
 	void Movement();
+	void RotateOrientation();
 	void AI();
 	void AIFunction(bool, int);
 	void AvoidObstacles();

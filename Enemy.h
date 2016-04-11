@@ -22,6 +22,7 @@ protected:
 
 	Vector2f m_pos;
 	float orientation; 
+	float desiredOrientation;
 	float speed;  
 
 	b2Body* body;
