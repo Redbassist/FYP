@@ -62,6 +62,11 @@ void Door::Open()
 	}
 }
 
+void Door::Knock()
+{
+	AudioManager::GetInstance()->playSound("knock", m_sprite.getPosition());
+}
+
 void Door::createBox2dBody() {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_staticBody;

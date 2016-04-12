@@ -56,7 +56,8 @@ void AudioManager::playSound(const std::string& name, const sf::Vector2f& pos)
 
 	//use later to set the volume of the music using SETTINGS
 	snd->setVolume(SettingsManager::GetInstance()->EffectVolume());
-
+	snd->setMinDistance(500);
+	snd->setAttenuation(33);
 	snd->play();
 
 	mPlaying.push_back(snd);

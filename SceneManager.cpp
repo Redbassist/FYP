@@ -18,7 +18,8 @@ void SceneManager::CreateMenus()
 
 	//creating the main menu
 	tempMenu = new Menu(string("normalMenu"));
-	tempMenu->AddButton(new Button(Vector2f(1050, 400), 200, 80, string("Start Game"), GameState::GAME));
+	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Continue"), GameState::CONTINUEGAME));
+	tempMenu->AddButton(new Button(Vector2f(1050, 400), 200, 80, string("New Game"), GameState::NEWGAME));
 	tempMenu->AddButton(new Button(Vector2f(1050, 520), 200, 80, string("Options"), GameState::OPTIONS));
 	tempMenu->AddButton(new Button(Vector2f(1050, 640), 200, 80, string("Exit"), GameState::EXIT));
 	menusMap[GameState::MENU] = tempMenu;
@@ -89,10 +90,22 @@ void SceneManager::ChangeScene()
 			currentMenu = menusMap[GameState::MENU];
 			currentMenu->UpdateTransform();
 			break;
-		case(GameState::GAME) :
+		case(GameState::CONTINUEGAME) : 
+			loadGame = true;
+			SceneChanger::GetInstance()->ChangeScene(GameState::GAME);
+			break;
+		case(GameState::NEWGAME) : 
+			loadGame = false;
+			SceneChanger::GetInstance()->ChangeScene(GameState::GAME);
+			break;
+		case(GameState::GAME) : 
 			currentMenu = menusMap[GameState::GAME];
 			if (gameWorld == NULL) {
-				gameWorld = new World();
+				if (loadGame)
+					gameWorld = new World(true);
+				else {
+					gameWorld = new World(false);
+				}
 				AudioManager::GetInstance()->startMusic("backgroundMusic");
 			}
 			break;
@@ -109,6 +122,9 @@ void SceneManager::ChangeScene()
 			currentMenu->UpdateTransform();
 			break;
 		case(GameState::EXIT) :
+			if (gameWorld != NULL) {
+				gameWorld->SavePlayer();
+			}
 			window->close();
 			break;
 		}

@@ -64,7 +64,7 @@ int main()
 	SceneManager* sceneManager = new SceneManager();
 
 	ml = new tmx::MapLoader("Maps");
-	ml->Load("myMap.tmx"); 
+	ml->Load("myMap.tmx");
 
 	/*//network shtuff
 	sf::TcpSocket socket;

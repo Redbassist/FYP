@@ -45,6 +45,7 @@ public:
 	bool CheckOpen();
 	void Draw();
 	void DrawItems();
+	std::vector<Item*> GetItems();
 };
 
 #endif

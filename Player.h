@@ -172,6 +172,7 @@ public:
 	bool doingMeleeDamage = false;
 
 	Player(Vector2f);
+	Player(Vector2f, int hth, int hgr, int thst, vector<Item*> items);
 	void LoadAssets();
 	void EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight);
 	void EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim,
@@ -203,6 +204,10 @@ public:
 	void BloodMask();
 	void UpdateBloodMask();
 	Vector2f GetPosition() { return m_pos; }
+	float GetHealth() { return health; }
+	float GetHunger() { return hunger; }
+	float GetThirst() { return thirst; }
+	Inventory* GetInventory() { return inventory; }
 };
 
 #endif

@@ -19,6 +19,7 @@ private:
 	World* gameWorld;
 	GameState state; 
 	MenuMap menusMap;
+	bool loadGame = false;
 
 public:
 	SceneManager(); 

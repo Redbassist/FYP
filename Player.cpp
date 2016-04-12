@@ -52,6 +52,64 @@ Player::Player(Vector2f pos) : m_pos(pos)
 	shotgunShootSpeed = 1100;
 }
 
+Player::Player(Vector2f pos, int hth, int hgr, int thst, vector<Item*> items)
+{
+
+	m_pos = pos;
+
+	inventory = new Inventory();
+	
+	int size = items.size();
+	for (int i = 0; i < size; i++) {
+		inventory->AddItem(items[i], sf::Vector2f());
+	}
+
+	hotbar = new Hotbar();
+	speed = 0.06f;
+	touchedContainer = NULL;
+	touchedDoor = NULL;
+	dragInventoryItem = NULL;
+	dragContainerItem = NULL;
+
+	fullHealth = 1000;
+	health = hth;
+	heartBeatX = 0;
+
+	hunger = hgr;
+	thirst = thst;
+	hungerTick = time(&timer);
+	thirstTick = time(&timer);
+	hungerRate = 1;
+	thirstRate = 0.5;
+
+	currentHours = 12;
+	currentMinutes = 0;
+	nextMinute = 0;
+
+	LoadAssets();
+	LoadBinds();
+	createBox2dBody();
+	createPunchBox2dBody();
+
+	createMeleeBox2dBody();
+	createJoint();
+
+	shot = false;
+	swingSpeed = 10;
+	punch = false;
+	meleeAxe = false;
+	meleeBat = false;
+	pistol = false;
+	rifle = false;
+	shotgun = false;
+
+	reloadTime = 1;
+	reloadTimer = time(&timer);
+	lastShot = Clock::now();
+	rifleShootSpeed = 100;
+	shotgunShootSpeed = 1100;
+}
+
 void Player::LoadAssets() {
 	//loading the animations for the player
 	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "legs", &legsIdle, 1, 1, 1, 32, 32, currentLegAnimation);
@@ -833,7 +891,7 @@ void Player::createPunchBox2dBody()
 	punchfixtureDef.restitution = b2MixRestitution(0, 0);
 
 	punchfixtureDef.filter.categoryBits = PUNCH;
-	punchfixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR | PLAYER | ENEMY;
+	punchfixtureDef.filter.maskBits = ITEM | CONTAINER | WALL | DOOR | PLAYER | ENEMYHIT;
 
 	punchbody->CreateFixture(&punchfixtureDef);
 	punchbody->SetFixedRotation(false);
@@ -858,7 +916,7 @@ void Player::createMeleeBox2dBody()
 	meleefixtureDef.restitution = b2MixRestitution(0, 0);
 
 	meleefixtureDef.filter.categoryBits = MELEE;
-	meleefixtureDef.filter.maskBits = CONTAINER | WALL | DOOR | PLAYER | ENEMY;
+	meleefixtureDef.filter.maskBits = CONTAINER | WALL | DOOR | PLAYER | ENEMYHIT;
 
 	meleebody->CreateFixture(&meleefixtureDef);
 	meleebody->SetFixedRotation(false);

@@ -231,3 +231,18 @@ void Inventory::DrawItems() {
 			slots[i].item->DrawInInventory(m_sprite.getPosition(), m_sprite.getGlobalBounds(), slots[i].col, slots[i].row);
 	}
 }
+
+std::vector<Item*> Inventory::GetItems()
+{
+	std::vector<Item*> items;
+
+	int size = slots.size(); 
+	for (int i = 0; i < size; i++) {
+		if (slots[i].item != NULL && slots[i].full == true) {
+			items.push_back(slots[i].item);
+		}
+			
+	}
+
+	return items;
+}

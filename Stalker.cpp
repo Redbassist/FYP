@@ -5,6 +5,7 @@ Stalker::Stalker(Vector2f pos) : Enemy(pos)
 	LoadAssets();
 	createBox2dBody();
 	createPunchBox2dBody();
+	createHitBox2dBody();
 	numberRays = 11;
 	CreateRays();
 	speed = 2;
@@ -20,6 +21,8 @@ Stalker::Stalker(Vector2f pos) : Enemy(pos)
 	spottedPlayer = NULL;
 	nearDoor = false;
 	collapse = false;
+	chatterTimer = time(&timer);
+	chatterDelay = 0;
 }
 
 Stalker::Stalker(Vector2f pos, Player* p) : Enemy(pos)
@@ -27,6 +30,7 @@ Stalker::Stalker(Vector2f pos, Player* p) : Enemy(pos)
 	LoadAssets();
 	createBox2dBody();
 	createPunchBox2dBody();
+	createHitBox2dBody();
 	numberRays = 11;
 	CreateRays();
 	speed = 2;
@@ -145,6 +149,32 @@ void Stalker::createBox2dBody()
 	body->SetFixedRotation(false);
 }
 
+void Stalker::createHitBox2dBody()
+{
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.position.Set(m_pos.x / SCALE, m_pos.y / SCALE);
+	bodyDef.userData = this;
+	bodyDef.gravityScale = 1;
+	hitBody = world->CreateBody(&bodyDef);
+
+	b2CircleShape circle;
+	circle.m_radius = 15 / SCALE;
+	hitfixtureDef.shape = &circle;
+
+	hitfixtureDef.isSensor = true;
+	hitfixtureDef.density = 1;
+	hitfixtureDef.friction = 0.3f;
+	hitfixtureDef.userData = "EnemyHit";
+	hitfixtureDef.restitution = b2MixRestitution(0, 0);
+
+	hitfixtureDef.filter.categoryBits = ENEMYHIT;
+	hitfixtureDef.filter.maskBits = DOOR | PUNCH | MELEE;
+
+	hitBody->CreateFixture(&hitfixtureDef);
+	hitBody->SetFixedRotation(false);
+}
+
 void Stalker::createPunchBox2dBody()
 {
 	b2BodyDef bodyDef;
@@ -196,6 +226,21 @@ void Stalker::Update()
 			searchDoor = true;
 		}
 
+		//playing chatter noise of alien
+		if (difftime(time(&timer), chatterTimer) > chatterDelay) {
+			int sound = rand() % 4;
+			if (sound == 0)
+				AudioManager::GetInstance()->playSound("stalkerChatter1", m_pos);
+			else if (sound == 1)
+				AudioManager::GetInstance()->playSound("stalkerChatter2", m_pos);
+			else if (sound == 2)
+				AudioManager::GetInstance()->playSound("stalkerChatter3", m_pos);
+
+			chatterDelay = sound + 1;
+			chatterTimer = time(&timer);
+		}
+
+		//turn into method
 		headSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 		headSprite.setRotation(orientation + searchOrientation);
 		animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
@@ -285,6 +330,7 @@ void Stalker::Draw()
 			collapse = true; 
 			body->GetFixtureList()->SetUserData("Destroy");
 			punchbody->GetFixtureList()->SetUserData("Destroy");
+			hitBody->GetFixtureList()->SetUserData("Destroy");
 		}
 		else {
 			animatedDeath.update(frameTime);
@@ -323,7 +369,8 @@ void Stalker::Movement()
 		for (int i = 0; i < numberRays; i++) {
 			if (i == 0) {
 				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
-					&& Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 60) {
+					&& Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 60
+					&& Distance(m_pos, Vector2f(visionRays[i + 2].second.m_point.x * SCALE, visionRays[i + 2].second.m_point.y * SCALE)) > 60) {
 					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
 					desiredOrientation = GetRotationAngle();
 					stop = false;
@@ -334,7 +381,8 @@ void Stalker::Movement()
 			}
 			else if (i == numberRays - 1) {
 				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
-					&& Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 60) {
+					&& Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 60
+					&& Distance(m_pos, Vector2f(visionRays[i - 2].second.m_point.x * SCALE, visionRays[i - 2].second.m_point.y * SCALE)) > 60) {
 					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
 					desiredOrientation = GetRotationAngle();
 					stop = false;
@@ -389,8 +437,6 @@ void Stalker::Movement()
 		movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
 	}
 
-	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
-
 	b2Vec2 orientationPoint = b2Vec2((float)cos(orientation * DEGTORAD), (float)sin(orientation * DEGTORAD));
 	b2Vec2 punchTemp = orientationPoint;
 	punchTemp.x /= 100;
@@ -400,8 +446,9 @@ void Stalker::Movement()
 
 	body->SetTransform(position, orientation * DEGTORAD);
 	punchbody->SetTransform(body->GetPosition() + punchTemp, orientation * DEGTORAD);
+	hitBody->SetTransform(body->GetPosition(), orientation * DEGTORAD);
 
-	body->SetTransform(position, orientation + DEGTORAD);
+	m_pos = Vector2f(position.x * SCALE, position.y * SCALE);
 }
 
 void Stalker::RotateOrientation()

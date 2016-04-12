@@ -12,12 +12,26 @@
 #include "EnemyManager.h"
 #include "Tree.h"
 
+#include <sstream>
+
 using namespace sf;
+using namespace std;
+
+struct PlayerSaveData {
+	float health;
+	float hunger;
+	float thirst;
+	Vector2f position;
+	vector<Item*> invItems;
+};
 
 class Stalker;
+class Inventory;
 
 class World {
 private:
+	bool loadedCharacrter;
+
 	Player* player;
 	EnemyManager enemyManager;
 	Texture m_texture;
@@ -29,11 +43,13 @@ private:
 	std::vector<FillerObject*> fillers; 
 		
 public:
-	World();
+	World(bool);
 	void CreateAssets();
 	void CreateLevel();
 	void Update();
 	void Draw(); 
+	void SavePlayer();
+	void LoadPlayer();
 };
 
 #endif

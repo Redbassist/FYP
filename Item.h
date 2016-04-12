@@ -77,7 +77,9 @@ public:
 	void Dropped(Vector2f);
 	std::string getTextForEnum(int enumVal);
 	void createBox2dBody();
+	int GetAmmo() { return amountAmmo; }
 	ItemType GetType() { return type; }
+	string GetTypeString() { return ItemTypeStrings[type]; }
 };
 
 #endif

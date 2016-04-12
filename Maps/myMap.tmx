@@ -124,10 +124,10 @@
   <object id="752" name="CabinL" x="5045" y="1339" width="350" height="250"/>
   <object id="753" name="CabinL" x="5525" y="1019" width="350" height="250"/>
   <object id="754" name="CabinL" x="5465" y="1803" width="350" height="250"/>
-  <object id="1146" name="Enemy" x="1460" y="4559" width="68" height="74"/>
+  <object id="1146" name="Enemy" x="2525.33" y="3026.33" width="68" height="74"/>
  </objectgroup>
  <objectgroup name="Player">
-  <object id="15" name="Player" x="946.24" y="4847.03" width="80" height="96"/>
+  <object id="15" name="Player" x="2704.24" y="3172.36" width="80" height="96"/>
  </objectgroup>
  <objectgroup name="Lights">
   <object id="121" name="lamppost" x="1134.67" y="261.333" width="20" height="20"/>

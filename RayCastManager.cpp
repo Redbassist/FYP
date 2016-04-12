@@ -38,7 +38,7 @@ void RayCastManager::HitReaction()
 	if (bulletRayCastCallBack->objectName != NULL) {
 		EffectManager::GetInstance()->PlayEffect(0, Vector2f(bulletRayCastCallBack->m_point.x * 30, bulletRayCastCallBack->m_point.y * 30));
 	}
-	if (bulletRayCastCallBack->objectName == "Enemy") {
+	if (bulletRayCastCallBack->objectName == "EnemyHit") {
 		static_cast<Stalker*>(bulletRayCastCallBack->data)->DropHealth(20);
 	}
 }

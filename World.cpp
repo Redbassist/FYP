@@ -1,8 +1,13 @@
 #include "World.h"
 #include "Stalker.h"
+#include "Inventory.h"
 
-World::World() {
+World::World(bool load) {
+	loadedCharacrter = load;
 	CreateAssets();
+	if (loadedCharacrter) {
+		LoadPlayer();
+	}
 	CreateLevel();
 }
 
@@ -21,16 +26,18 @@ void World::CreateAssets() {
 void World::CreateLevel() {
 	View view = View(FloatRect(0, 0, 1280, 720));
 	view.zoom(0.7);
-	window->setView(view);  
+	window->setView(view);
 
 	for (auto layer = ml->GetLayers().begin(); layer != ml->GetLayers().end(); ++layer)
 	{
-		if (layer->name == "Player")
-		{
-			for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
+		if (!loadedCharacrter) {
+			if (layer->name == "Player")
 			{
-				player = new Player(Vector2f(object._Ptr->GetPosition()));
-				break;
+				for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
+				{
+					player = new Player(Vector2f(object._Ptr->GetPosition()));
+					break;
+				}
 			}
 		}
 
@@ -54,10 +61,10 @@ void World::CreateLevel() {
 				}
 				else if (object._Ptr->GetName() == "Military") {
 					houses.push_back(new House(Vector2f(object._Ptr->GetPosition()), &items, 5));
-				} 
-				else if (object._Ptr->GetName() == "Enemy") {
-					enemyManager.AddStalker(new Stalker(Vector2f(object._Ptr->GetPosition())));
 				}
+				/*else if (object._Ptr->GetName() == "Enemy") {
+					enemyManager.AddStalker(new Stalker(Vector2f(object._Ptr->GetPosition())));
+				}*/
 			}
 		}
 
@@ -77,21 +84,21 @@ void World::CreateLevel() {
 			}
 		}
 	}
-} 
+}
 
 void World::Update() {
 	player->Update();
 	enemyManager.Update(player);
-	
+
 	int size = trees.size();
 	for (int i = 0; i < size; i++) {
 		trees[i]->FadeOut(player->GetPosition());
-	} 
+	}
 }
 
 void World::Draw() {
 	//window->draw(m_sprite);  
-	
+
 	int size = houses.size();
 	for (int i = 0; i < size; i++) {
 		houses[i]->Draw();
@@ -112,7 +119,7 @@ void World::Draw() {
 
 	enemyManager.Draw();
 
-	player->Draw(); 
+	player->Draw();
 
 	size = fillers.size();
 	for (int i = 0; i < size; i++) {
@@ -123,4 +130,99 @@ void World::Draw() {
 	for (int i = 0; i < size; i++) {
 		trees[i]->Draw();
 	}
+}
+
+void World::SavePlayer()
+{
+	std::ofstream out;
+	out.open("saveFile.txt", std::ofstream::out | std::ofstream::trunc);
+
+	PlayerSaveData psd;
+
+	psd.health = player->GetHealth();
+	psd.hunger = player->GetHunger();
+	psd.thirst = player->GetThirst();
+	psd.position = player->GetPosition();
+	psd.invItems = player->GetInventory()->GetItems();
+
+	string saveData;
+	saveData.append(to_string((int)psd.health) + "/");
+	saveData.append(to_string((int)psd.hunger) + "/");
+	saveData.append(to_string((int)psd.thirst) + "/");
+	saveData.append(to_string((int)psd.position.x) + "/");
+	saveData.append(to_string((int)psd.position.y) + "/");
+
+	int size = psd.invItems.size();
+
+	for (int i = 0; i < size; i++) {
+		saveData.append(to_string(psd.invItems[i]->GetType()) + "/");
+		saveData.append(to_string(psd.invItems[i]->GetSize()) + "/");
+		saveData.append(to_string(psd.invItems[i]->GetAmmo()) + "/");
+	}
+
+	saveData.append("END");
+
+	out << saveData;
+}
+
+void World::LoadPlayer()
+{
+	PlayerSaveData psd;
+
+	string loadedData;
+	ifstream myfile("saveFile.txt");
+	if (myfile.is_open())
+	{
+		getline(myfile, loadedData);
+		myfile.close();
+	}
+
+	stringstream ss;
+	ss.str(loadedData);
+
+	bool gotHealth = false;
+	bool gotHunger = false;
+	bool gotThirst = false;
+	bool gotPosX = false;
+	bool gotPosY = false;
+
+	string segment;
+	bool breakout = false;
+
+	while (std::getline(ss, segment, '/') && !breakout)
+	{
+		if (segment == "END")
+			breakout = true;
+		else if (!gotHealth) {
+			psd.health = stoi(segment.c_str());
+			gotHealth = true;
+		}
+		else if (!gotHunger) {
+			psd.hunger = stoi(segment.c_str());
+			gotHunger = true;
+		}
+		else if (!gotThirst) {
+			psd.thirst = stoi(segment.c_str());
+			gotThirst = true;
+		}
+		else if (!gotPosX) {
+			psd.position = Vector2f(stoi(segment.c_str()), 0);
+			gotPosX = true;
+		}
+		else if (!gotPosY) {
+			psd.position.y = stoi(segment.c_str());
+			gotPosY = true;
+		}
+		else {
+			int type = stoi(segment.c_str());
+			std::getline(ss, segment, '/');
+			int size = stoi(segment.c_str());
+			std::getline(ss, segment, '/');
+			int ammo = stoi(segment.c_str());
+			psd.invItems.push_back(new Item(ItemType(type), size, ammo));
+		}
+	}
+	ss.clear();
+
+	player = new Player(psd.position, psd.health, psd.hunger, psd.thirst, psd.invItems);
 }

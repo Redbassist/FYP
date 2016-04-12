@@ -6,6 +6,7 @@
 #include "Item.h"
 #include "Container.h"
 #include "Stalker.h"
+#include "Door.h"
 
 class ContactListener : public b2ContactListener { 
 public: 
@@ -73,9 +74,9 @@ public:
 				}
 			}
 		}
-		else if (fixAType == "Enemy" && fixBType == "Punch"
-			|| fixAType == "Punch" && fixBType == "Enemy") {
-			if (fixAType == "Enemy") {
+		else if (fixAType == "EnemyHit" && fixBType == "Punch"
+			|| fixAType == "Punch" && fixBType == "EnemyHit") {
+			if (fixAType == "EnemyHit") {
 				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
 				if (static_cast<Player*>(bodyUserData2)->doingPunchDamage) {
@@ -83,7 +84,7 @@ public:
 					static_cast<Enemy*>(bodyUserData1)->DropHealth(10);
 				}
 			}
-			else if (fixBType == "Enemy") {
+			else if (fixBType == "EnemyHit") {
 				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
 				if (static_cast<Player*>(bodyUserData2)->doingPunchDamage) {
@@ -92,9 +93,9 @@ public:
 				}
 			}
 		}
-		else if (fixAType == "Enemy" && fixBType == "MeleeWeapon"
-			|| fixAType == "MeleeWeapon" && fixBType == "Enemy") {
-			if (fixAType == "Enemy") {
+		else if (fixAType == "EnemyHit" && fixBType == "MeleeWeapon"
+			|| fixAType == "MeleeWeapon" && fixBType == "EnemyHit") {
+			if (fixAType == "EnemyHit") {
 				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
 				if (static_cast<Player*>(bodyUserData2)->doingMeleeDamage) {
@@ -102,7 +103,7 @@ public:
 					static_cast<Enemy*>(bodyUserData1)->DropHealth(40);
 				}
 			}
-			else if (fixBType == "Enemy") {
+			else if (fixBType == "EnemyHit") {
 				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
 				if (static_cast<Player*>(bodyUserData2)->doingMeleeDamage) {
@@ -111,8 +112,8 @@ public:
 				}
 			}
 		}
-		else if (fixAType == "Enemy" && fixBType == "Door"
-			|| fixAType == "Door" && fixBType == "Enemy") {
+		else if (fixAType == "EnemyHit" && fixBType == "Door"
+			|| fixAType == "Door" && fixBType == "EnemyHit") {
 			if (fixAType == "Door") {
 				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
@@ -122,6 +123,21 @@ public:
 				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
 				static_cast<Door*>(bodyUserData1)->Open();
+			}
+		}
+		else if (fixAType == "Punch" && fixBType == "Door"
+			|| fixAType == "Door" && fixBType == "Punch") {
+			if (fixAType == "Door") {
+				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
+				if (static_cast<Player*>(bodyUserData2)->doingPunchDamage) 
+				static_cast<Door*>(bodyUserData1)->Knock();
+			}
+			else if (fixBType == "Door") {
+				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
+				if (static_cast<Player*>(bodyUserData2)->doingPunchDamage) 
+					static_cast<Door*>(bodyUserData1)->Knock();
 			}
 		}
 	}

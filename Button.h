@@ -21,6 +21,7 @@ private:
 	Font font;
 	Text text;
 	GameState function;
+	bool clicked = false;
 public:
 	Button(Vector2f, int, int, string&, GameState);
 	void LoadAssets(string&);

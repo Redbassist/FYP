@@ -81,11 +81,16 @@ private:
 	int punchDirection = 0;
 	int punchDistance = 0;
 	int maxPunchDistance;
-
 	time_t punchTimer;
+
+	b2Body* hitBody;
+	b2FixtureDef hitfixtureDef;
 
 	time_t deathTimer;
 	bool collapse;
+
+	time_t chatterTimer;
+	int chatterDelay;
 
 public:
 	Stalker(Vector2f);
@@ -95,6 +100,7 @@ public:
 	void EasyLoadAssetsAnimation(Texture * t, string file, Animation * anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current);
 	void EasyLoadAssetsAnimation(Texture * t, string file, Animation * anim, int frames, int columns, int rows, int individualWidth, int individualHeight);
 	void createBox2dBody();
+	void createHitBox2dBody();
 	void createPunchBox2dBody();
 	void CreateRays();
 	void Update();

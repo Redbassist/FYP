@@ -74,7 +74,10 @@ void Button::CheckClick() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && hovering)
 	{
 		//signaling that the scene is changing
-		SceneChanger::GetInstance()->ChangeScene(function);
+		if (!clicked) { 
+			SceneChanger::GetInstance()->ChangeScene(function);
+			clicked = true;
+		}
 	}
 }
 
