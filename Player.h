@@ -34,12 +34,14 @@ struct keyActions {
 	bool hotbar2 = false;
 	bool hotbar3 = false;
 	bool hotbar4 = false;
-	bool hotbar5 = false;
+	bool hotbar5 = false; 
 };
 
 class Player {
 private:
 	//player stats
+	int id = 123456;
+
 	float fullHealth;
 	float health;
 	bool bleeding = false;

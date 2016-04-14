@@ -190,6 +190,7 @@
     <ClInclude Include="MapLayer.h" />
     <ClInclude Include="MapLoader.h" />
     <ClInclude Include="MapObject.h" />
+    <ClInclude Include="Network.h" />
     <ClInclude Include="newMath.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="NormalsSprite.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="MapLoaderPrivate.cpp" />
     <ClCompile Include="MapLoaderPublic.cpp" />
     <ClCompile Include="MapObject.cpp" />
+    <ClCompile Include="Network.cpp" />
     <ClCompile Include="newMath.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="pugixml.cpp" />

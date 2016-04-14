@@ -98,6 +98,7 @@ int main()
 		InputManager::GetInstance()->Update();
 		AudioManager::GetInstance()->update();
 		sceneManager->Update();
+		Network::GetInstance()->ReceiveMessages();
 		//}  
 
 		window->clear();

@@ -18,6 +18,7 @@ void SceneManager::CreateMenus()
 
 	//creating the main menu
 	tempMenu = new Menu(string("normalMenu"));
+	tempMenu->AddButton(new Button(Vector2f(1050, 160), 200, 80, string("Multiplayer"), GameState::MULTIPLAYER));
 	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Continue"), GameState::CONTINUEGAME));
 	tempMenu->AddButton(new Button(Vector2f(1050, 400), 200, 80, string("New Game"), GameState::NEWGAME));
 	tempMenu->AddButton(new Button(Vector2f(1050, 520), 200, 80, string("Options"), GameState::OPTIONS));
@@ -31,6 +32,12 @@ void SceneManager::CreateMenus()
 	tempMenu->AddSlider(new Slider(Vector2f(700, 600), 500, string("Effects Volume"), Setting::SHORT));
 	tempMenu->AddButton(new Button(Vector2f(150, 650), 200, 80, string("Back"), GameState::MENU));
 	menusMap[GameState::OPTIONS] = tempMenu;
+
+	//creating the options menu
+	tempMenu = new Menu(string("normalMenu"));
+	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Connect"), GameState::CONTINUEGAME));
+	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Back"), GameState::MENU));
+	menusMap[GameState::MULTIPLAYER] = tempMenu;
 
 	//creating the menu for in game
 	tempMenu = NULL;
@@ -112,6 +119,13 @@ void SceneManager::ChangeScene()
 		case(GameState::OPTIONS) :
 			currentMenu = menusMap[GameState::OPTIONS];
 			currentMenu->UpdateTransform();
+			break;
+		case(GameState::MULTIPLAYER) :
+			currentMenu = menusMap[GameState::OPTIONS];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::CONNECT) :
+
 			break;
 		case(GameState::GAMEMENU) :
 			currentMenu = menusMap[GameState::GAMEMENU];
