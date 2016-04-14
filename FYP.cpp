@@ -66,13 +66,7 @@ int main()
 	ml = new tmx::MapLoader("Maps");
 	ml->Load("myMap.tmx");
 
-	/*//network shtuff
-	sf::TcpSocket socket;
-	sf::Socket::Status status = socket.connect("127.0.0.1", 8080);
-	if (status != sf::Socket::Done)
-	{
-		// error...
-	}*/
+	Network::GetInstance();
 
 	while (window->isOpen())
 	{
@@ -98,7 +92,7 @@ int main()
 		InputManager::GetInstance()->Update();
 		AudioManager::GetInstance()->update();
 		sceneManager->Update();
-		Network::GetInstance()->ReceiveMessages();
+		//Network::GetInstance()->ReceiveMessages();
 		//}  
 
 		window->clear();

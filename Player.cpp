@@ -265,6 +265,7 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar4, Keyboard::Key::Num4);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar5, Keyboard::Key::Num5);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.reload, Keyboard::Key::R);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.testNet, Keyboard::Key::Return);
 }
 
 void Player::Draw() {

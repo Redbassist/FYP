@@ -20,6 +20,7 @@ private:
 	GameState state; 
 	MenuMap menusMap;
 	bool loadGame = false;
+	bool connect = false;
 
 public:
 	SceneManager(); 

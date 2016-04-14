@@ -35,8 +35,8 @@ void SceneManager::CreateMenus()
 
 	//creating the options menu
 	tempMenu = new Menu(string("normalMenu"));
-	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Connect"), GameState::CONTINUEGAME));
-	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Back"), GameState::MENU));
+	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Connect"), GameState::CONNECT));
+	tempMenu->AddButton(new Button(Vector2f(1050, 520), 200, 80, string("Back"), GameState::MENU));
 	menusMap[GameState::MULTIPLAYER] = tempMenu;
 
 	//creating the menu for in game
@@ -121,11 +121,16 @@ void SceneManager::ChangeScene()
 			currentMenu->UpdateTransform();
 			break;
 		case(GameState::MULTIPLAYER) :
-			currentMenu = menusMap[GameState::OPTIONS];
+			currentMenu = menusMap[GameState::MULTIPLAYER];
 			currentMenu->UpdateTransform();
 			break;
-		case(GameState::CONNECT) :
-
+		case(GameState::CONNECT) : 
+			if (!connect) {
+				NetworkPacket np;
+				np.type = "Connection";
+				Network::GetInstance()->SendPacket("149.153.102.56", np);
+				connect = true;
+			}
 			break;
 		case(GameState::GAMEMENU) :
 			currentMenu = menusMap[GameState::GAMEMENU];

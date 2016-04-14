@@ -190,6 +190,7 @@
     <ClInclude Include="MapLayer.h" />
     <ClInclude Include="MapLoader.h" />
     <ClInclude Include="MapObject.h" />
+    <ClInclude Include="MyThreadPool.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="newMath.h" />
     <ClInclude Include="Menu.h" />
@@ -213,6 +214,7 @@
     <ClInclude Include="StaticQuadtree.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="ThreadGlobals.h" />
     <ClInclude Include="tmx2box2d.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="VoiceReceiver.h" />
@@ -247,6 +249,7 @@
     <ClCompile Include="MapLoaderPrivate.cpp" />
     <ClCompile Include="MapLoaderPublic.cpp" />
     <ClCompile Include="MapObject.cpp" />
+    <ClCompile Include="MyThreadPool.cpp" />
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="newMath.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -265,6 +268,7 @@
     <ClCompile Include="Stalker.cpp" />
     <ClCompile Include="StaticQuadtree.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="ThreadGlobals.cpp" />
     <ClCompile Include="tmx2box2d.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="VoiceReceiver.cpp" />

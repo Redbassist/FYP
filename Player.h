@@ -35,6 +35,7 @@ struct keyActions {
 	bool hotbar3 = false;
 	bool hotbar4 = false;
 	bool hotbar5 = false; 
+	bool testNet = false;
 };
 
 class Player {

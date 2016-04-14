@@ -64,6 +64,12 @@
     <Filter Include="Header Files\RayCastCallbacks">
       <UniqueIdentifier>{1a2aa5e7-f39f-47eb-a86b-1e0b716e5329}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Threads">
+      <UniqueIdentifier>{5cf1dc8a-7960-4d63-84e4-e0915148a085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Threads">
+      <UniqueIdentifier>{037f9d77-aedd-4fc3-9ccf-55668d569b0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -243,6 +249,12 @@
     <ClInclude Include="Network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyThreadPool.h">
+      <Filter>Header Files\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadGlobals.h">
+      <Filter>Header Files\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -394,6 +406,12 @@
     </ClCompile>
     <ClCompile Include="Network.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyThreadPool.cpp">
+      <Filter>Source Files\Threads</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadGlobals.cpp">
+      <Filter>Source Files\Threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
