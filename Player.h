@@ -170,11 +170,13 @@ private:
 	b2RayCastInput gunRay;
 	time_t timer;
 
+	bool multiplayer;
+
 public:
 	bool doingPunchDamage = false;
 	bool doingMeleeDamage = false;
 
-	Player(Vector2f);
+	Player(Vector2f, bool);
 	Player(Vector2f, int hth, int hgr, int thst, vector<Item*> items);
 	void LoadAssets();
 	void EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight);
@@ -211,6 +213,9 @@ public:
 	float GetHunger() { return hunger; }
 	float GetThirst() { return thirst; }
 	Inventory* GetInventory() { return inventory; }
+
+	void SendPlayerData();
+	void AddActionsToPacket(vector<float>&);
 };
 
 #endif

@@ -57,12 +57,12 @@ Worker::Worker() :
 				Parameter p = parameters.front();
 				mtx->unlock();
 
-				task(p.param);
+				int alive = task(p.param);
 
 				mtx->lock();
-				if (!tasks.empty()) {
-					//tasks.pop();
-					//parameters.pop();
+				if (alive == 0) {
+					tasks.pop();
+					parameters.pop();
 				}
 				mtx->unlock();
 			}

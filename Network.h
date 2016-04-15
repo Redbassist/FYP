@@ -13,7 +13,7 @@ struct NetworkPacket {
 	string ip;
 	int playerID = 0;
 	int dataSize = 0;
-	vector<int> data;
+	vector<float> data;
 };
 
 class Network {
@@ -21,6 +21,7 @@ private:
 	vector<pair<IpAddress, unsigned short>> connectedPlayerInfo;
 	UdpSocket socket;
 	vector<NetworkPacket*> receivedPackets;
+	NetworkPacket* sentMessage;
 public:
 	Network();
 	static Network* GetInstance();
@@ -28,8 +29,11 @@ public:
 	void ReceiveMessages();
 	void HandleMessage();
 	void ProcessMessageData(NetworkPacket*);
-	void SendPacket(IpAddress, NetworkPacket);
+	void SendPacket(IpAddress, NetworkPacket*);
+	void SendPacketThread();
 	void CheckDisconnect(int playerID);
+	
+	bool startGame = false;
 };
 
 #endif

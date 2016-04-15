@@ -41,9 +41,11 @@ private:
 	std::vector<Item*> items;
 	std::vector<Tree*> trees;
 	std::vector<FillerObject*> fillers; 
+
+	bool multiplayer;
 		
 public:
-	World(bool);
+	World(bool, bool);
 	void CreateAssets();
 	void CreateLevel();
 	void Update();

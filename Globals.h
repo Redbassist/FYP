@@ -8,6 +8,7 @@ extern sf::Shader* lightOverShapeShader;
 extern sf::Shader* normalsShader;
 extern sf::RenderWindow* window; 
 extern tmx::MapLoader* ml;
+extern int playerID;
 #define RADTODEG (180.0 / b2_pi)
 #define DEGTORAD (b2_pi / 180)
 

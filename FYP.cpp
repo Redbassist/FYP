@@ -9,6 +9,8 @@ using namespace sf;
 
 int main()
 {
+	playerID = 123456;
+
 	srand(time(NULL));
 	std::chrono::steady_clock myClock;
 	const auto timePerTick = std::chrono::milliseconds(16);

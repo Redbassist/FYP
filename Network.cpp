@@ -8,6 +8,11 @@ int ThreadedReceive(void* param) {
 	return 1;
 }
 
+int ThreadedSend(void* param) {
+	static_cast<Network*>(param)->SendPacketThread();
+	return 0;
+}
+
 sf::Packet& operator << (sf::Packet& packet, const NetworkPacket& p)
 {
 	int size = p.data.size();
@@ -20,10 +25,10 @@ sf::Packet& operator << (sf::Packet& packet, const NetworkPacket& p)
 
 sf::Packet& operator >> (sf::Packet& packet, NetworkPacket& p)
 {
-	int size = p.data.size();
 	packet >> p.type >> p.ip >> p.playerID >> p.dataSize;
+	int size = p.data.size();
 	for (int i = 0; i < size; i++) {
-		int dataPiece;
+		float dataPiece;
 		packet >> dataPiece;
 		p.data.push_back(dataPiece);
 	}
@@ -74,10 +79,12 @@ void Network::ReceiveMessages()
 void Network::HandleMessage()
 {
 	if (receivedPackets.size() > 0) {
-		cout << "Handling Message" << endl;
-		int size = receivedPackets.size();
-		for (int i = 0; i < size; i++) {
-			ProcessMessageData(receivedPackets[i]);
+		cout << "Handling Message" << endl; 
+		for (int i = 0; i < receivedPackets.size(); i++) {
+			ProcessMessageData(receivedPackets[i]); 
+			delete receivedPackets[i];
+			receivedPackets.erase(receivedPackets.begin() + i);
+			i--;
 		}
 	}
 }
@@ -91,18 +98,31 @@ void Network::ProcessMessageData(NetworkPacket* np)
 		if (messageType == "Success") {
 			cout << "You connected to the server! :)" << endl;
 		}
+		else if (messageType == "Start") {
+			startGame = true;
+		}
 	}
 }
 
-void Network::SendPacket(IpAddress ip, NetworkPacket np)
+void Network::SendPacket(IpAddress ip, NetworkPacket* np)
+{
+	np->ip = IpAddress::getLocalAddress().toString();
+	sentMessage = np;
+
+	Parameter p;
+	p.param = this;
+
+	ThreadPool::GetInstance()->AddTask(ThreadedSend, p);
+}
+
+void Network::SendPacketThread()
 {
 	sf::Packet packet;
-	np.ip = IpAddress::getLocalAddress().toString();
-	packet << np;
-	IpAddress reciever = ip;
+	packet << *sentMessage;
+	IpAddress reciever = sentMessage->ip;
 	unsigned short port = 54000;
-	socket.send(packet, reciever, port);
 	cout << "Sending Message" << endl;
+	socket.send(packet, reciever, port); 
 }
 
 void Network::CheckDisconnect(int playerID)

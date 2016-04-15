@@ -2,13 +2,20 @@
 #include "Stalker.h"
 #include "Inventory.h"
 
-World::World(bool load) {
-	loadedCharacrter = load;
-	CreateAssets();
-	if (loadedCharacrter) {
-		LoadPlayer();
+World::World(bool load, bool multiplayer) {
+	if (!multiplayer) {
+		loadedCharacrter = load;
+		CreateAssets();
+		if (loadedCharacrter) {
+			LoadPlayer();
+		}
+		CreateLevel();
 	}
-	CreateLevel();
+	else {
+		loadedCharacrter = false;
+		CreateAssets();
+		CreateLevel();
+	}
 }
 
 void World::CreateAssets() {
@@ -27,7 +34,7 @@ void World::CreateLevel() {
 	View view = View(FloatRect(0, 0, 1280, 720));
 	view.zoom(0.7);
 	window->setView(view);
-
+	 
 	for (auto layer = ml->GetLayers().begin(); layer != ml->GetLayers().end(); ++layer)
 	{
 		if (!loadedCharacrter) {
@@ -35,7 +42,10 @@ void World::CreateLevel() {
 			{
 				for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
 				{
-					player = new Player(Vector2f(object._Ptr->GetPosition()));
+					if (multiplayer)
+						player = new Player(Vector2f(200, 200), true);
+					else
+						player = new Player(Vector2f(200, 200), false);
 					break;
 				}
 			}
@@ -88,7 +98,12 @@ void World::CreateLevel() {
 
 void World::Update() {
 	player->Update();
-	enemyManager.Update(player);
+
+	if (!multiplayer)
+		enemyManager.Update(player);
+	else {
+		//put other players here!
+	}
 
 	int size = trees.size();
 	for (int i = 0; i < size; i++) {
@@ -117,7 +132,9 @@ void World::Draw() {
 			items[i]->Draw();
 	}
 
-	enemyManager.Draw();
+	if (!multiplayer) {
+		enemyManager.Draw();
+	}
 
 	player->Draw();
 

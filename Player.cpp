@@ -2,8 +2,9 @@
 
 //For the handling of collision filtering
 
-Player::Player(Vector2f pos) : m_pos(pos)
+Player::Player(Vector2f pos, bool multi) : m_pos(pos)
 {
+	multiplayer = multi;
 	m_pos = pos;
 	inventory = new Inventory();
 	hotbar = new Hotbar();
@@ -54,7 +55,6 @@ Player::Player(Vector2f pos) : m_pos(pos)
 
 Player::Player(Vector2f pos, int hth, int hgr, int thst, vector<Item*> items)
 {
-
 	m_pos = pos;
 
 	inventory = new Inventory();
@@ -430,6 +430,9 @@ void Player::Update() {
 
 	if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 		SceneChanger::GetInstance()->ChangeScene(GameState::GAMEMENU);
+	}
+	if (multiplayer) {
+		SendPlayerData();
 	}
 }
 
@@ -1063,6 +1066,44 @@ void Player::UpdateBloodMask()
 		alpha -= 1;
 
 	bloodScreenSprite.setColor((sf::Color(255, 255, 255, alpha)));
+}
+
+void Player::SendPlayerData()
+{
+	NetworkPacket* np = new NetworkPacket();
+	np->type = "PlayerData";
+	np->playerID = playerID;
+
+	//adding player data to packet for server to use
+	np->data.push_back(m_pos.x);
+	np->data.push_back(m_pos.y);
+	np->data.push_back(orientation);
+
+	AddActionsToPacket(np->data);
+	np->dataSize = np->data.size();
+
+	Network::GetInstance()->SendPacket("127.0.0.1", np);
+}
+
+void Player::AddActionsToPacket(vector<float>& data)
+{
+	data.push_back(actions.walkLeft);
+	data.push_back(actions.walkRight);
+	data.push_back(actions.walkUp);
+	data.push_back(actions.sprint);
+	data.push_back(actions.interact); 
+	data.push_back(actions.swing);
+	data.push_back(actions.punch);
+	data.push_back(actions.fire);
+	data.push_back(actions.autoFire);
+	data.push_back(actions.reload); 
+	data.push_back(punch);
+	data.push_back(meleeAxe);
+	data.push_back(meleeBat);
+	data.push_back(pistol);
+	data.push_back(shotgun);
+	data.push_back(rifle);
+	data.push_back(reloading); 
 }
 
 float Player::getRotationAngle() {

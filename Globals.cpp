@@ -7,3 +7,4 @@ sf::Shader* lightOverShapeShader;
 sf::Shader* normalsShader;
 tmx::MapLoader* ml;
 sf::RenderWindow* window; 
+int playerID;
