@@ -16,6 +16,7 @@ public:
 	Effect(Texture* t, Vector2f pos, int frames, int columns, int rows, int individualWidth, int individualHeight, float speed, float scale);
 	void DrawEffect(sf::Time frameTime);
 	bool IsComplete();
+	int numFrames;
 private:
 	Animation animation;
 	AnimatedSprite animatedSprite;

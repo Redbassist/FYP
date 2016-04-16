@@ -1,11 +1,11 @@
-#include "Player.h"
+#include "EnemyPlayer.h"
 
 //For the handling of collision filtering
 
-Player::Player(Vector2f pos, bool multi) : m_pos(pos)
+EnemyPlayer::EnemyPlayer(Vector2f pos, int id) : m_pos(pos)
 {
-	multiplayer = multi;
 	m_pos = pos;
+	playerID = id;
 	inventory = new Inventory();
 	hotbar = new Hotbar();
 	speed = 0.06f;
@@ -30,7 +30,7 @@ Player::Player(Vector2f pos, bool multi) : m_pos(pos)
 	nextMinute = 0;
 
 	LoadAssets();
-	LoadBinds();
+	//LoadBinds();
 	createBox2dBody();
 	createPunchBox2dBody();
 
@@ -53,64 +53,7 @@ Player::Player(Vector2f pos, bool multi) : m_pos(pos)
 	shotgunShootSpeed = 1100;
 }
 
-Player::Player(Vector2f pos, int hth, int hgr, int thst, vector<Item*> items)
-{
-	m_pos = pos;
-
-	inventory = new Inventory();
-
-	int size = items.size();
-	for (int i = 0; i < size; i++) {
-		inventory->AddItem(items[i], sf::Vector2f());
-	}
-
-	hotbar = new Hotbar();
-	speed = 0.06f;
-	touchedContainer = NULL;
-	touchedDoor = NULL;
-	dragInventoryItem = NULL;
-	dragContainerItem = NULL;
-
-	fullHealth = 1000;
-	health = hth;
-	heartBeatX = 0;
-
-	hunger = hgr;
-	thirst = thst;
-	hungerTick = time(&timer);
-	thirstTick = time(&timer);
-	hungerRate = 1;
-	thirstRate = 0.5;
-
-	currentHours = 12;
-	currentMinutes = 0;
-	nextMinute = 0;
-
-	LoadAssets();
-	LoadBinds();
-	createBox2dBody();
-	createPunchBox2dBody();
-
-	createMeleeBox2dBody();
-	createJoint();
-
-	shot = false;
-	swingSpeed = 10;
-	punch = false;
-	meleeAxe = false;
-	meleeBat = false;
-	pistol = false;
-	rifle = false;
-	shotgun = false;
-
-	reloadTime = 1;
-	reloadTimer = time(&timer);
-	lastShot = Clock::now();
-	rifleShootSpeed = 100;
-	shotgunShootSpeed = 1100;
-}
-
-void Player::LoadAssets() {
+void EnemyPlayer::LoadAssets() {
 	//loading the animations for the player
 	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "legs", &legsIdle, 1, 1, 1, 32, 32, currentLegAnimation);
 	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "legs", &legsMoving, 12, 4, 3, 32, 32);
@@ -225,7 +168,7 @@ void Player::LoadAssets() {
 	currentTime.setCharacterSize(32);
 	currentTime.setColor(sf::Color::Black);
 }
-void Player::EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current)
+void EnemyPlayer::EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight, Animation * current)
 {
 	t->loadFromFile("Sprites/" + file + ".png");
 	t->setSmooth(false);
@@ -234,7 +177,7 @@ void Player::EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, i
 	current = anim;
 }
 
-void Player::EasyLoadAssetsAnimation(Texture*t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight)
+void EnemyPlayer::EasyLoadAssetsAnimation(Texture*t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight)
 {
 	t->loadFromFile("Sprites/" + file + ".png");
 	t->setSmooth(false);
@@ -242,33 +185,7 @@ void Player::EasyLoadAssetsAnimation(Texture*t, string file, Animation* anim, in
 	anim->addFrames(frames, columns, rows, individualWidth, individualHeight);
 }
 
-void Player::LoadBinds() {
-	//binding the keys for the player
-	InputManager::GetInstance()->Bind(&actions.walkUp, Keyboard::Key::W);
-	InputManager::GetInstance()->Bind(&actions.walkDown, Keyboard::Key::S);
-	InputManager::GetInstance()->Bind(&actions.walkLeft, Keyboard::Key::A);
-	InputManager::GetInstance()->Bind(&actions.walkRight, Keyboard::Key::D);
-	InputManager::GetInstance()->Bind(&actions.sprint, Keyboard::Key::LShift);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.interact, Keyboard::Key::E);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.inventory, Keyboard::Key::G);
-	InputManager::GetInstance()->BindSingleMousePress(&actions.drop, Mouse::Button::Right);
-	InputManager::GetInstance()->BindSingleMousePress(&actions.take, Mouse::Button::Left);
-	InputManager::GetInstance()->Bind(&actions.drag, Mouse::Button::Left);
-	InputManager::GetInstance()->BindSingleMousePress(&actions.swing, Mouse::Button::Left);
-	InputManager::GetInstance()->BindSingleMousePress(&actions.punch, Mouse::Button::Left);
-	InputManager::GetInstance()->BindSingleMousePress(&actions.fire, Mouse::Button::Left);
-	InputManager::GetInstance()->BindSingleMousePress(&actions.use, Mouse::Button::Left);
-	InputManager::GetInstance()->Bind(&actions.autoFire, Mouse::Button::Left);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar1, Keyboard::Key::Num1);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar2, Keyboard::Key::Num2);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar3, Keyboard::Key::Num3);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar4, Keyboard::Key::Num4);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar5, Keyboard::Key::Num5);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.reload, Keyboard::Key::R);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.testNet, Keyboard::Key::Return);
-}
-
-void Player::Draw() {
+void EnemyPlayer::Draw() {
 	if (shot) {
 		sf::VertexArray line(sf::LinesStrip, 2);
 
@@ -381,39 +298,14 @@ void Player::Draw() {
 	sprite.setPosition(view1.getCenter());
 	sprite.setOrigin(640, 360);
 	window->draw(sprite, *lightRenderStates);*/
-
-	//drawing the inventory and its contents
-	inventory->Draw();
-
-	//drawing the hotbar and its contents
-	hotbar->Draw();
-
-	//if there is an item being dragged, draw it here
-	if (dragInventoryItem != NULL) {
-		dragInventoryItem->DrawDragged();
-	}
-	if (dragContainerItem != NULL) {
-		dragContainerItem->DrawDragged();
-	}
-
-	DrawWatch();
-
-	if (touchedContainer != NULL) {
-		touchedContainer->DrawUI();
-	}
-
-	window->draw(bloodScreenSprite);
 }
 
-void Player::Update() {
+void EnemyPlayer::Update() {
 	SetRotation();
-	if (multiplayer) {
-		SendPlayerData();
-	}
 	Movement();
 	Interaction();
-	SetStats();
-	UpdateBloodMask();
+	//SetStats();
+	//UpdateBloodMask();
 
 	//setting the position of the sprite to the physics body
 	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
@@ -424,26 +316,16 @@ void Player::Update() {
 	animatedPunchLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 
 	m_pos = animatedTopSprite.getPosition();
-
-	//setting camera to the player
-	CenterCamera();
-
-	//setting the watch position
-	WatchUIPosition();
-
-	if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-		SceneChanger::GetInstance()->ChangeScene(GameState::GAMEMENU);
-	}
 }
 
-void Player::CenterCamera()
+void EnemyPlayer::CenterCamera()
 {
 	View view = window->getView();
 	view.setCenter(m_pos);
 	window->setView(view);
 }
 
-void Player::Movement() {
+void EnemyPlayer::Movement() {
 	b2Vec2 position = body->GetPosition();
 
 	float moveSpeed = speed;
@@ -490,7 +372,7 @@ void Player::Movement() {
 	light->_emissionSprite.setPosition(m_pos);
 }
 
-void Player::Interaction() {
+void EnemyPlayer::Interaction() {
 	shot = false;
 
 	Vector2i mousePos = Mouse::getPosition(*window);
@@ -657,43 +539,36 @@ void Player::Interaction() {
 			actions.punch = false;
 		}
 	}
-
-	if (!inventory->CheckOpen()) {
-		if (actions.autoFire && rifle && !reloading) {
+	if (!reloading && (actions.fire || actions.autoFire) && !invOpen) {
+		if (actions.autoFire && rifle) {
 			if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > rifleShootSpeed) {
-				if (hotbarItem->RemoveAmmo(1).first) {
+				if (ammoEmpty)
+					AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+				else {
 					AudioManager::GetInstance()->playSound("rifleshot", m_pos);
 					RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
 					shot = true;
-				}
-				else {
-					AudioManager::GetInstance()->playSound("pistoldry", m_pos);
 				}
 				lastShot = Clock::now();
 			}
 		}
 
-		else if (actions.fire) {
-			if (!reloading && (pistol || shotgun)) {
-				if (hotbarItem->RemoveAmmo(1).first) {
-					if (pistol) {
-						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
-						RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
-						shot = true;
-					}
-					else if (shotgun && std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shotgunShootSpeed) {
-						AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
-						RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
-						shot = true;
-						lastShot = Clock::now();
-					}
-				}
-				else {
-					if (pistol)
-						AudioManager::GetInstance()->playSound("pistoldry", m_pos);
-					else if (shotgun)
-						AudioManager::GetInstance()->playSound("pistoldry", m_pos);
-				}
+		else if (actions.fire && (pistol || shotgun)) {
+
+			if (ammoEmpty) {
+				AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+			}
+			else if (pistol) {
+				AudioManager::GetInstance()->playSound("pistolshot", m_pos);
+				RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
+				shot = true;
+			}
+			else if (shotgun && std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shotgunShootSpeed) {
+				AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+				AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
+				RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
+				shot = true;
+				lastShot = Clock::now();
 			}
 		}
 	}
@@ -755,26 +630,21 @@ void Player::Interaction() {
 	}
 
 	//reloading the current weapon
-	if (actions.reload && hotbarItem != NULL && (pistol || rifle || shotgun) && !reloading) {
-		hotbarItem->AddAmmo(inventory->SearchAmmo(hotbarItem->GetType(), hotbarItem->MissingAmmo()));
-		reloadTimer = time(&timer);
-		if (hotbarItem->GetType() == PISTOL) {
+	if (actions.reload && !reloading) {
+		if (pistol) {
 			AudioManager::GetInstance()->playSound("loadPistol", m_pos);
 			reloadTime = 1;
 		}
-		else if (hotbarItem->GetType() == RIFLE) {
+		else if (rifle) {
 			AudioManager::GetInstance()->playSound("loadRifle", m_pos);
 			reloadTime = 1;
 		}
-		else if (hotbarItem->GetType() == SHOTGUN) {
+		else if (shotgun) {
 			AudioManager::GetInstance()->playSound("loadShotgun", m_pos);
 			reloadTime = 2;
 		}
-		reloading = true;
+		//reloading = true;
 		actions.reload = false;
-
-		if (hotbarItem->GetAmmo() > 0)
-			ammoEmpty = false;
 	}
 
 	if (actions.use && hotbarItem != NULL) {
@@ -802,48 +672,37 @@ void Player::Interaction() {
 		reloading = false;
 	}
 
-	if (hotbarItem == NULL) {
-		meleeAxe = false;
-		meleeBat = false;
-		pistol = false;
-	}
-	else {
-		if (hotbarItem->GetType() == PISTOL || hotbarItem->GetType() == RIFLE || hotbarItem->GetType() == SHOTGUN) {
-			if (hotbarItem->GetAmmo() == 0)
-				ammoEmpty = true;
-			else
-				ammoEmpty = false;
-		}
-	}
-
-	invOpen = inventory->CheckOpen();
-
+	/*if (hotbarItem == NULL) {
+	meleeAxe = false;
+	meleeBat = false;
+	pistol = false;
+	}*/
 	//making sure if fire didnt happen, that it doesnt try again next frame
 	actions.fire = false;
 }
 
-void Player::TouchingContainer(Container* container) {
+void EnemyPlayer::TouchingContainer(Container* container) {
 	touchedContainer = container;
 }
 
-void Player::NotTouchingContainer() {
+void EnemyPlayer::NotTouchingContainer() {
 	touchedContainer = NULL;
 	dragContainerItem - NULL;
 }
 
-void Player::TouchingDoor(Door* door) {
+void EnemyPlayer::TouchingDoor(Door* door) {
 	touchedDoor = door;
 }
 
-void Player::NotTouchingDoor() {
+void EnemyPlayer::NotTouchingDoor() {
 	touchedDoor = NULL;
 }
 
-void Player::TouchingItem(Item* item) {
+void EnemyPlayer::TouchingItem(Item* item) {
 	touchedItems.push_back(item);
 }
 
-void Player::NotTouchingItem(Item* item) {
+void EnemyPlayer::NotTouchingItem(Item* item) {
 	std::vector<Item*>::iterator iter = touchedItems.begin();
 	std::vector<Item*>::iterator end = touchedItems.end();
 
@@ -855,8 +714,8 @@ void Player::NotTouchingItem(Item* item) {
 	}
 }
 
-void Player::SetRotation() {
-	orientation = getRotationAngle();
+void EnemyPlayer::SetRotation() {
+	//orientation = getRotationAngle();
 	animatedLegSprite.setRotation(orientation);
 	animatedTopSprite.setRotation(orientation);
 	animatedSwingAxeRight.setRotation(orientation);
@@ -865,7 +724,7 @@ void Player::SetRotation() {
 	animatedPunchLeft.setRotation(orientation);
 }
 
-void Player::createBox2dBody() {
+void EnemyPlayer::createBox2dBody() {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(m_pos.x / SCALE, m_pos.y / SCALE);
@@ -889,7 +748,7 @@ void Player::createBox2dBody() {
 	body->SetFixedRotation(false);
 }
 
-void Player::createPunchBox2dBody()
+void EnemyPlayer::createPunchBox2dBody()
 {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -915,7 +774,7 @@ void Player::createPunchBox2dBody()
 	punchbody->SetFixedRotation(false);
 }
 
-void Player::createMeleeBox2dBody()
+void EnemyPlayer::createMeleeBox2dBody()
 {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -940,7 +799,7 @@ void Player::createMeleeBox2dBody()
 	meleebody->SetFixedRotation(false);
 }
 
-void Player::createJoint()
+void EnemyPlayer::createJoint()
 {
 	meleeJointDef;
 	meleeJointDef.bodyA = body;
@@ -951,7 +810,7 @@ void Player::createJoint()
 	meleeJoint = world->CreateJoint(&meleeJointDef);
 }
 
-b2Vec2 Player::Normalize(b2Vec2 vector) {
+b2Vec2 EnemyPlayer::Normalize(b2Vec2 vector) {
 	float length = sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 	if (length != 0) {
 		vector.x /= length;
@@ -961,7 +820,7 @@ b2Vec2 Player::Normalize(b2Vec2 vector) {
 }
 
 //Setting the stats for the UI depending on the status of the player
-void Player::SetStats() {
+void EnemyPlayer::SetStats() {
 	//for seting current heart rate on watch using the health of the player
 	heartRate = fullHealth / (health * 100);
 	int heartRateForText = 85 + (10 * heartRate);
@@ -1015,7 +874,7 @@ void Player::SetStats() {
 	currentTime.setString(timeText);
 }
 
-void Player::WatchUIPosition() {
+void EnemyPlayer::WatchUIPosition() {
 	//placing the watchUI in the correct position on the screen
 	Vector2f center = window->getView().getCenter();
 	Vector2f size = window->getView().getSize();
@@ -1044,7 +903,7 @@ void Player::WatchUIPosition() {
 	bloodScreenSprite.setPosition(center - Vector2f(size.x / 2, size.y / 2));
 }
 
-void Player::DrawWatch() {
+void EnemyPlayer::DrawWatch() {
 	window->draw(watchBGSprite);
 	window->draw(heartBeatSprite);
 	window->draw(watchSprite);
@@ -1054,7 +913,7 @@ void Player::DrawWatch() {
 	window->draw(currentTime);
 }
 
-void Player::TakeDamage(int type)
+void EnemyPlayer::TakeDamage(int type)
 {
 	//punched
 	if (type == 0) {
@@ -1064,13 +923,13 @@ void Player::TakeDamage(int type)
 	}
 }
 
-void Player::BloodMask()
+void EnemyPlayer::BloodMask()
 {
 	bloodScreenAlpha = 255;
 	bloodScreenSprite.setColor((sf::Color(255, 255, 255, bloodScreenAlpha)));
 }
 
-void Player::UpdateBloodMask()
+void EnemyPlayer::UpdateBloodMask()
 {
 	//fading out the blood mask
 	float alpha = bloodScreenSprite.getColor().a;
@@ -1082,46 +941,32 @@ void Player::UpdateBloodMask()
 	bloodScreenSprite.setColor((sf::Color(255, 255, 255, alpha)));
 }
 
-void Player::SendPlayerData()
+void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 {
-	NetworkPacket* np = new NetworkPacket();
-	np->type = "PlayerData";
-	np->playerID = playerID;
-
-	//adding player data to packet for server to use
-	np->data.push_back(m_pos.x);
-	np->data.push_back(m_pos.y);
-	np->data.push_back(orientation);
-
-	AddActionsToPacket(np->data);
-	np->dataSize = np->data.size();
-
-	Network::GetInstance()->SendPacket("192.168.1.18", np);
+	orientation = data[2];
+	body->SetTransform(b2Vec2(data[0] / SCALE, data[1] / SCALE), orientation * DEGTORAD);
+	int i = 3;
+	actions.walkLeft = data[i++];
+	actions.walkRight = data[i++];
+	actions.walkUp = data[i++];
+	actions.sprint = data[i++];
+	invOpen = data[i++];
+	actions.swing = data[i++];
+	actions.punch = data[i++];
+	actions.fire = data[i++];
+	actions.autoFire = data[i++];
+	actions.reload = data[i++];
+	punch = data[i++];
+	meleeAxe = data[i++];
+	meleeBat = data[i++];
+	pistol = data[i++];
+	shotgun = data[i++];
+	rifle = data[i++];
+	reloading = data[i++];
+	ammoEmpty = data[i++];
 }
 
-void Player::AddActionsToPacket(vector<float>& data)
-{
-	data.push_back(actions.walkLeft);
-	data.push_back(actions.walkRight);
-	data.push_back(actions.walkUp);
-	data.push_back(actions.sprint);
-	data.push_back(invOpen);
-	data.push_back(actions.swing);
-	data.push_back(actions.punch);
-	data.push_back(actions.fire);
-	data.push_back(actions.autoFire);
-	data.push_back(actions.reload);
-	data.push_back(punch);
-	data.push_back(meleeAxe);
-	data.push_back(meleeBat);
-	data.push_back(pistol);
-	data.push_back(shotgun);
-	data.push_back(rifle);
-	data.push_back(reloading);
-	data.push_back(ammoEmpty);
-}
-
-float Player::getRotationAngle() {
+float EnemyPlayer::getRotationAngle() {
 	Vector2i mousePos = Mouse::getPosition(*window);
 	//used to convert to view coordinates
 	sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
@@ -1130,3 +975,4 @@ float Player::getRotationAngle() {
 	float radian = atan2f(dy, dx);
 	return (radian * RADTODEG);
 }
+

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef Player_H
-#define Player_H
+#ifndef ENEMYPLAYER_H
+#define ENEMYPLAYER_H
 
 #include "stdafx.h"
 #include "Globals.h"
@@ -13,7 +13,7 @@
 
 using namespace sf;
 
-struct keyActions {
+struct enemyKeyActions {
 	bool walkLeft = false;
 	bool walkRight = false;
 	bool walkUp = false;
@@ -34,27 +34,24 @@ struct keyActions {
 	bool hotbar2 = false;
 	bool hotbar3 = false;
 	bool hotbar4 = false;
-	bool hotbar5 = false; 
-	bool testNet = false;
+	bool hotbar5 = false;
 };
 
-class Player {
+class EnemyPlayer {
 private:
 	//player stats
-	int id = 123456;
-
 	float fullHealth;
 	float health;
 	bool bleeding = false;
 
 	float hunger;
-	time_t hungerTick; 
+	time_t hungerTick;
 	float hungerRate = 1;
 	float thirst;
 	time_t thirstTick;
 	float thirstRate = 0.5;
 
-	keyActions actions;
+	enemyKeyActions actions;
 	Texture m_AnimationLegsTexture;
 	Texture m_AnimationTopTexture;
 	Texture m_SwingAxeRightTexture;
@@ -142,12 +139,12 @@ private:
 	bool shotgun;
 	bool rifle;
 	int shoottime = 0;
-	float rifleShootSpeed; 
+	float rifleShootSpeed;
 	float shotgunShootSpeed;
 	typedef std::chrono::high_resolution_clock Clock;
 	typedef std::chrono::milliseconds milliseconds;
 	Clock::time_point lastShot;
-	time_t reloadTimer; 
+	time_t reloadTimer;
 	int reloadTime;
 	bool reloading;
 	bool ammoEmpty;
@@ -172,20 +169,18 @@ private:
 	b2RayCastInput gunRay;
 	time_t timer;
 
-	bool multiplayer;
+	int playerID;
 
 public:
 	bool doingPunchDamage = false;
 	bool doingMeleeDamage = false;
 
-	Player(Vector2f, bool);
-	Player(Vector2f, int hth, int hgr, int thst, vector<Item*> items);
+	EnemyPlayer(Vector2f, int); 
 	void LoadAssets();
 	void EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim, int frames, int columns, int rows, int individualWidth, int individualHeight);
 	void EasyLoadAssetsAnimation(Texture* t, string file, Animation* anim,
 		int frames, int columns, int rows, int individualWidth, int individualHeight,
-		Animation* current);
-	void LoadBinds();
+		Animation* current); 
 	void Draw();
 	void Update();
 	void Movement();
@@ -210,14 +205,13 @@ public:
 	void TakeDamage(int type);
 	void BloodMask();
 	void UpdateBloodMask();
+	void UpdateNetworkPlayer(vector<float>);
 	Vector2f GetPosition() { return m_pos; }
 	float GetHealth() { return health; }
 	float GetHunger() { return hunger; }
 	float GetThirst() { return thirst; }
 	Inventory* GetInventory() { return inventory; }
-
-	void SendPlayerData();
-	void AddActionsToPacket(vector<float>&);
+	int PlayerID() { return playerID; };
 };
 
 #endif

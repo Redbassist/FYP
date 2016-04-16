@@ -32,12 +32,12 @@ public:
 	bool isPlaying() const;
 	sf::Time getFrameTime() const;
 	void setFrame(std::size_t newFrame, bool resetTime = true);
+	std::size_t m_currentFrame;
 
 private:
 	const Animation* m_animation;
 	sf::Time m_frameTime;
 	sf::Time m_currentTime;
-	std::size_t m_currentFrame;
 	bool m_isPaused;
 	bool m_isLooped;
 	const sf::Texture* m_texture;

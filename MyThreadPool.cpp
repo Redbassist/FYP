@@ -181,7 +181,7 @@ ThreadPool::ThreadPool(unsigned int threadCount) :
 {
 	/*if (!threadCount)
 	threadCount = SDL_GetCPUCount(); //Returns the number of logical cores <- Not using as this is creating errors. */
-	workers = std::vector<Worker>(4);
+	workers = std::vector<Worker>(2);
 }
 
 //Destructor of the threadpool. Removes tasks from workers and waits for threads to end
@@ -217,7 +217,7 @@ void ThreadPool::AddTask(Worker::Task task, Parameter p)
 {
 	workers[index++].AddTask(task, p);
 	if (index >= workers.size())
-		index = 0;
+		index = 1;
 }
 
 //Remove all tasks from each of the workers

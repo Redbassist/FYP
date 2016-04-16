@@ -6,6 +6,7 @@ Effect::Effect()
 
 Effect::Effect(Texture * t, Vector2f pos, int frames, int columns, int rows, int individualWidth, int individualHeight, float speed, float scale)
 {
+	numFrames = frames;
 	animation.setSpriteSheet(*t);
 	animation.addFrames(frames, columns, rows, individualWidth, individualHeight);
 	animatedSprite = AnimatedSprite(sf::seconds(speed), true, true);
@@ -25,7 +26,7 @@ void Effect::DrawEffect(sf::Time frameTime)
 
 bool Effect::IsComplete()
 {
-	if (!animatedSprite.isPlaying())
+	if (animatedSprite.m_currentFrame >= (numFrames - 1))
 		return true;
 	else
 		return false;

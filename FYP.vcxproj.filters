@@ -255,6 +255,9 @@
     <ClInclude Include="ThreadGlobals.h">
       <Filter>Header Files\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyPlayer.h">
+      <Filter>Header Files\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -412,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="ThreadGlobals.cpp">
       <Filter>Source Files\Threads</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyPlayer.cpp">
+      <Filter>Source Files\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

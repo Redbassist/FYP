@@ -8,6 +8,7 @@
 #include "Container.h"
 #include "Item.h"
 #include "Player.h"
+#include "EnemyPlayer.h"
 #include "FillerObject.h" 
 #include "EnemyManager.h"
 #include "Tree.h"
@@ -33,6 +34,7 @@ private:
 	bool loadedCharacrter;
 
 	Player* player;
+	vector<EnemyPlayer*> enemyPlayers;
 	EnemyManager enemyManager;
 	Texture m_texture;
 	Sprite m_sprite;  

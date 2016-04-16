@@ -9,7 +9,7 @@ using namespace sf;
 
 int main()
 {
-	playerID = 123456;
+	playerID = 123457;
 
 	srand(time(NULL));
 	std::chrono::steady_clock myClock;
@@ -68,7 +68,7 @@ int main()
 	ml = new tmx::MapLoader("Maps");
 	ml->Load("myMap.tmx");
 
-	Network::GetInstance();
+	//Network::GetInstance();
 
 	while (window->isOpen())
 	{

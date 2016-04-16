@@ -69,9 +69,11 @@ void SceneManager::Update()
 	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::GAME || SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIPLAYER) && gameWorld != NULL)
 		gameWorld->Update();
 
-	if (Network::GetInstance()->startGame) {
-		SceneChanger::GetInstance()->ChangeScene(GameState::MULTIPLAYER);
-		Network::GetInstance()->startGame = false;
+	if (SceneChanger::GetInstance()->CurrentScene() == GameState::CONNECT) {
+		if (Network::GetInstance()->startGame) {
+			SceneChanger::GetInstance()->ChangeScene(GameState::MULTIPLAYER);
+			Network::GetInstance()->startGame = false;
+		}
 	}
 }
 
@@ -135,7 +137,7 @@ void SceneManager::ChangeScene()
 				NetworkPacket* np = new NetworkPacket();
 				np->type = "Connection";
 				np->playerID = playerID;
-				Network::GetInstance()->SendPacket("127.0.0.1", np);
+				Network::GetInstance()->SendPacket("192.168.1.18", np);
 				connect = true;
 			}
 			break;

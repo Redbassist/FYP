@@ -26,7 +26,7 @@ sf::Packet& operator << (sf::Packet& packet, const NetworkPacket& p)
 sf::Packet& operator >> (sf::Packet& packet, NetworkPacket& p)
 {
 	packet >> p.type >> p.ip >> p.playerID >> p.dataSize;
-	int size = p.data.size();
+	int size = p.dataSize;
 	for (int i = 0; i < size; i++) {
 		float dataPiece;
 		packet >> dataPiece;
@@ -101,6 +101,30 @@ void Network::ProcessMessageData(NetworkPacket* np)
 		else if (messageType == "Start") {
 			startGame = true;
 		}
+		else if (messageType == "EnemyPlayerData") {
+			int numberPlayersSent = np->dataSize / 22;
+
+			for (int i = 0; i < numberPlayersSent; i++) {
+				int size = players.size();
+				bool foundPlayer = false;
+				for (int j = 0; j < size; j++) {
+					if (players[j].id == (int)np->data[22 * i]) {
+						players[j].update = true;
+						players[j].data.clear();
+						players[j].data.insert(players[j].data.end(), np->data.begin() + (22 * i), np->data.begin() + (22 * (i + 1)));
+						foundPlayer = true;
+						break;
+					}
+				}
+				if (!foundPlayer) {
+					PlayerInfo temp;
+					temp.id = (int)np->data[22 * i];
+					temp.update = true;
+					temp.data.insert(temp.data.end(), np->data.begin() + (22 * i), np->data.begin() + (22 * (i + 1)));
+					players.push_back(temp);
+				}
+			}
+		}
 	}
 }
 
@@ -119,7 +143,7 @@ void Network::SendPacketThread()
 {
 	sf::Packet packet;
 	packet << *sentMessage;
-	IpAddress reciever = sentMessage->ip;
+	IpAddress reciever = "192.168.1.18";
 	unsigned short port = 54000;
 	cout << "Sending Message" << endl;
 	socket.send(packet, reciever, port); 
