@@ -71,7 +71,7 @@ void Network::Update()
 
 void Network::ReceiveMessages()
 {
-	cout << "Receiving Message" << endl;
+	//cout << "Receiving Message" << endl;
 	sf::Packet packet;
 	IpAddress sender;
 	unsigned short port;
@@ -85,7 +85,7 @@ void Network::ReceiveMessages()
 void Network::HandleMessage()
 {
 	if (receivedPackets.size() > 0) {
-		cout << "Handling Message" << endl; 
+		//cout << "Handling Message" << endl; 
 		for (int i = 0; i < receivedPackets.size(); i++) {
 			ProcessMessageData(receivedPackets[i]); 
 			delete receivedPackets[i];
@@ -109,6 +109,10 @@ void Network::ProcessMessageData(NetworkPacket* np)
 		}
 		else if (messageType == "EnemyPlayerData") {
 			int numberPlayersSent = np->dataSize / 22;
+
+			while (nr > 0) {
+				//do nothing
+			}
 
 			for (int i = 0; i < numberPlayersSent; i++) {
 				int size = players.size();
@@ -137,7 +141,7 @@ void Network::ProcessMessageData(NetworkPacket* np)
 void Network::SendPacket(IpAddress ip, NetworkPacket* np)
 {
 	np->ip = IpAddress::getLocalAddress().toString();
-	sentMessage = np;
+	sentMessages.push_back(np);
 
 	Parameter p;
 	p.param = this;
@@ -148,11 +152,15 @@ void Network::SendPacket(IpAddress ip, NetworkPacket* np)
 void Network::SendPacketThread()
 {
 	sf::Packet packet;
-	packet << *sentMessage;
-	IpAddress reciever = "192.168.1.18";
-	unsigned short port = 54000;
-	cout << "Sending Message" << endl;
-	sendSocket.send(packet, reciever, port); 
+	if (sentMessages.size() > 0) {
+		packet << *sentMessages[0];
+		IpAddress reciever = "192.168.1.18";
+		unsigned short port = 54000;
+		//cout << "Sending Message" << endl;
+		sendSocket.send(packet, reciever, port);
+		delete sentMessages[0];
+		sentMessages.erase(sentMessages.begin());
+	}
 }
 
 void Network::CheckDisconnect(int playerID)

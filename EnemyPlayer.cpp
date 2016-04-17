@@ -945,7 +945,7 @@ void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 {
 	if (data.size() > 0) {
 		orientation = data[3];
-		body->SetTransform(b2Vec2(data[1] / SCALE, data[2] / SCALE), orientation * DEGTORAD);
+		body->SetTransform(b2Vec2((data[1] + 1), data[2]), orientation * DEGTORAD);
 		int i = 4;
 		actions.walkLeft = data[i++];
 		actions.walkRight = data[i++];
@@ -965,6 +965,9 @@ void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 		rifle = data[i++];
 		reloading = data[i++];
 		ammoEmpty = data[i++];
+	}
+	else {
+		int poop = 0;
 	}
 }
 

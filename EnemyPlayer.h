@@ -171,6 +171,7 @@ private:
 
 	int playerID;
 
+	bool receivedUpdate;
 public:
 	bool doingPunchDamage = false;
 	bool doingMeleeDamage = false;

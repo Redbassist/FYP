@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ContactListener.h" 
 #include "Globals.h"
+#include "ThreadGlobals.h"
 #include "SceneManager.h"
 #include "SFMLDebugDraw.h"
 
@@ -10,6 +11,7 @@ using namespace sf;
 int main()
 {
 	playerID = 123456;
+	nr = 0;
 
 	srand(time(NULL));
 	std::chrono::steady_clock myClock;

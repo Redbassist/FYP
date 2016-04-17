@@ -97,38 +97,39 @@ void World::CreateLevel() {
 }
 
 void World::Update() {
-	player->Update();
-
 	if (!multiplayer)
 		enemyManager.Update(player);
 	else {
 		
+		nr++;
 		vector<PlayerInfo> p = Network::GetInstance()->GetPlayerData();
 		int size = p.size();
 
 		for (int i = 0; i < size; i++) {
 			bool foundPlayer = false;
 			for (int j = 0; j < enemyPlayers.size(); j++) {
-				if (p[i].id == enemyPlayers[j]->PlayerID() && p[i].update) {
+				if (p[i].id + 1 == enemyPlayers[j]->PlayerID()) {
 					enemyPlayers[j]->UpdateNetworkPlayer(p[i].data);
-					Network::GetInstance()->GetPlayerData()[i].update = false;
 					foundPlayer = true;
 					break;
 				}
 			}
-			if (!foundPlayer && p[i].id != playerID) {
-				EnemyPlayer* temp = new EnemyPlayer(Vector2f(p[i].data[1], p[i].data[2]), p[i].data[0]);
+			if (!foundPlayer && p[i].id != playerID + 1) {
+				EnemyPlayer* temp = new EnemyPlayer(Vector2f(p[i].data[1], p[i].data[2]), p[i].data[0] + 1);
 				if (p[i].update)
 					temp->UpdateNetworkPlayer(p[i].data);
 				enemyPlayers.push_back(temp);
 			}
 		}
+		nr--;
 
 		size = enemyPlayers.size();
 		for (int i = 0; i < size; i++) {
 			enemyPlayers[i]->Update();
 		}
 	}
+
+	player->Update();
 
 	int size = trees.size();
 	for (int i = 0; i < size; i++) {

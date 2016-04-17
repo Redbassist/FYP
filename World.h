@@ -4,6 +4,7 @@
 
 #include "stdafx.h" 
 #include "Globals.h"
+#include "ThreadGlobals.h"
 #include "House.h"
 #include "Container.h"
 #include "Item.h"

@@ -4,6 +4,7 @@
 
 #include "stdafx.h" 
 #include "Globals.h"
+#include "ThreadGlobals.h"
 
 using namespace std;
 using namespace sf;
@@ -29,7 +30,7 @@ private:
 	UdpSocket sendSocket;
 	UdpSocket receiveSocket;
 	vector<NetworkPacket*> receivedPackets;
-	NetworkPacket* sentMessage;
+	vector<NetworkPacket*> sentMessages;
 public:
 	Network();
 	static Network* GetInstance();

@@ -425,7 +425,7 @@ void Player::Update() {
 	animatedPunchRight.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedPunchLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 
-	m_pos = animatedTopSprite.getPosition();
+	//m_pos = animatedTopSprite.getPosition();
 
 	//setting camera to the player
 	CenterCamera();
@@ -435,7 +435,7 @@ void Player::Update() {
 
 	if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 		SceneChanger::GetInstance()->ChangeScene(GameState::GAMEMENU);
-	}
+	} 
 }
 
 void Player::CenterCamera()
@@ -1091,8 +1091,8 @@ void Player::SendPlayerData()
 	np->playerID = playerID;
 
 	//adding player data to packet for server to use
-	np->data.push_back(m_pos.x);
-	np->data.push_back(m_pos.y);
+	np->data.push_back(m_pos.x / SCALE);
+	np->data.push_back(m_pos.y / SCALE);
 	np->data.push_back(orientation);
 
 	AddActionsToPacket(np->data);
