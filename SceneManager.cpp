@@ -33,11 +33,16 @@ void SceneManager::CreateMenus()
 	tempMenu->AddButton(new Button(Vector2f(150, 650), 200, 80, string("Back"), GameState::MENU));
 	menusMap[GameState::OPTIONS] = tempMenu;
 
-	//creating the options menu
+	//creating the connect menu
 	tempMenu = new Menu(string("normalMenu"));
 	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Connect"), GameState::CONNECT));
 	tempMenu->AddButton(new Button(Vector2f(1050, 520), 200, 80, string("Back"), GameState::MENU));
 	menusMap[GameState::MULTIPLAYERMENU] = tempMenu;
+
+	//creating the connect menu
+	tempMenu = new Menu(string("waitMenu"));
+	tempMenu->AddButton(new Button(Vector2f(640, 520), 200, 80, string("Cancel"), GameState::MENU));
+	menusMap[GameState::CONNECT] = tempMenu;
 
 	//creating the menu for in game
 	tempMenu = NULL;
@@ -62,11 +67,15 @@ void SceneManager::CreateMenus()
 void SceneManager::Update()
 {
 	ChangeScene();
+
 	if (currentMenu != NULL)
 		currentMenu->Update();
 
 	//updating the gameWorld
-	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::GAME || SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIPLAYER) && gameWorld != NULL)
+	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::GAME 
+		|| SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIPLAYER
+		|| SceneChanger::GetInstance()->CurrentScene() == GameState::CONTINUEGAME) 
+		&& gameWorld != NULL)
 		gameWorld->Update();
 
 	if (SceneChanger::GetInstance()->CurrentScene() == GameState::CONNECT) {
@@ -83,6 +92,7 @@ void SceneManager::Draw()
 	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::GAME ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIPLAYER ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEOPTIONS ||
+		SceneChanger::GetInstance()->CurrentScene() == GameState::CONTINUEGAME ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEMENU
 		)
 		&& gameWorld != NULL) {
@@ -102,12 +112,23 @@ void SceneManager::ChangeScene()
 			currentMenu->UpdateTransform();
 			break;
 		case(GameState::MENU) :
+			if (connect) {
+				NetworkPacket* np = new NetworkPacket();
+				np->type = "Disconnect";
+				np->playerID = playerID;
+				Network::GetInstance()->SendPacket("192.168.1.18", np);
+				connect = true;
+				connect = false;
+			}
 			currentMenu = menusMap[GameState::MENU];
 			currentMenu->UpdateTransform();
 			break;
-		case(GameState::CONTINUEGAME) : 
-			loadGame = true;
-			SceneChanger::GetInstance()->ChangeScene(GameState::GAME);
+		case(GameState::CONTINUEGAME) :
+			currentMenu = menusMap[GameState::GAME];
+			if (gameWorld == NULL) {
+				gameWorld = new World(true, false);
+				AudioManager::GetInstance()->startMusic("backgroundMusic");
+			}
 			break;
 		case(GameState::NEWGAME) : 
 			loadGame = false;
@@ -115,14 +136,10 @@ void SceneManager::ChangeScene()
 			break;
 		case(GameState::GAME) : 
 			currentMenu = menusMap[GameState::GAME];
-			if (gameWorld == NULL) {
-				if (loadGame)
-					gameWorld = new World(true, false);
-				else {
+			if (gameWorld == NULL) { 
 					gameWorld = new World(false, false);
-				}
-				AudioManager::GetInstance()->startMusic("backgroundMusic");
-			}
+					AudioManager::GetInstance()->startMusic("backgroundMusic");
+			}		
 			break;
 		case(GameState::OPTIONS) :
 			currentMenu = menusMap[GameState::OPTIONS];
@@ -132,7 +149,8 @@ void SceneManager::ChangeScene()
 			currentMenu = menusMap[GameState::MULTIPLAYERMENU];
 			currentMenu->UpdateTransform();
 			break;
-		case(GameState::CONNECT) : 
+		case(GameState::CONNECT) :
+			currentMenu = menusMap[GameState::CONNECT];
 			if (!connect) {
 				NetworkPacket* np = new NetworkPacket();
 				np->type = "Connection";

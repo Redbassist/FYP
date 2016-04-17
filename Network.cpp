@@ -37,11 +37,17 @@ sf::Packet& operator >> (sf::Packet& packet, NetworkPacket& p)
 
 Network::Network()
 {
-	if (socket.bind(8080) != sf::Socket::Done)
+	if (sendSocket.bind(80) != sf::Socket::Done)
 	{
 		cout << "Could not bind to specified port" << endl;
 	}
-	socket.setBlocking(true);
+	sendSocket.setBlocking(true);
+
+	if (receiveSocket.bind(8080) != sf::Socket::Done)
+	{
+		cout << "Could not bind to specified port" << endl;
+	}
+	receiveSocket.setBlocking(true);
 
 	Parameter p;
 	p.param = this;
@@ -69,7 +75,7 @@ void Network::ReceiveMessages()
 	sf::Packet packet;
 	IpAddress sender;
 	unsigned short port;
-	socket.receive(packet, sender, port);
+	receiveSocket.receive(packet, sender, port);
 	NetworkPacket* np = new NetworkPacket();
 	packet >> *np;
 	receivedPackets.push_back(np);
@@ -146,7 +152,7 @@ void Network::SendPacketThread()
 	IpAddress reciever = "192.168.1.18";
 	unsigned short port = 54000;
 	cout << "Sending Message" << endl;
-	socket.send(packet, reciever, port); 
+	sendSocket.send(packet, reciever, port); 
 }
 
 void Network::CheckDisconnect(int playerID)

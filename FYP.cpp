@@ -9,7 +9,7 @@ using namespace sf;
 
 int main()
 {
-	playerID = 123457;
+	playerID = 123456;
 
 	srand(time(NULL));
 	std::chrono::steady_clock myClock;

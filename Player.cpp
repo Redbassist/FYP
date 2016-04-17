@@ -55,6 +55,8 @@ Player::Player(Vector2f pos, bool multi) : m_pos(pos)
 
 Player::Player(Vector2f pos, int hth, int hgr, int thst, vector<Item*> items)
 {
+	multiplayer = false;
+
 	m_pos = pos;
 
 	inventory = new Inventory();

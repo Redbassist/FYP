@@ -26,7 +26,8 @@ class Network {
 private:
 	vector<pair<IpAddress, unsigned short>> connectedPlayerInfo;
 	vector<PlayerInfo> players;
-	UdpSocket socket;
+	UdpSocket sendSocket;
+	UdpSocket receiveSocket;
 	vector<NetworkPacket*> receivedPackets;
 	NetworkPacket* sentMessage;
 public:

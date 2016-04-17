@@ -943,27 +943,29 @@ void EnemyPlayer::UpdateBloodMask()
 
 void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 {
-	orientation = data[2];
-	body->SetTransform(b2Vec2(data[0] / SCALE, data[1] / SCALE), orientation * DEGTORAD);
-	int i = 3;
-	actions.walkLeft = data[i++];
-	actions.walkRight = data[i++];
-	actions.walkUp = data[i++];
-	actions.sprint = data[i++];
-	invOpen = data[i++];
-	actions.swing = data[i++];
-	actions.punch = data[i++];
-	actions.fire = data[i++];
-	actions.autoFire = data[i++];
-	actions.reload = data[i++];
-	punch = data[i++];
-	meleeAxe = data[i++];
-	meleeBat = data[i++];
-	pistol = data[i++];
-	shotgun = data[i++];
-	rifle = data[i++];
-	reloading = data[i++];
-	ammoEmpty = data[i++];
+	if (data.size() > 0) {
+		orientation = data[3];
+		body->SetTransform(b2Vec2(data[1] / SCALE, data[2] / SCALE), orientation * DEGTORAD);
+		int i = 4;
+		actions.walkLeft = data[i++];
+		actions.walkRight = data[i++];
+		actions.walkUp = data[i++];
+		actions.sprint = data[i++];
+		invOpen = data[i++];
+		actions.swing = data[i++];
+		actions.punch = data[i++];
+		actions.fire = data[i++];
+		actions.autoFire = data[i++];
+		actions.reload = data[i++];
+		punch = data[i++];
+		meleeAxe = data[i++];
+		meleeBat = data[i++];
+		pistol = data[i++];
+		shotgun = data[i++];
+		rifle = data[i++];
+		reloading = data[i++];
+		ammoEmpty = data[i++];
+	}
 }
 
 float EnemyPlayer::getRotationAngle() {
