@@ -154,7 +154,7 @@ void Network::SendPacketThread()
 	sf::Packet packet;
 	if (sentMessages.size() > 0) {
 		packet << *sentMessages[0];
-		IpAddress reciever = "192.168.1.18";
+		IpAddress reciever = "192.168.1.8";
 		unsigned short port = 54000;
 		//cout << "Sending Message" << endl;
 		sendSocket.send(packet, reciever, port);
