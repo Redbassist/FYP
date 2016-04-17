@@ -133,6 +133,7 @@ void Network::ProcessMessageData(NetworkPacket* np)
 					temp.data.insert(temp.data.end(), np->data.begin() + (22 * i), np->data.begin() + (22 * (i + 1)));
 					players.push_back(temp);
 				}
+				cout << "Num Packet = " + to_string(np->data[i * 22 + 1]) << endl;
 			}
 		}
 	}
