@@ -44,7 +44,7 @@ private:
 	std::vector<Item*> items;
 	std::vector<Tree*> trees;
 	std::vector<FillerObject*> fillers; 
-
+	std::vector<Wall*> boundaries;
 	bool multiplayer;
 		
 public:
@@ -55,6 +55,7 @@ public:
 	void Draw(); 
 	void SavePlayer();
 	void LoadPlayer();
+	void DeletePlayerSave();
 };
 
 #endif

@@ -52,7 +52,7 @@ void SceneManager::CreateMenus()
 	tempMenu = new Menu(string("ingameMenu"));
 	tempMenu->AddButton(new Button(Vector2f(430, 150), 180, 55, string("Resume"), GameState::GAME));
 	tempMenu->AddButton(new Button(Vector2f(430, 245), 180, 55, string("Options"), GameState::GAMEOPTIONS));
-	tempMenu->AddButton(new Button(Vector2f(430, 340), 180, 55, string("Exit"), GameState::EXIT));
+	tempMenu->AddButton(new Button(Vector2f(430, 340), 180, 55, string("Exit"), GameState::SAVEEXIT));
 	menusMap[GameState::GAMEMENU] = tempMenu;
 
 	//creating the game options menu
@@ -62,6 +62,12 @@ void SceneManager::CreateMenus()
 	tempMenu->AddSlider(new Slider(Vector2f(250, 340), 400, string("Effects Volume"), Setting::SHORT));
 	tempMenu->AddButton(new Button(Vector2f(330, 420), 180, 55, string("Back"), GameState::GAMEMENU));
 	menusMap[GameState::GAMEOPTIONS] = tempMenu;
+
+	//creating the dead menu
+	tempMenu = new Menu(string("deadMenu"));
+	tempMenu->AddButton(new Button(Vector2f(640, 400), 200, 80, string("Main Menu"), GameState::MENU));
+	tempMenu->AddButton(new Button(Vector2f(640, 520), 200, 80, string("Exit Game"), GameState::EXIT));
+	menusMap[GameState::DEAD] = tempMenu;
 }
 
 void SceneManager::Update()
@@ -72,7 +78,7 @@ void SceneManager::Update()
 		currentMenu->Update();
 
 	//updating the gameWorld
-	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::GAME 
+	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::NEWGAME
 		|| SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIPLAYER
 		|| SceneChanger::GetInstance()->CurrentScene() == GameState::CONTINUEGAME) 
 		&& gameWorld != NULL)
@@ -89,7 +95,7 @@ void SceneManager::Update()
 void SceneManager::Draw()
 {
 	//updating the gameWorld
-	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::GAME ||
+	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::NEWGAME ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIPLAYER ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEOPTIONS ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::CONTINUEGAME ||
@@ -112,6 +118,10 @@ void SceneManager::ChangeScene()
 			currentMenu->UpdateTransform();
 			break;
 		case(GameState::MENU) :
+			if (gameWorld != NULL) {
+				delete gameWorld;
+				gameWorld = NULL;
+			}
 			if (connect) {
 				NetworkPacket* np = new NetworkPacket();
 				np->type = "Disconnect";
@@ -131,15 +141,11 @@ void SceneManager::ChangeScene()
 			}
 			break;
 		case(GameState::NEWGAME) : 
-			loadGame = false;
-			SceneChanger::GetInstance()->ChangeScene(GameState::GAME);
-			break;
-		case(GameState::GAME) : 
 			currentMenu = menusMap[GameState::GAME];
-			if (gameWorld == NULL) { 
-					gameWorld = new World(false, false);
-					AudioManager::GetInstance()->startMusic("backgroundMusic");
-			}		
+			if (gameWorld == NULL) {
+				gameWorld = new World(false, false);
+				AudioManager::GetInstance()->startMusic("backgroundMusic");
+			}
 			break;
 		case(GameState::OPTIONS) :
 			currentMenu = menusMap[GameState::OPTIONS];
@@ -174,10 +180,18 @@ void SceneManager::ChangeScene()
 			currentMenu = menusMap[GameState::GAMEOPTIONS];
 			currentMenu->UpdateTransform();
 			break;
-		case(GameState::EXIT) :
+		case(GameState::DEAD) :
+			gameWorld->DeletePlayerSave();
+			currentMenu = menusMap[GameState::DEAD];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::SAVEEXIT) :
 			if (gameWorld != NULL) {
 				gameWorld->SavePlayer();
 			}
+			window->close();
+			break;
+		case(GameState::EXIT) : 
 			window->close();
 			break;
 		}

@@ -1,19 +1,20 @@
 #include "Container.h" 
 
-Container::Container(Vector2f pos, float rot, std::vector<Item*>* i, int type) :
+Container::Container(Vector2f pos, float rot, std::vector<Item*>* i, int t) :
 	m_pos(pos), rotation(rot), items(i)
 {
+	type = t;
 	open = false;
 	invCols = 4;
 	invRows = 5;
 	invSize = 20;
-	LoadAssets(type);
+	LoadAssets();
 	SetupSlots();
 	GenerateItems();
 	createBox2dBody();
 }
 
-void Container::LoadAssets(int type) {
+void Container::LoadAssets() {
 	m_texture.loadFromFile("Sprites/container.png");
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
@@ -26,7 +27,7 @@ void Container::LoadAssets(int type) {
 		m_shapeTexture.loadFromFile("Sprites/cupboard.png");
 	}
 	else if (type == 1) {
-		m_shapeTexture.loadFromFile("Sprites/cupboard2.png"); 
+		m_shapeTexture.loadFromFile("Sprites/cupboard2.png");
 	}
 	else if (type == 2) {
 		m_shapeTexture.loadFromFile("Sprites/shelf.png");
@@ -68,76 +69,211 @@ void Container::GenerateItems() {
 	int size = slots.size();
 	Item* temp;
 
-	for (int i = 0; i < size; i++) {
-		int item = rand() % 20 + 0;
-		int amount;
-		if (item == 0) {
-			temp = new Item(FOOD1, 1);
-			AddItem(temp);
-			items->push_back(temp);
-			/*slots[i].item = new Item(FOOD1, 1); OLD WAY
-			slots[i].full = true;
-			slots[i].item->SlotNumber(i);
-			items->push_back(slots[i].item);*/
+	switch (type) {
+	case(0) :
+		for (int i = 0; i < size; i++) {
+			int item = rand() % 40 + 0;
+			int amount;
+			if (item >= 0 && item <= 3) {
+				temp = new Item(FOOD1, 1);
+				AddItem(temp);
+				items->push_back(temp);
+				/*slots[i].item = new Item(FOOD1, 1); OLD WAY
+				slots[i].full = true;
+				slots[i].item->SlotNumber(i);
+				items->push_back(slots[i].item);*/
+			}
+			else if (item >= 4 && item <= 7) {
+				temp = new Item(WATER1, 1);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 9 && item <= 11) {
+				temp = new Item(WATER2, 1);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item == 15) {
+				temp = new Item(AXE, 2);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item == 16) {
+				temp = new Item(BAT, 2);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item == 23) {
+				amount = rand() % 7 + 0;
+				temp = new Item(PISTOL, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 24 && item <= 25) {
+				amount = rand() % 20 + 0;
+				temp = new Item(AMMOPISTOL, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			} 
+			else if (item == 30) {
+				amount = rand() % 6 + 0;
+				temp = new Item(SHOTGUN, 2, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 32 && item <= 33) {
+				amount = rand() % 8 + 0;
+				temp = new Item(AMMOSHOTGUN, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
 		}
-		else if (item == 1) {
-			temp = new Item(WATER1, 1);
-			AddItem(temp);
-			items->push_back(temp);
+		break;
+	case(1) :
+		for (int i = 0; i < size; i++) {
+			int item = rand() % 40 + 0;
+			int amount;
+			if (item >= 0 && item <= 2) {
+				temp = new Item(FOOD1, 1);
+				AddItem(temp);
+				items->push_back(temp);
+				/*slots[i].item = new Item(FOOD1, 1); OLD WAY
+				slots[i].full = true;
+				slots[i].item->SlotNumber(i);
+				items->push_back(slots[i].item);*/
+			}
+			else if (item >= 4 && item <= 7) {
+				temp = new Item(WATER1, 1);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 9 && item <= 10) {
+				temp = new Item(WATER2, 1);
+				AddItem(temp);
+				items->push_back(temp);
+			}  
+			else if (item == 24) {
+				amount = rand() % 20 + 0;
+				temp = new Item(AMMOPISTOL, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			} 
+			else if (item == 33) {
+				amount = rand() % 8 + 0;
+				temp = new Item(AMMOSHOTGUN, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
 		}
-		else if (item == 2) {
-			temp = new Item(WATER2, 1);
-			AddItem(temp);
-			items->push_back(temp);
+		break;
+	case(2) :
+		for (int i = 0; i < size; i++) {
+			int item = rand() % 40 + 0;
+			int amount;
+			if (item >= 0 && item <= 5) {
+				temp = new Item(FOOD1, 1);
+				AddItem(temp);
+				items->push_back(temp);
+				/*slots[i].item = new Item(FOOD1, 1); OLD WAY
+				slots[i].full = true;
+				slots[i].item->SlotNumber(i);
+				items->push_back(slots[i].item);*/
+			}
+			else if (item >= 6 && item <= 9) {
+				temp = new Item(WATER1, 1);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 10 && item <= 12) {
+				temp = new Item(WATER2, 1);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 15 && item <= 18) {
+				temp = new Item(AXE, 2);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 19 && item <= 22) {
+				temp = new Item(BAT, 2);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 23 && item <= 24) {
+				amount = rand() % 7 + 0;
+				temp = new Item(PISTOL, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 24 && item <= 26) {
+				amount = rand() % 20 + 0;
+				temp = new Item(AMMOPISTOL, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 30 && item <= 32) {
+				amount = rand() % 6 + 0;
+				temp = new Item(SHOTGUN, 2, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 33 && item <= 34) {
+				amount = rand() % 8 + 0;
+				temp = new Item(AMMOSHOTGUN, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item == 36) {
+				amount = rand() % 100 + 0;
+				temp = new Item(AMMORIFLE, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
 		}
-		else if (item == 3) {
-			temp = new Item(AXE, 2);
-			AddItem(temp);
-			items->push_back(temp);
+		break;
+	case(3) :
+		for (int i = 0; i < size; i++) {
+			int item = rand() % 40 + 0;
+			int amount;
+			if (item >= 0 && item <= 4) {
+				amount = rand() % 7 + 0;
+				temp = new Item(PISTOL, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}  
+			else if (item >= 10 && item <= 17) {
+				amount = rand() % 20 + 0;
+				temp = new Item(AMMOPISTOL, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 20 && item <= 24) {
+				amount = rand() % 6 + 0;
+				temp = new Item(SHOTGUN, 2, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 25 && item <= 32) {
+				amount = rand() % 8 + 0;
+				temp = new Item(AMMOSHOTGUN, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 33 && item <= 34) {
+				amount = rand() % 30 + 0;
+				temp = new Item(RIFLE, 2, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
+			else if (item >= 37 && item <= 39) {
+				amount = rand() % 100 + 0;
+				temp = new Item(AMMORIFLE, 1, amount);
+				AddItem(temp);
+				items->push_back(temp);
+			}
 		}
-		else if (item == 4) {
-			temp = new Item(BAT, 2);
-			AddItem(temp);
-			items->push_back(temp);
-		}
-		else if (item == 5) {
-			amount = rand() % 7 + 0;
-			temp = new Item(PISTOL, 1, amount);
-			AddItem(temp);
-			items->push_back(temp);
-		}
-		else if (item == 6) {
-			amount = rand() % 20 + 0;
-			temp = new Item(AMMOPISTOL, 1, amount);
-			AddItem(temp);
-			items->push_back(temp);
-		}
-		else if (item == 7) {
-			amount = rand() % 30 + 0;
-			temp = new Item(RIFLE, 2, amount);
-			AddItem(temp);
-			items->push_back(temp);
-		}
-		else if (item == 8) {
-			amount = rand() % 100 + 0;
-			temp = new Item(AMMORIFLE, 1, amount);
-			AddItem(temp);
-			items->push_back(temp);
-		}
-		else if (item == 9) {
-			amount = rand() % 6 + 0;
-			temp = new Item(SHOTGUN, 2, amount);
-			AddItem(temp);
-			items->push_back(temp);
-		}
-		else if (item == 10) {
-			amount = rand() % 8 + 0;
-			temp = new Item(AMMOSHOTGUN, 1, amount);
-			AddItem(temp);
-			items->push_back(temp);
-		}
+		break;
 	}
-
 }
 
 bool Container::AddItem(Item* item, Vector2f dropPos) {

@@ -22,6 +22,7 @@ Player::Player(Vector2f pos, bool multi) : m_pos(pos)
 	thirst = 50;
 	hungerTick = time(&timer);
 	thirstTick = time(&timer);
+	healthRegen = time(&timer);
 	hungerRate = 1;
 	thirstRate = 0.5;
 
@@ -81,6 +82,7 @@ Player::Player(Vector2f pos, int hth, int hgr, int thst, vector<Item*> items)
 	thirst = thst;
 	hungerTick = time(&timer);
 	thirstTick = time(&timer);
+	healthRegen = time(&timer);
 	hungerRate = 1;
 	thirstRate = 0.5;
 
@@ -988,6 +990,16 @@ void Player::SetStats() {
 	foodBarSprite.setScale(0.3 * foodBarLength, 0.3);
 	drinkBarSprite.setScale(0.3 * drinkBarLength, 0.3);
 
+	//regen on player health if water and food above certain level
+	if (hunger < 50 && thirst < 70) {
+		if (difftime(time(&timer), healthRegen) > 1) {
+			health += 0.1;
+			if (health > (fullHealth / 100))
+				health = fullHealth / 100;
+			healthRegen = time(&timer);
+		}
+	}
+
 	//current time on the watch 1 second = 1 minute
 	nextMinute++;
 
@@ -1063,6 +1075,13 @@ void Player::TakeDamage(int type)
 		health -= 1.5f;
 		AudioManager::GetInstance()->playSound("groan", m_pos);
 		BloodMask();
+	}
+
+	if (health <= 0) {
+		View view = View(FloatRect(0, 0, 1280, 720));
+		view.zoom(1);
+		window->setView(view);
+		SceneChanger::GetInstance()->ChangeScene(GameState::DEAD);
 	}
 }
 

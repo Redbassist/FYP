@@ -45,7 +45,7 @@ private:
 
 	float fullHealth;
 	float health;
-	bool bleeding = false;
+	time_t healthRegen;
 
 	float hunger;
 	time_t hungerTick; 

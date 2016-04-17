@@ -11,12 +11,15 @@ House::House(Vector2f pos, std::vector<Item*>* i, int t) : m_pos(pos), items(i),
 }
 
 void House::LoadAssets() {
-	/*m_texture.loadFromFile("Sprites/houseFloor.png");
+	if (type <= 1)
+		m_texture.loadFromFile("Sprites/houseFloor.png");
+	if (type == 2)
+		m_texture.loadFromFile("Sprites/shopFloor.png");
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
 	m_sprite.setTextureRect(sf::IntRect(0, 0, m_texture.getSize().x, m_texture.getSize().y));
 	//m_sprite.setScale(Vector2f(0.45, 0.45));
-	m_sprite.setPosition(Vector2f(m_pos.x - 90, m_pos.y));*/
+	m_sprite.setPosition(Vector2f(m_pos.x, m_pos.y));
 }
 
 void House::CreateWalls() {
@@ -171,7 +174,7 @@ void House::CreateWalls() {
 		fillers.push_back(new FillerObject(m_pos + Vector2f(65, 194 ), 17, "bed"));
 	}
 
-	//cabin facing right
+	//cabin facing left
 	else if (type == 4) {
 		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(200, 15)));
 		walls.push_back(new Wall(m_pos + Vector2f(0, 0), Vector2f(15, 175)));

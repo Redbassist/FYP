@@ -18,6 +18,7 @@ struct ContainerSlot {
 
 class Container {
 private:
+	int type;
 	std::vector<Item*> contains;
 	Texture m_texture;
 	Sprite m_sprite;
@@ -37,7 +38,7 @@ private:
 
 public:
 	Container(Vector2f, float, std::vector<Item*>*, int);
-	void LoadAssets(int);
+	void LoadAssets();
 	void SetupSlots();
 	void GenerateItems();
 	bool AddItem(Item*, Vector2f = Vector2f());
