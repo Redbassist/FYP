@@ -946,8 +946,8 @@ void EnemyPlayer::UpdateBloodMask()
 
 void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 {
-	if (data.size() > 0) {
-		orientation = data[3];
+	if (data.size() > 10) {
+		orientation = data[3]; 
 		body->SetTransform(b2Vec2((data[1]), data[2]), orientation * DEGTORAD);
 		int i = 4;
 		actions.walkLeft = data[i++];
@@ -970,7 +970,7 @@ void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 		ammoEmpty = data[i++];
 	}
 	else {
-		int poop = 0;
+		cout << "Data is 0" << endl;
 	}
 }
 

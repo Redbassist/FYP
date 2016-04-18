@@ -46,7 +46,7 @@ private:
 	std::vector<FillerObject*> fillers; 
 	std::vector<Wall*> boundaries;
 	bool multiplayer;
-		
+	int poop = 0;
 public:
 	World(bool, bool);
 	void CreateAssets();

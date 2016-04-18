@@ -113,14 +113,15 @@ void World::Update() {
 		enemyManager.Update(player);
 	else {
 
-		nr++;
+		mutexR.lock();
 		vector<PlayerInfo> p = Network::GetInstance()->GetPlayerData();
 		int size = p.size();
 
 		for (int i = 0; i < size; i++) {
 			bool foundPlayer = false;
 			for (int j = 0; j < enemyPlayers.size(); j++) {
-				if (p[i].id == enemyPlayers[j]->PlayerID()) {
+				if (p[i].id == enemyPlayers[j]->PlayerID() && p[i].update) { 
+					Network::GetInstance()->GetPlayerData()[i].update = false;
 					enemyPlayers[j]->UpdateNetworkPlayer(p[i].data);
 					foundPlayer = true;
 					break;
@@ -128,12 +129,12 @@ void World::Update() {
 			}
 			if (!foundPlayer && p[i].id != playerID) {
 				EnemyPlayer* temp = new EnemyPlayer(Vector2f(p[i].data[1], p[i].data[2]), p[i].data[0]);
-				//if (p[i].update)
+				if (p[i].update)
 					temp->UpdateNetworkPlayer(p[i].data);
 				enemyPlayers.push_back(temp);
 			}
 		}
-		nr--;
+		mutexR.unlock();
 
 		size = enemyPlayers.size();
 		for (int i = 0; i < size; i++) {

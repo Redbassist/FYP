@@ -108,10 +108,9 @@ void Network::ProcessMessageData(NetworkPacket* np)
 			startGame = true;
 		}
 		else if (messageType == "EnemyPlayerData") {
-			int numberPlayersSent = np->dataSize / 22; 
-			while (nr > 0) {
-				//do nothing
-			}
+			int numberPlayersSent = np->dataSize / 22;  
+
+			mutexR.lock();
 
 			for (int i = 0; i < numberPlayersSent; i++) {
 				int size = players.size();
@@ -137,6 +136,8 @@ void Network::ProcessMessageData(NetworkPacket* np)
 					players.push_back(temp);
 				}
 			}
+
+			mutexR.unlock();
 		}
 	}
 }
