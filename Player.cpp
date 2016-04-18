@@ -415,12 +415,7 @@ void Player::Draw() {
 void Player::Update() {
 	SetRotation();
 	if (multiplayer) {
-		if (sendData) {
-			SendPlayerData();
-			sendData = false;
-		}
-		else
-			sendData = true;
+		SendPlayerData();
 	}
 	Movement();
 	Interaction();
@@ -445,7 +440,7 @@ void Player::Update() {
 
 	if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 		SceneChanger::GetInstance()->ChangeScene(GameState::GAMEMENU);
-	} 
+	}
 }
 
 void Player::CenterCamera()
@@ -1078,12 +1073,28 @@ void Player::DrawWatch() {
 
 void Player::TakeDamage(int type)
 {
-	//punched
+	//punched by enemy
 	if (type == 0) {
 		health -= 1.5f;
-		AudioManager::GetInstance()->playSound("groan", m_pos);
-		BloodMask();
 	}
+
+	//punched by enemy player
+	else if (type == 1) {
+		health -= 1; 
+	}
+
+	//melee hit by enemy player
+	else if (type == 2) {
+		health -= 2.5f; 
+	}
+
+	//hit by bullet
+	else if (type == 3) {
+		health -= 2; 
+	}
+
+	AudioManager::GetInstance()->playSound("groan", m_pos);
+	BloodMask();
 
 	if (health <= 0) {
 		View view = View(FloatRect(0, 0, 1280, 720));

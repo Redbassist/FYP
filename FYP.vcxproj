@@ -163,6 +163,7 @@
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="BadBulletRayCastCallback.h" />
     <ClInclude Include="BulletRayCastCallback.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="ContactListener.h" />

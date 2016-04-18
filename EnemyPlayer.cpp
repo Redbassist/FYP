@@ -741,7 +741,7 @@ void EnemyPlayer::createBox2dBody() {
 
 	fixtureDef.density = 1;
 	fixtureDef.friction = 0.3f;
-	fixtureDef.userData = "Player";
+	fixtureDef.userData = "EnemyPlayer";
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
@@ -767,7 +767,7 @@ void EnemyPlayer::createPunchBox2dBody()
 	punchfixtureDef.isSensor = true;
 	punchfixtureDef.density = 1;
 	punchfixtureDef.friction = 0.3f;
-	punchfixtureDef.userData = "Punch";
+	punchfixtureDef.userData = "BadPunch";
 	punchfixtureDef.restitution = b2MixRestitution(0, 0);
 
 	punchfixtureDef.filter.categoryBits = PUNCH;
@@ -792,7 +792,7 @@ void EnemyPlayer::createMeleeBox2dBody()
 	meleefixtureDef.isSensor = true;
 	meleefixtureDef.density = 0.000000001;
 	meleefixtureDef.friction = 0.0f;
-	meleefixtureDef.userData = "MeleeWeapon";
+	meleefixtureDef.userData = "BadMeleeWeapon";
 	meleefixtureDef.restitution = b2MixRestitution(0, 0);
 
 	meleefixtureDef.filter.categoryBits = MELEE;

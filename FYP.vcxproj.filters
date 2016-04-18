@@ -258,6 +258,9 @@
     <ClInclude Include="EnemyPlayer.h">
       <Filter>Header Files\Player</Filter>
     </ClInclude>
+    <ClInclude Include="BadBulletRayCastCallback.h">
+      <Filter>Header Files\RayCastCallbacks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

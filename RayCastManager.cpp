@@ -1,5 +1,6 @@
 #include "RayCastManager.h"
 #include "Stalker.h"
+#include "Player.h"
 
 static bool instanceFlag = false;
 static RayCastManager* instance = NULL;
@@ -33,13 +34,31 @@ BulletRayCastCallback * RayCastManager::CastBulletRay(b2Vec2 p1, b2Vec2 p2)
 	return bulletRayCastCallBack;
 }
 
+BadBulletRayCastCallback * RayCastManager::CastBadBulletRay(b2Vec2 p1, b2Vec2 p2)
+{
+	badbulletRayCastCallBack->Reset();
+	world->RayCast(badbulletRayCastCallBack, p1, p2);
+	HitReaction();
+	return badbulletRayCastCallBack;
+}
+
 void RayCastManager::HitReaction()
 {
 	if (bulletRayCastCallBack->objectName != NULL) {
 		EffectManager::GetInstance()->PlayEffect(0, Vector2f(bulletRayCastCallBack->m_point.x * 30, bulletRayCastCallBack->m_point.y * 30));
 	}
-	if (bulletRayCastCallBack->objectName == "EnemyHit") {
+	else if (bulletRayCastCallBack->objectName == "EnemyHit") {
 		static_cast<Stalker*>(bulletRayCastCallBack->data)->DropHealth(20);
 	}
+
+	if (badbulletRayCastCallBack->objectName != NULL) {
+		EffectManager::GetInstance()->PlayEffect(0, Vector2f(badbulletRayCastCallBack->m_point.x * 30, badbulletRayCastCallBack->m_point.y * 30));
+	}
+	else if (badbulletRayCastCallBack->objectName == "Player") {
+		static_cast<Player*>(badbulletRayCastCallBack->data)->TakeDamage(3);
+	}
+
+	bulletRayCastCallBack->Reset();
+	badbulletRayCastCallBack->Reset();
 }
 
