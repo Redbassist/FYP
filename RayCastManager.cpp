@@ -17,6 +17,7 @@ RayCastManager::RayCastManager()
 {
 	callBack = new RayCastCallBack();
 	bulletRayCastCallBack = new BulletRayCastCallback();
+	badbulletRayCastCallBack = new BadBulletRayCastCallback();
 }
 
 RayCastCallBack* RayCastManager::CastRay(b2Vec2 p1, b2Vec2 p2) { 
