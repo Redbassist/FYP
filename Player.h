@@ -173,6 +173,7 @@ private:
 	time_t timer;
 
 	bool multiplayer;
+	bool sendData = true;
 
 public:
 	bool doingPunchDamage = false;

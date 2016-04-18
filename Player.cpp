@@ -52,6 +52,9 @@ Player::Player(Vector2f pos, bool multi) : m_pos(pos)
 	lastShot = Clock::now();
 	rifleShootSpeed = 100;
 	shotgunShootSpeed = 1100;
+
+	reloading = false;
+	ammoEmpty = false;
 }
 
 Player::Player(Vector2f pos, int hth, int hgr, int thst, vector<Item*> items)
@@ -412,7 +415,12 @@ void Player::Draw() {
 void Player::Update() {
 	SetRotation();
 	if (multiplayer) {
-		SendPlayerData();
+		if (sendData) {
+			SendPlayerData();
+			sendData = false;
+		}
+		else
+			sendData = true;
 	}
 	Movement();
 	Interaction();

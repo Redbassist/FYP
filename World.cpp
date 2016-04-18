@@ -128,7 +128,7 @@ void World::Update() {
 			}
 			if (!foundPlayer && p[i].id != playerID) {
 				EnemyPlayer* temp = new EnemyPlayer(Vector2f(p[i].data[1], p[i].data[2]), p[i].data[0]);
-				if (p[i].update)
+				//if (p[i].update)
 					temp->UpdateNetworkPlayer(p[i].data);
 				enemyPlayers.push_back(temp);
 			}

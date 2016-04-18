@@ -51,6 +51,9 @@ EnemyPlayer::EnemyPlayer(Vector2f pos, int id) : m_pos(pos)
 	lastShot = Clock::now();
 	rifleShootSpeed = 100;
 	shotgunShootSpeed = 1100;
+
+	reloading = false;
+	ammoEmpty = false;
 }
 
 void EnemyPlayer::LoadAssets() {
@@ -945,7 +948,7 @@ void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 {
 	if (data.size() > 0) {
 		orientation = data[3];
-		body->SetTransform(b2Vec2((data[1] + 1), data[2]), orientation * DEGTORAD);
+		body->SetTransform(b2Vec2((data[1]), data[2]), orientation * DEGTORAD);
 		int i = 4;
 		actions.walkLeft = data[i++];
 		actions.walkRight = data[i++];

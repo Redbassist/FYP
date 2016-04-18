@@ -108,8 +108,7 @@ void Network::ProcessMessageData(NetworkPacket* np)
 			startGame = true;
 		}
 		else if (messageType == "EnemyPlayerData") {
-			int numberPlayersSent = np->dataSize / 22;
-
+			int numberPlayersSent = np->dataSize / 22; 
 			while (nr > 0) {
 				//do nothing
 			}
@@ -121,7 +120,9 @@ void Network::ProcessMessageData(NetworkPacket* np)
 					if (players[j].id == (int)np->data[22 * i]) {
 						players[j].update = true;
 						players[j].data.clear();
-						players[j].data.insert(players[j].data.end(), np->data.begin() + (22 * i), np->data.begin() + (22 * (i + 1)));
+						vector<float>::const_iterator begin = np->data.begin() + (22 * i);
+						vector<float>::const_iterator end = np->data.begin() + (22 * (i + 1));
+						players[j].data = vector<float>(begin, end);
 						foundPlayer = true;
 						break;
 					}
@@ -130,7 +131,9 @@ void Network::ProcessMessageData(NetworkPacket* np)
 					PlayerInfo temp;
 					temp.id = (int)np->data[22 * i];
 					temp.update = true;
-					temp.data.insert(temp.data.end(), np->data.begin() + (22 * i), np->data.begin() + (22 * (i + 1)));
+					vector<float>::const_iterator begin = np->data.begin() + (22 * i);
+					vector<float>::const_iterator end = np->data.begin() + (22 * (i + 1));
+					temp.data = vector<float>(begin, end);
 					players.push_back(temp);
 				}
 			}

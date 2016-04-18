@@ -30,7 +30,7 @@ private:
 	UdpSocket sendSocket;
 	UdpSocket receiveSocket;
 	vector<NetworkPacket*> receivedPackets;
-	vector<NetworkPacket*> sentMessages;
+	vector<NetworkPacket*> sentMessages; 
 public:
 	Network();
 	static Network* GetInstance();
