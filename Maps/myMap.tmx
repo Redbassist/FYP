@@ -127,7 +127,7 @@
   <object id="1146" name="Enemy" x="2525.33" y="3026.33" width="68" height="74"/>
  </objectgroup>
  <objectgroup name="Player">
-  <object id="15" name="Player" x="2704.24" y="3172.36" width="80" height="96"/>
+  <object id="15" name="Player" x="2004.12" y="3732.78" width="80" height="96"/>
  </objectgroup>
  <objectgroup name="Lights">
   <object id="121" name="lamppost" x="1134.67" y="261.333" width="20" height="20"/>

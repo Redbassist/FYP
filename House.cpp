@@ -13,8 +13,14 @@ House::House(Vector2f pos, std::vector<Item*>* i, int t) : m_pos(pos), items(i),
 void House::LoadAssets() {
 	if (type <= 1)
 		m_texture.loadFromFile("Sprites/houseFloor.png");
-	if (type == 2)
+	else if (type == 2)
 		m_texture.loadFromFile("Sprites/shopFloor.png");
+	else if (type == 3)
+		m_texture.loadFromFile("Sprites/cabinFloor1.png");
+	else if (type == 4)
+		m_texture.loadFromFile("Sprites/cabinFloor2.png");
+	else if (type == 5)
+		m_texture.loadFromFile("Sprites/baseFloor.png");
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
 	m_sprite.setTextureRect(sf::IntRect(0, 0, m_texture.getSize().x, m_texture.getSize().y));
@@ -86,7 +92,7 @@ void House::CreateWalls() {
 		containers.push_back(new Container(m_pos + Vector2f(110, 235), 180, items, 1));
 
 		fillers.push_back(new FillerObject(m_pos + Vector2f(80, 82), 0, "table"));
-		fillers.push_back(new FillerObject(m_pos + Vector2f(280, 310), 0, "table"));
+		fillers.push_back(new FillerObject(m_pos + Vector2f(280, 325), 0, "table"));
 		fillers.push_back(new FillerObject(m_pos + Vector2f(65, 275), 0, "counter"));
 		fillers.push_back(new FillerObject(m_pos + Vector2f(145, 275), 0, "counter"));
 		fillers.push_back(new FillerObject(m_pos + Vector2f(40, 215), 180, "toilet"));

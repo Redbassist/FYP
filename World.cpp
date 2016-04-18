@@ -44,9 +44,9 @@ void World::CreateLevel() {
 				for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
 				{
 					if (multiplayer)
-						player = new Player(Vector2f(200, 200), true);
+						player = new Player(object._Ptr->GetPosition(), true);
 					else
-						player = new Player(Vector2f(200, 200), false);
+						player = new Player(object._Ptr->GetPosition(), false);
 					break;
 				}
 			}
