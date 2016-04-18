@@ -178,14 +178,14 @@ public:
 			if (fixAType == "Player") {
 				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
-				if (static_cast<EnemyPlayer*>(bodyUserData2)->doingPunchDamage) {
+				if (static_cast<EnemyPlayer*>(bodyUserData2)->doingMeleeDamage) {
 					static_cast<Player*>(bodyUserData1)->TakeDamage(2);
 				}
 			}
 			else if (fixBType == "Player") {
 				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
-				if (static_cast<EnemyPlayer*>(bodyUserData2)->doingPunchDamage) {
+				if (static_cast<EnemyPlayer*>(bodyUserData2)->doingMeleeDamage) {
 					static_cast<Player*>(bodyUserData1)->TakeDamage(2);
 				}
 			}
