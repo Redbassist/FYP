@@ -507,6 +507,8 @@ void EnemyPlayer::Interaction() {
 			actions.swing = false;
 		}
 		else if (meleeAngle <= 0) {
+			doDamage = false;
+			doingMeleeDamage = false;
 			swingDirection = 0;
 			animatedSwingAxeLeft.stop();
 			if (meleeAxe)
@@ -549,7 +551,7 @@ void EnemyPlayer::Interaction() {
 					AudioManager::GetInstance()->playSound("pistoldry", m_pos);
 				else {
 					AudioManager::GetInstance()->playSound("rifleshot", m_pos);
-					RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
+					RayCastManager::GetInstance()->CastBadBulletRay(gunRay.p1, gunRay.p2);
 					shot = true;
 				}
 				lastShot = Clock::now();
@@ -563,13 +565,13 @@ void EnemyPlayer::Interaction() {
 			}
 			else if (pistol) {
 				AudioManager::GetInstance()->playSound("pistolshot", m_pos);
-				RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
+				RayCastManager::GetInstance()->CastBadBulletRay(gunRay.p1, gunRay.p2);
 				shot = true;
 			}
 			else if (shotgun && std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shotgunShootSpeed) {
 				AudioManager::GetInstance()->playSound("pistoldry", m_pos);
 				AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
-				RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
+				RayCastManager::GetInstance()->CastBadBulletRay(gunRay.p1, gunRay.p2);
 				shot = true;
 				lastShot = Clock::now();
 			}
@@ -745,7 +747,7 @@ void EnemyPlayer::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
-	fixtureDef.filter.maskBits = ENEMY | ENEMYPUNCH | ITEM | CONTAINER | WALL | DOOR | FILLER;
+	fixtureDef.filter.maskBits = ENEMY | ENEMYPUNCH | ITEM | CONTAINER | WALL | DOOR | FILLER | PUNCH | MELEE;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);

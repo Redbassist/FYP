@@ -890,7 +890,7 @@ void Player::createBox2dBody() {
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = PLAYER;
-	fixtureDef.filter.maskBits = ENEMY | ENEMYPUNCH | ITEM | CONTAINER | WALL | DOOR | FILLER;
+	fixtureDef.filter.maskBits = ENEMY | ENEMYPUNCH | ITEM | CONTAINER | WALL | DOOR | FILLER | PUNCH | MELEE;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);
