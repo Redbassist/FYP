@@ -955,8 +955,14 @@ void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 		actions.walkUp = data[i++];
 		actions.sprint = data[i++];
 		invOpen = data[i++];
-		actions.swing = data[i++];
-		actions.punch = data[i++];
+		if (data[i] == true)
+			actions.swing = data[i++];
+		else
+			i++;
+		if (data[i] == true)
+			actions.punch = data[i++];
+		else
+			i++; 
 		actions.fire = data[i++];
 		actions.autoFire = data[i++];
 		actions.reload = data[i++];
