@@ -504,6 +504,15 @@ void Player::Interaction() {
 	//used to convert to view coordinates
 	sf::Vector2f worldMousePos = window->mapPixelToCoords(mousePos);
 
+	if (hotbarItem != NULL) {
+		if (hotbarItem->GetType() == PISTOL || hotbarItem->GetType() == RIFLE || hotbarItem->GetType() == SHOTGUN) {
+			if (hotbarItem->GetAmmo() == 0)
+				ammoEmpty = true;
+			else
+				ammoEmpty = false;
+		}
+	}
+
 	//opening and closing the inventory
 	if (actions.inventory && inventory->CheckOpen()) {
 		inventory->Close();
@@ -814,15 +823,6 @@ void Player::Interaction() {
 		meleeBat = false;
 		pistol = false;
 	}
-	else {
-		if (hotbarItem->GetType() == PISTOL || hotbarItem->GetType() == RIFLE || hotbarItem->GetType() == SHOTGUN) {
-			if (hotbarItem->GetAmmo() == 0)
-				ammoEmpty = true;
-			else
-				ammoEmpty = false;
-		}
-	}
-
 	invOpen = inventory->CheckOpen();
 
 	//making sure if fire didnt happen, that it doesnt try again next frame
@@ -1080,17 +1080,17 @@ void Player::TakeDamage(int type)
 
 	//punched by enemy player
 	else if (type == 1) {
-		health -= 1; 
+		health -= 1;
 	}
 
 	//melee hit by enemy player
 	else if (type == 2) {
-		health -= 2.5f; 
+		health -= 2.5f;
 	}
 
 	//hit by bullet
 	else if (type == 3) {
-		health -= 2; 
+		health -= 2;
 	}
 
 	AudioManager::GetInstance()->playSound("groan", m_pos);

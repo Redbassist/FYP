@@ -45,18 +45,19 @@ BadBulletRayCastCallback * RayCastManager::CastBadBulletRay(b2Vec2 p1, b2Vec2 p2
 
 void RayCastManager::HitReaction()
 {
-	if (bulletRayCastCallBack->objectName != NULL) {
-		EffectManager::GetInstance()->PlayEffect(0, Vector2f(bulletRayCastCallBack->m_point.x * 30, bulletRayCastCallBack->m_point.y * 30));
-	}
-	else if (bulletRayCastCallBack->objectName == "EnemyHit") {
+	if (bulletRayCastCallBack->objectName == "EnemyHit") {
 		static_cast<Stalker*>(bulletRayCastCallBack->data)->DropHealth(20);
 	}
-
-	if (badbulletRayCastCallBack->objectName != NULL) {
-		EffectManager::GetInstance()->PlayEffect(0, Vector2f(badbulletRayCastCallBack->m_point.x * 30, badbulletRayCastCallBack->m_point.y * 30));
+	else if (bulletRayCastCallBack->objectName != NULL) {
+		EffectManager::GetInstance()->PlayEffect(0, Vector2f(bulletRayCastCallBack->m_point.x * 30, bulletRayCastCallBack->m_point.y * 30));
 	}
-	else if (badbulletRayCastCallBack->objectName == "Player") {
+
+	if (badbulletRayCastCallBack->objectName == "Player") {
 		static_cast<Player*>(badbulletRayCastCallBack->data)->TakeDamage(3);
+	}
+
+	else if (badbulletRayCastCallBack->objectName != NULL) {
+		EffectManager::GetInstance()->PlayEffect(0, Vector2f(badbulletRayCastCallBack->m_point.x * 30, badbulletRayCastCallBack->m_point.y * 30));
 	}
 
 	bulletRayCastCallBack->Reset();
