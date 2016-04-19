@@ -160,9 +160,7 @@ void Network::SendPacketThread()
 		packet << *(sentMessages[0]);
 		IpAddress reciever = "192.168.1.8";
 		unsigned short port = 54000;
-		//cout << "Sending Message" << endl;
-		if (sentMessages[0]->data.size() > 10)
-			cout << to_string(sentMessages[0]->data[1]) << endl;
+		//cout << "Sending Message" << endl; 
 		sendSocket.send(packet, reciever, port);
 		delete sentMessages[0];
 		sentMessages.erase(sentMessages.begin());

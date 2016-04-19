@@ -114,22 +114,22 @@ void World::Update() {
 	else {
 
 		mutexR.lock();
-		vector<PlayerInfo> p = Network::GetInstance()->GetPlayerData();
-		int size = p.size();
+		vector<PlayerInfo>* p = Network::GetInstance()->GetPlayerData();
+		int size = p->size();
 
 		for (int i = 0; i < size; i++) {
 			bool foundPlayer = false;
 			for (int j = 0; j < enemyPlayers.size(); j++) {
-				if (p[i].id == enemyPlayers[j]->PlayerID() && p[i].update) { 
-					Network::GetInstance()->GetPlayerData()[i].update = false;
+				if (p->at(i).id == enemyPlayers[j]->PlayerID() && p->at(i).update) {
+					p->at(i).update = false;
 					enemyPlayers[j]->UpdateNetworkPlayer(p[i].data);
 					foundPlayer = true;
 					break;
 				}
 			}
-			if (!foundPlayer && p[i].id != playerID) {
+			if (!foundPlayer && p->at(i).id != playerID) {
 				EnemyPlayer* temp = new EnemyPlayer(Vector2f(p[i].data[1], p[i].data[2]), p[i].data[0]);
-				if (p[i].update)
+				if (p->at(i).update)
 					temp->UpdateNetworkPlayer(p[i].data);
 				enemyPlayers.push_back(temp);
 			}

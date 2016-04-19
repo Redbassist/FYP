@@ -414,9 +414,6 @@ void Player::Draw() {
 
 void Player::Update() {
 	SetRotation();
-	if (multiplayer) {
-		SendPlayerData();
-	}
 	Movement();
 	Interaction();
 	SetStats();
@@ -511,6 +508,10 @@ void Player::Interaction() {
 			else
 				ammoEmpty = false;
 		}
+	}
+
+	if (multiplayer) {
+		SendPlayerData();
 	}
 
 	//opening and closing the inventory

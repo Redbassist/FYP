@@ -648,7 +648,7 @@ void EnemyPlayer::Interaction() {
 			AudioManager::GetInstance()->playSound("loadShotgun", m_pos);
 			reloadTime = 2;
 		}
-		//reloading = true;
+
 		actions.reload = false;
 	}
 

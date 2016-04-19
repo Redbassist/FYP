@@ -41,7 +41,7 @@ public:
 	void SendPacket(IpAddress, NetworkPacket*);
 	void SendPacketThread();
 	void CheckDisconnect(int playerID);
-	vector<PlayerInfo> GetPlayerData() { return players; }
+	vector<PlayerInfo>* GetPlayerData() { return &players; }
 	bool startGame = false;
 };
 
