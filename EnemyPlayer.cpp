@@ -113,10 +113,11 @@ void EnemyPlayer::LoadAssets() {
 	animatedPunchLeft.setScale(1, 1);
 	animatedPunchLeft.play(punchLeft);
 
-	animatedDeath = AnimatedSprite(sf::seconds(0.5), true, false); 
+	animatedDeath = AnimatedSprite(sf::seconds(0.5), true, true); 
 	animatedDeath.setOrigin(12, 13.5);
 	animatedDeath.setPosition(m_pos);
 	animatedDeath.setScale(1, 1);
+	animatedDeath.play(death);
 
 	//loading the watch sprites for the UI
 	watchTexture.loadFromFile("Sprites/watch.png");

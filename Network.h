@@ -33,6 +33,8 @@ private:
 	vector<NetworkPacket*> receivedPackets;
 	vector<NetworkPacket*> sentMessages; 
 public:
+	bool winner = false;
+
 	Network();
 	static Network* GetInstance();
 	void Update();

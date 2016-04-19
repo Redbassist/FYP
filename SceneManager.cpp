@@ -68,6 +68,12 @@ void SceneManager::CreateMenus()
 	tempMenu->AddButton(new Button(Vector2f(640, 400), 200, 80, string("Main Menu"), GameState::MENU));
 	tempMenu->AddButton(new Button(Vector2f(640, 520), 200, 80, string("Exit Game"), GameState::EXIT));
 	menusMap[GameState::DEAD] = tempMenu;
+
+	//creating the dead menu
+	tempMenu = new Menu(string("winMenu"));
+	tempMenu->AddButton(new Button(Vector2f(300, 600), 200, 80, string("Main Menu"), GameState::MENU));
+	tempMenu->AddButton(new Button(Vector2f(500, 600), 200, 80, string("Exit Game"), GameState::EXIT));
+	menusMap[GameState::WIN] = tempMenu;
 }
 
 void SceneManager::Update()
@@ -117,7 +123,7 @@ void SceneManager::ChangeScene()
 			currentMenu = menusMap[GameState::SPLASHSCREEN];
 			currentMenu->UpdateTransform();
 			break;
-		case(GameState::MENU) :
+		case(GameState::MENU) : 
 			if (gameWorld != NULL) {
 				delete gameWorld;
 				gameWorld = NULL;
@@ -182,6 +188,10 @@ void SceneManager::ChangeScene()
 			break;
 		case(GameState::DEAD) :
 			gameWorld->DeletePlayerSave();
+			currentMenu = menusMap[GameState::DEAD];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::WIN) : 
 			currentMenu = menusMap[GameState::DEAD];
 			currentMenu->UpdateTransform();
 			break;

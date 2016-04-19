@@ -153,6 +153,10 @@ void World::Update() {
 	for (int i = 0; i < size; i++) {
 		trees[i]->FadeOut(player->GetPosition());
 	}
+
+	if (Network::GetInstance()->winner) {
+		SceneChanger::GetInstance()->ChangeScene(GameState::WIN);
+	}
 }
 
 void World::Draw() {

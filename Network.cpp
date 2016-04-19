@@ -139,6 +139,9 @@ void Network::ProcessMessageData(NetworkPacket* np)
 
 			mutexR.unlock();
 		}
+		else if (messageType == "Winner") {
+			winner = true;
+		}
 	}
 }
 
