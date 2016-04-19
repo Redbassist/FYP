@@ -122,15 +122,15 @@ void World::Update() {
 			for (int j = 0; j < enemyPlayers.size(); j++) {
 				if (p->at(i).id == enemyPlayers[j]->PlayerID() && p->at(i).update) {
 					p->at(i).update = false;
-					enemyPlayers[j]->UpdateNetworkPlayer(p[i].data);
+					enemyPlayers[j]->UpdateNetworkPlayer(p->at(i).data);
 					foundPlayer = true;
 					break;
 				}
 			}
 			if (!foundPlayer && p->at(i).id != playerID) {
-				EnemyPlayer* temp = new EnemyPlayer(Vector2f(p[i].data[1], p[i].data[2]), p[i].data[0]);
+				EnemyPlayer* temp = new EnemyPlayer(Vector2f(p->at(i).data[1], p->at(i).data[2]), p->at(i).data[0]);
 				if (p->at(i).update)
-					temp->UpdateNetworkPlayer(p[i].data);
+					temp->UpdateNetworkPlayer(p->at(i).data);
 				enemyPlayers.push_back(temp);
 			}
 		}
