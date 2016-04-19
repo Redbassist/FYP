@@ -218,6 +218,7 @@ public:
 	Inventory* GetInventory() { return inventory; }
 
 	void SendPlayerData();
+	void SendDeathMessage();
 	void AddActionsToPacket(vector<float>&);
 };
 

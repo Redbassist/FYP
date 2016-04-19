@@ -118,7 +118,7 @@ void World::Update() {
 		int size = p.size();
 
 		for (int i = 0; i < size; i++) {
-			bool foundPlayer = false;
+			bool foundPlayer = false; 
 			for (int j = 0; j < enemyPlayers.size(); j++) {
 				if (p[i].id == enemyPlayers[j]->PlayerID() && p[i].update) { 
 					Network::GetInstance()->SetPlayerUpdateFalse(i);
@@ -140,7 +140,8 @@ void World::Update() {
 
 		size = enemyPlayers.size();
 		for (int i = 0; i < size; i++) {
-			enemyPlayers[i]->Update();
+			if (!enemyPlayers[i]->Dead())
+				enemyPlayers[i]->Update();
 		}
 	}
 

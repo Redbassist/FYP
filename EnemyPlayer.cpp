@@ -74,10 +74,10 @@ void EnemyPlayer::LoadAssets() {
 	EasyLoadAssetsAnimation(&m_PunchLeftTexture, "leftPunch", &punchLeft, 4, 4, 1, 31, 27);
 
 	EasyLoadAssetsAnimation(&m_pistolTexture, "playerPistol", &pistolShoot, 1, 1, 1, 31, 27);
-
 	EasyLoadAssetsAnimation(&m_rifleTexture, "playerRifle", &rifleShoot, 1, 1, 1, 36, 27);
-
 	EasyLoadAssetsAnimation(&m_shotgunTexture, "playerShotgun", &shotgunShoot, 1, 1, 1, 36, 27);
+
+	EasyLoadAssetsAnimation(&m_DeathTexture, "playerCollapse", &death, 4, 4, 1, 55, 31);
 
 	animatedLegSprite = AnimatedSprite(sf::seconds(0.08), true, false);
 	animatedLegSprite.setOrigin(16, 16);
@@ -112,6 +112,11 @@ void EnemyPlayer::LoadAssets() {
 	animatedPunchLeft.setPosition(m_pos);
 	animatedPunchLeft.setScale(1, 1);
 	animatedPunchLeft.play(punchLeft);
+
+	animatedDeath = AnimatedSprite(sf::seconds(0.5), true, false); 
+	animatedDeath.setOrigin(12, 13.5);
+	animatedDeath.setPosition(m_pos);
+	animatedDeath.setScale(1, 1);
 
 	//loading the watch sprites for the UI
 	watchTexture.loadFromFile("Sprites/watch.png");
@@ -189,118 +194,126 @@ void EnemyPlayer::EasyLoadAssetsAnimation(Texture*t, string file, Animation* ani
 }
 
 void EnemyPlayer::Draw() {
-	if (shot) {
-		sf::VertexArray line(sf::LinesStrip, 2);
-
-		// define the position of the triangle's points
-		line[0].position = sf::Vector2f(gunRay.p1.x * SCALE, gunRay.p1.y * SCALE);
-		line[0].color = sf::Color(255, 255, 255, 50);
-
-		line[1].position = sf::Vector2f(gunRay.p2.x * SCALE, gunRay.p2.y * SCALE);
-		line[1].color = sf::Color(255, 255, 255, 50);
-
-		window->draw(line);
-	}
 
 	//frame time which is used for updating the animation
 	sf::Time frameTime = frameClock.restart();
 
-	//Setting the animation of the player legs depending on if is moving or not
-	if ((actions.walkUp || actions.walkDown || actions.walkLeft || actions.walkRight)) {
+	if (!dead) {
+		if (shot) {
+			sf::VertexArray line(sf::LinesStrip, 2);
 
-		if (punch) {
-			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
-		}
-		else if (meleeAxe) {
-			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
-		}
-		else if (meleeBat) {
-			currentTopAnimation = (swingDirection == 0) ? &swingBatRight : &swingBatLeft;
-		}
-		else if (pistol) {
-			currentTopAnimation = &pistolShoot;
-		}
-		else if (rifle) {
-			currentTopAnimation = &rifleShoot;
-		}
-		else if (shotgun) {
-			currentTopAnimation = &shotgunShoot;
-		}
-		else
-			currentTopAnimation = &playerTopMoving;
-		currentLegAnimation = &legsMoving;
-	}
-	else {
-		if (punch) {
-			currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
-		}
-		else if (meleeAxe) {
-			currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
-		}
-		else if (meleeBat) {
-			currentTopAnimation = (swingDirection == 0) ? &swingBatRight : &swingBatLeft;
-		}
-		else if (pistol) {
-			currentTopAnimation = &pistolShoot;
-		}
-		else if (rifle) {
-			currentTopAnimation = &rifleShoot;
-		}
-		else if (shotgun) {
-			currentTopAnimation = &shotgunShoot;
-		}
-		else
-			currentTopAnimation = &playerTopIdle;
-		currentLegAnimation = &legsIdle;
-	}
+			// define the position of the triangle's points
+			line[0].position = sf::Vector2f(gunRay.p1.x * SCALE, gunRay.p1.y * SCALE);
+			line[0].color = sf::Color(255, 255, 255, 50);
 
-	animatedLegSprite.play(*currentLegAnimation);
-	animatedLegSprite.update(frameTime);
+			line[1].position = sf::Vector2f(gunRay.p2.x * SCALE, gunRay.p2.y * SCALE);
+			line[1].color = sf::Color(255, 255, 255, 50);
 
-	window->draw(animatedLegSprite);
+			window->draw(line);
+		}
 
-	if (punch) {
-		if (punchDirection == 0) {
-			window->draw(animatedPunchRight);
+		//Setting the animation of the player legs depending on if is moving or not
+		if ((actions.walkUp || actions.walkDown || actions.walkLeft || actions.walkRight)) {
+
+			if (punch) {
+				currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
+			}
+			else if (meleeAxe) {
+				currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
+			}
+			else if (meleeBat) {
+				currentTopAnimation = (swingDirection == 0) ? &swingBatRight : &swingBatLeft;
+			}
+			else if (pistol) {
+				currentTopAnimation = &pistolShoot;
+			}
+			else if (rifle) {
+				currentTopAnimation = &rifleShoot;
+			}
+			else if (shotgun) {
+				currentTopAnimation = &shotgunShoot;
+			}
+			else
+				currentTopAnimation = &playerTopMoving;
+			currentLegAnimation = &legsMoving;
 		}
 		else {
-			window->draw(animatedPunchLeft);
-		}
-		if (actions.punch) {
-			if (punchDirection == 0)
-				animatedPunchRight.update(frameTime);
+			if (punch) {
+				currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
+			}
+			else if (meleeAxe) {
+				currentTopAnimation = (swingDirection == 0) ? &swingAxeRight : &swingAxeLeft;
+			}
+			else if (meleeBat) {
+				currentTopAnimation = (swingDirection == 0) ? &swingBatRight : &swingBatLeft;
+			}
+			else if (pistol) {
+				currentTopAnimation = &pistolShoot;
+			}
+			else if (rifle) {
+				currentTopAnimation = &rifleShoot;
+			}
+			else if (shotgun) {
+				currentTopAnimation = &shotgunShoot;
+			}
 			else
-				animatedPunchLeft.update(frameTime);
+				currentTopAnimation = &playerTopIdle;
+			currentLegAnimation = &legsIdle;
 		}
-	}
-	else if (meleeAxe || meleeBat) {
-		if (swingDirection == 0) {
-			//animatedSwingAxeRight.play(*currentTopAnimation);
-			window->draw(animatedSwingAxeRight);
+
+		animatedLegSprite.play(*currentLegAnimation);
+		animatedLegSprite.update(frameTime);
+
+		window->draw(animatedLegSprite);
+
+		if (punch) {
+			if (punchDirection == 0) {
+				window->draw(animatedPunchRight);
+			}
+			else {
+				window->draw(animatedPunchLeft);
+			}
+			if (actions.punch) {
+				if (punchDirection == 0)
+					animatedPunchRight.update(frameTime);
+				else
+					animatedPunchLeft.update(frameTime);
+			}
+		}
+		else if (meleeAxe || meleeBat) {
+			if (swingDirection == 0) {
+				//animatedSwingAxeRight.play(*currentTopAnimation);
+				window->draw(animatedSwingAxeRight);
+			}
+			else {
+				//animatedSwingAxeLeft.play(*currentTopAnimation);
+				window->draw(animatedSwingAxeLeft);
+			}
+			if (actions.swing) {
+				if (swingDirection == 0)
+					animatedSwingAxeRight.update(frameTime);
+				else
+					animatedSwingAxeLeft.update(frameTime);
+			}
 		}
 		else {
-			//animatedSwingAxeLeft.play(*currentTopAnimation);
-			window->draw(animatedSwingAxeLeft);
-		}
-		if (actions.swing) {
-			if (swingDirection == 0)
-				animatedSwingAxeRight.update(frameTime);
-			else
-				animatedSwingAxeLeft.update(frameTime);
+			animatedTopSprite.play(*currentTopAnimation);
+			animatedTopSprite.update(frameTime);
+			window->draw(animatedTopSprite);
 		}
 	}
 	else {
-		animatedTopSprite.play(*currentTopAnimation);
-		animatedTopSprite.update(frameTime);
-		window->draw(animatedTopSprite);
+		if (!collapse) {
+			collapse = true;
+			body->GetFixtureList()->SetUserData("Destroy");
+			punchbody->GetFixtureList()->SetUserData("Destroy");
+			meleebody->GetFixtureList()->SetUserData("Destroy");
+		}
+		else {
+			animatedDeath.update(frameTime);
+		}
+		window->draw(animatedDeath);
 	}
-
-	/*View view1 = window->getView();
-	ltbl::LightSystem::GetInstance()->render();
-	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
-	sprite.setPosition(view1.getCenter());
-	sprite.setOrigin(640, 360);
-	window->draw(sprite, *lightRenderStates);*/
 }
 
 void EnemyPlayer::Update() {
@@ -313,6 +326,7 @@ void EnemyPlayer::Update() {
 	//setting the position of the sprite to the physics body
 	animatedLegSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedTopSprite.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+	animatedDeath.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedSwingAxeRight.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedSwingAxeLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedPunchRight.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
@@ -548,9 +562,9 @@ void EnemyPlayer::Interaction() {
 		if (actions.autoFire && rifle) {
 			if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > rifleShootSpeed) {
 				if (ammoEmpty)
-					AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+					AudioManager::GetInstance()->playSound("enemyPistoldry", m_pos);
 				else {
-					AudioManager::GetInstance()->playSound("rifleshot", m_pos);
+					AudioManager::GetInstance()->playSound("enemyrifleshot", m_pos);
 					RayCastManager::GetInstance()->CastBadBulletRay(gunRay.p1, gunRay.p2);
 					shot = true;
 				}
@@ -561,16 +575,15 @@ void EnemyPlayer::Interaction() {
 		else if (actions.fire && (pistol || shotgun)) {
 
 			if (ammoEmpty) {
-				AudioManager::GetInstance()->playSound("pistoldry", m_pos);
+				AudioManager::GetInstance()->playSound("enemyPistoldry", m_pos);
 			}
 			else if (pistol) {
-				AudioManager::GetInstance()->playSound("pistolshot", m_pos);
+				AudioManager::GetInstance()->playSound("enemypistolshot", m_pos);
 				RayCastManager::GetInstance()->CastBadBulletRay(gunRay.p1, gunRay.p2);
 				shot = true;
 			}
 			else if (shotgun && std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shotgunShootSpeed) {
-				AudioManager::GetInstance()->playSound("pistoldry", m_pos);
-				AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
+				AudioManager::GetInstance()->playSound("enemyshotgunshot", m_pos);
 				RayCastManager::GetInstance()->CastBadBulletRay(gunRay.p1, gunRay.p2);
 				shot = true;
 				lastShot = Clock::now();
@@ -637,15 +650,15 @@ void EnemyPlayer::Interaction() {
 	//reloading the current weapon
 	if (actions.reload && !reloading) {
 		if (pistol) {
-			AudioManager::GetInstance()->playSound("loadPistol", m_pos);
+			AudioManager::GetInstance()->playSound("enemyLoadPistol", m_pos);
 			reloadTime = 1;
 		}
 		else if (rifle) {
-			AudioManager::GetInstance()->playSound("loadRifle", m_pos);
+			AudioManager::GetInstance()->playSound("enemyLoadRifle", m_pos);
 			reloadTime = 1;
 		}
 		else if (shotgun) {
-			AudioManager::GetInstance()->playSound("loadShotgun", m_pos);
+			AudioManager::GetInstance()->playSound("enemyLoadShotgun", m_pos);
 			reloadTime = 2;
 		}
 
@@ -723,6 +736,7 @@ void EnemyPlayer::SetRotation() {
 	//orientation = getRotationAngle();
 	animatedLegSprite.setRotation(orientation);
 	animatedTopSprite.setRotation(orientation);
+	animatedDeath.setRotation(orientation);
 	animatedSwingAxeRight.setRotation(orientation);
 	animatedSwingAxeLeft.setRotation(orientation);
 	animatedPunchRight.setRotation(orientation);
@@ -948,38 +962,56 @@ void EnemyPlayer::UpdateBloodMask()
 
 void EnemyPlayer::UpdateNetworkPlayer(vector<float> data)
 {
-	if (data.size() > 10) {
-		orientation = data[3]; 
-		body->SetTransform(b2Vec2((data[1]), data[2]), orientation * DEGTORAD);
-		int i = 4;
-		actions.walkLeft = data[i++];
-		actions.walkRight = data[i++];
-		actions.walkUp = data[i++];
-		actions.sprint = data[i++];
-		invOpen = data[i++];
-		if (data[i] == true)
-			actions.swing = data[i++];
-		else
-			i++;
-		if (data[i] == true)
-			actions.punch = data[i++];
-		else
-			i++; 
-		actions.fire = data[i++];
-		actions.autoFire = data[i++];
-		actions.reload = data[i++];
-		punch = data[i++];
-		meleeAxe = data[i++];
-		meleeBat = data[i++];
-		pistol = data[i++];
-		shotgun = data[i++];
-		rifle = data[i++];
-		reloading = data[i++];
-		ammoEmpty = data[i++];
+	if (!dead) {
+		if (data.size() > 10) {
+			//checking if the player has died
+			if (data[1] == 999999) {
+				SetDead();
+			}
+			else {
+				orientation = data[3];
+				body->SetTransform(b2Vec2((data[1]), data[2]), orientation * DEGTORAD);
+				int i = 4;
+				actions.walkLeft = data[i++];
+				actions.walkRight = data[i++];
+				actions.walkUp = data[i++];
+				actions.sprint = data[i++];
+				invOpen = data[i++];
+				if (data[i] == true)
+					actions.swing = data[i++];
+				else
+					i++;
+				if (data[i] == true)
+					actions.punch = data[i++];
+				else
+					i++;
+				actions.fire = data[i++];
+				actions.autoFire = data[i++];
+				actions.reload = data[i++];
+				punch = data[i++];
+				meleeAxe = data[i++];
+				meleeBat = data[i++];
+				pistol = data[i++];
+				shotgun = data[i++];
+				rifle = data[i++];
+				reloading = data[i++];
+				ammoEmpty = data[i++];
+			}
+		}
+		else {
+			cout << "Data is 0" << endl;
+		}
 	}
-	else {
-		cout << "Data is 0" << endl;
-	}
+}
+
+void EnemyPlayer::SetDead()
+{
+	dead = true;
+	int sound = rand() % 2;
+	if (sound == 0)
+		AudioManager::GetInstance()->playSound("death1", m_pos);
+	else
+		AudioManager::GetInstance()->playSound("death2", m_pos);
 }
 
 float EnemyPlayer::getRotationAngle() {

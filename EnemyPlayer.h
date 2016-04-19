@@ -42,6 +42,8 @@ private:
 	//player stats
 	float fullHealth;
 	float health;
+	bool dead = false;
+	bool collapse = false;
 	bool bleeding = false;
 
 	float hunger;
@@ -52,6 +54,7 @@ private:
 	float thirstRate = 0.5;
 
 	enemyKeyActions actions;
+	Texture m_DeathTexture;
 	Texture m_AnimationLegsTexture;
 	Texture m_AnimationTopTexture;
 	Texture m_SwingAxeRightTexture;
@@ -63,6 +66,7 @@ private:
 	Texture m_pistolTexture;
 	Texture m_rifleTexture;
 	Texture m_shotgunTexture;
+	Animation death;
 	Animation legsIdle;
 	Animation legsMoving;
 	Animation playerTopIdle;
@@ -78,6 +82,7 @@ private:
 	Animation shotgunShoot;
 	Animation* currentLegAnimation;
 	Animation* currentTopAnimation;
+	AnimatedSprite animatedDeath;
 	AnimatedSprite animatedLegSprite;
 	AnimatedSprite animatedTopSprite;
 	AnimatedSprite animatedSwingAxeRight;
@@ -213,6 +218,8 @@ public:
 	float GetThirst() { return thirst; }
 	Inventory* GetInventory() { return inventory; }
 	int PlayerID() { return playerID; };
+	bool Dead() { return dead; }
+	void SetDead();
 };
 
 #endif

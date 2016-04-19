@@ -1140,6 +1140,15 @@ void Player::SendPlayerData()
 	Network::GetInstance()->SendPacket("192.168.1.18", np);
 }
 
+void Player::SendDeathMessage()
+{
+	NetworkPacket* np = new NetworkPacket();
+	np->type = "Dead";
+	np->playerID = playerID; 
+
+	Network::GetInstance()->SendPacket("192.168.1.18", np);
+}
+
 void Player::AddActionsToPacket(vector<float>& data)
 {
 	data.push_back(actions.walkLeft);

@@ -21,6 +21,7 @@ struct PlayerInfo {
 	int id = 0;
 	bool update = false;
 	vector<float> data;
+	bool dead = false;
 };
 
 class Network {
