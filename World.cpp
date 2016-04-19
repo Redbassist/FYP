@@ -120,10 +120,12 @@ void World::Update() {
 		for (int i = 0; i < size; i++) {
 			bool foundPlayer = false; 
 			for (int j = 0; j < enemyPlayers.size(); j++) {
+				if (p[i].id == enemyPlayers[j]->PlayerID())
+					foundPlayer = true;
+
 				if (p[i].id == enemyPlayers[j]->PlayerID() && p[i].update) { 
 					Network::GetInstance()->SetPlayerUpdateFalse(i);
 					enemyPlayers[j]->UpdateNetworkPlayer(p[i].data);
-					foundPlayer = true;
 					break;
 				}
 			}

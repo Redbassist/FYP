@@ -1102,6 +1102,7 @@ void Player::TakeDamage(int type)
 		view.zoom(1);
 		window->setView(view);
 		SceneChanger::GetInstance()->ChangeScene(GameState::DEAD);
+		SendDeathMessage();
 	}
 }
 
