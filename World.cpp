@@ -145,6 +145,14 @@ void World::Update() {
 			if (!enemyPlayers[i]->Dead())
 				enemyPlayers[i]->Update();
 		}
+
+		if (Network::GetInstance()->winner) {
+			Network::GetInstance()->winner = false;
+			View view = View(FloatRect(0, 0, 1280, 720));
+			view.zoom(1);
+			window->setView(view);
+			SceneChanger::GetInstance()->ChangeScene(GameState::WIN);
+		}
 	}
 
 	player->Update();
@@ -152,10 +160,6 @@ void World::Update() {
 	int size = trees.size();
 	for (int i = 0; i < size; i++) {
 		trees[i]->FadeOut(player->GetPosition());
-	}
-
-	if (Network::GetInstance()->winner) {
-		SceneChanger::GetInstance()->ChangeScene(GameState::WIN);
 	}
 }
 

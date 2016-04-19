@@ -192,7 +192,7 @@ void SceneManager::ChangeScene()
 			currentMenu->UpdateTransform();
 			break;
 		case(GameState::WIN) : 
-			currentMenu = menusMap[GameState::DEAD];
+			currentMenu = menusMap[GameState::WIN];
 			currentMenu->UpdateTransform();
 			break;
 		case(GameState::SAVEEXIT) :
