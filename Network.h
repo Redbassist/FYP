@@ -12,6 +12,7 @@ using namespace sf;
 struct NetworkPacket {
 	string type = "NOTHING";
 	string ip;
+	string message = "";
 	int playerID = 0;
 	int dataSize = 0;
 	vector<float> data;
@@ -34,6 +35,7 @@ private:
 	vector<NetworkPacket*> sentMessages; 
 public:
 	bool winner = false;
+	queue<string> textQueue;
 
 	Network();
 	static Network* GetInstance();

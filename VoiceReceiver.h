@@ -6,6 +6,7 @@
 #include <atlbase.h> 
 #include <sphelper.h> 
 #include <atlcom.h> 
+#include <queue> 
 
 class VoiceReceiver {
 private:
@@ -17,6 +18,8 @@ private:
 
 	//Create a SAPI Voice
 	ISpVoice * voice;
+
+	queue<std::string> voiceQueue;
 
 public:
 	static VoiceReceiver* GetInstance();
@@ -30,4 +33,8 @@ public:
 	void CloseStream();
 
 	void WriteTextToFile(std::string text);
+
+	void AddVoiceToQueue(std::string text);
+
+	void ProcessVoiceQueue();
 };

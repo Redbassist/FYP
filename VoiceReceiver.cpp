@@ -49,7 +49,7 @@ void VoiceReceiver::Reset() {
 }
 
 void VoiceReceiver::ReleaseVoice() {
-	voice->Release();
+	//voice->Release();
 }
 
 void VoiceReceiver::CloseStream() {
@@ -73,4 +73,22 @@ void VoiceReceiver::WriteTextToFile(std::string text) {
 	} 
 	CloseStream();
 	AudioManager::GetInstance()->playVoice();
+}
+
+void VoiceReceiver::AddVoiceToQueue(std::string text)
+{
+	voiceQueue.push(text);
+}
+
+void VoiceReceiver::ProcessVoiceQueue()
+{
+	int size = voiceQueue.size();
+
+	if (size > 0) {
+		if (AudioManager::GetInstance()->voiceSound->getStatus() == sf::Sound::Stopped) {
+			AudioManager::GetInstance()->ClearVoiceFile();
+			WriteTextToFile(voiceQueue.front());
+			voiceQueue.pop();
+		}
+	}
 }

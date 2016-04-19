@@ -35,11 +35,11 @@ struct keyActions {
 	bool hotbar3 = false;
 	bool hotbar4 = false;
 	bool hotbar5 = false; 
-	bool testNet = false;
+	bool enterText = false;
 };
 
 class Player {
-private:
+private: 
 	//player stats
 	int id = 123456;
 
@@ -55,6 +55,10 @@ private:
 	float thirstRate = 0.5;
 
 	keyActions actions;
+	
+	Texture textBoxTexture;
+	Sprite textBoxSprite;
+
 	Texture m_AnimationLegsTexture;
 	Texture m_AnimationTopTexture;
 	Texture m_SwingAxeRightTexture;
@@ -174,6 +178,10 @@ private:
 
 	bool multiplayer;
 	bool sendData = true;
+
+	string sendString;
+	Text sendText;
+	Font font;
 
 public:
 	bool doingPunchDamage = false;

@@ -21,6 +21,10 @@ public:
 
 	void update();
 
+	void ClearVoiceFile();
+
+	sf::Sound* voiceSound;
+
 private: 
 	float mUpdated;
 	std::unordered_map<std::string, sf::SoundBuffer> mBuffers;

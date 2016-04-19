@@ -68,7 +68,9 @@ int main()
 	SceneManager* sceneManager = new SceneManager();
 
 	ml = new tmx::MapLoader("Maps");
-	ml->Load("myMap.tmx");
+	//ml->Load("myMap.tmx");
+
+	//VoiceReceiver::GetInstance()->AddVoiceToQueue("Friendly!"); 
 
 	//Network::GetInstance();
 
@@ -95,12 +97,13 @@ int main()
 
 		InputManager::GetInstance()->Update();
 		AudioManager::GetInstance()->update();
+		VoiceReceiver::GetInstance()->ProcessVoiceQueue();
 		sceneManager->Update();
 		//Network::GetInstance()->ReceiveMessages();
 		//}  
 
 		window->clear();
-		window->draw(*ml);
+		window->draw(*ml); 
 		sceneManager->Draw();
 		//world->DrawDebugData();  
 

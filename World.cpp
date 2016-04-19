@@ -5,6 +5,7 @@
 World::World(bool load, bool m) {
 	multiplayer = m;
 	if (!multiplayer) {
+		ml->Load("myMap.tmx");
 		loadedCharacrter = load;
 		CreateAssets();
 		if (loadedCharacrter) {
@@ -13,6 +14,7 @@ World::World(bool load, bool m) {
 		CreateLevel();
 	}
 	else {
+		ml->Load("brMap.tmx");
 		loadedCharacrter = false;
 		CreateAssets();
 		CreateLevel();
@@ -152,6 +154,13 @@ void World::Update() {
 			view.zoom(1);
 			window->setView(view);
 			SceneChanger::GetInstance()->ChangeScene(GameState::WIN);
+		}
+
+		if (Network::GetInstance()->textQueue.size() > 0) {
+			if (Network::GetInstance()->textQueue.front() != "") {
+				VoiceReceiver::GetInstance()->AddVoiceToQueue(Network::GetInstance()->textQueue.front());
+			}
+			Network::GetInstance()->textQueue.pop();
 		}
 	}
 

@@ -16,7 +16,7 @@ int ThreadedSend(void* param) {
 sf::Packet& operator << (sf::Packet& packet, const NetworkPacket& p)
 {
 	int size = p.data.size();
-	packet << p.type << p.ip << p.playerID << size;
+	packet << p.type << p.ip << p.message << p.playerID << size;
 	for (int i = 0; i < size; i++) {
 		packet << p.data[i];
 	}
@@ -25,7 +25,7 @@ sf::Packet& operator << (sf::Packet& packet, const NetworkPacket& p)
 
 sf::Packet& operator >> (sf::Packet& packet, NetworkPacket& p)
 {
-	packet >> p.type >> p.ip >> p.playerID >> p.dataSize;
+	packet >> p.type >> p.ip >> p.message >> p.playerID >> p.dataSize;
 	int size = p.dataSize;
 	for (int i = 0; i < size; i++) {
 		float dataPiece;
@@ -87,7 +87,7 @@ void Network::HandleMessage()
 	if (receivedPackets.size() > 0) {
 		//cout << "Handling Message" << endl; 
 		for (int i = 0; i < receivedPackets.size(); i++) {
-			ProcessMessageData(receivedPackets[i]); 
+			ProcessMessageData(receivedPackets[i]);
 			delete receivedPackets[i];
 			receivedPackets.erase(receivedPackets.begin() + i);
 			i--;
@@ -108,7 +108,7 @@ void Network::ProcessMessageData(NetworkPacket* np)
 			startGame = true;
 		}
 		else if (messageType == "EnemyPlayerData") {
-			int numberPlayersSent = np->dataSize / 22;  
+			int numberPlayersSent = np->dataSize / 22;
 
 			mutexR.lock();
 
@@ -142,13 +142,18 @@ void Network::ProcessMessageData(NetworkPacket* np)
 		else if (messageType == "Winner") {
 			winner = true;
 		}
+		else if (messageType == "Text") {
+			textQueue.push(np->message);
+		}
 	}
 }
 
 void Network::SendPacket(IpAddress ip, NetworkPacket* np)
 {
 	np->ip = IpAddress::getLocalAddress().toString();
+	mutexR2.lock();
 	sentMessages.push_back(np);
+	mutexR2.unlock();
 
 	Parameter p;
 	p.param = this;
@@ -158,6 +163,7 @@ void Network::SendPacket(IpAddress ip, NetworkPacket* np)
 
 void Network::SendPacketThread()
 {
+	mutexR2.lock();
 	sf::Packet packet;
 	if (sentMessages.size() > 0) {
 		packet << *(sentMessages[0]);
@@ -168,6 +174,7 @@ void Network::SendPacketThread()
 		delete sentMessages[0];
 		sentMessages.erase(sentMessages.begin());
 	}
+	mutexR2.unlock();
 }
 
 void Network::CheckDisconnect(int playerID)

@@ -5,3 +5,4 @@
 extern int rw;
 extern int nr;
 extern std::mutex mutexR;
+extern std::mutex mutexR2;

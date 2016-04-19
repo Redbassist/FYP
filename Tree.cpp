@@ -25,13 +25,13 @@ void Tree::LoadAssets()
 	rotation = rand() % 180;
 	m_sprite.setRotation(rotation);
 
-	m_trunktexture.loadFromFile("Sprites/wall.png");
+	m_trunktexture.loadFromFile("Sprites/treeBase.png");
 	m_trunktexture.setSmooth(false);
 	m_trunksprite.setTexture(m_trunktexture);
 	m_trunksprite.setTextureRect(sf::IntRect(0, 0, m_trunktexture.getSize().x, m_trunktexture.getSize().y)); 
 	m_trunksprite.setOrigin(m_trunktexture.getSize().x / 2, m_trunktexture.getSize().y / 2);
-	m_trunksprite.setPosition(m_pos - Vector2f(20, 20));
-	m_trunksprite.setScale(40, 40); 
+	m_trunksprite.setPosition(m_pos);
+	//m_trunksprite.setScale(40, 40); 
 }
 
 void Tree::Draw()
@@ -42,16 +42,16 @@ void Tree::Draw()
 
 void Tree::FadeOut(Vector2f pos)
 {
+	maxDistance = 1000;
 	float distance = Distance(m_pos, pos);
 	if (distance < maxDistance) {
 		float alpha = 405 - ((maxDistance - distance) / maxDistance) * 255; 
 		if (alpha > 255)
-			alpha = 255;
-		alpha = 0;
+			alpha = 255; 
 		m_sprite.setColor(sf::Color(255, 255, 255, alpha));
 	}
 	else {
-		m_sprite.setColor(sf::Color(255, 255, 255, 0));
+		m_sprite.setColor(sf::Color(255, 255, 255, 255));
 	}
 }
 

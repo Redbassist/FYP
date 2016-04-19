@@ -14,6 +14,7 @@ AudioManager* AudioManager::GetInstance() {
 AudioManager::AudioManager() : mUpdated(0)
 {
 	mCurrentSong = NULL;
+	voiceSound = new sf::Sound();
 }
 
 AudioManager::~AudioManager()
@@ -76,21 +77,20 @@ void AudioManager::playVoice(const sf::Vector2f & pos)
 			return;
 		}
 
-	sf::Sound* snd = new sf::Sound();
-	snd->setBuffer(buf);
+	voiceSound = new sf::Sound();
+	voiceSound->setBuffer(buf);
+	voiceSound->setAttenuation(0);
 
 	if (pos != sf::Vector2f())
 	{
-		snd->setRelativeToListener(false);
-		snd->setPosition(pos.x, pos.y, 0);
+		voiceSound->setRelativeToListener(false);
+		voiceSound->setPosition(pos.x, pos.y, 0);
 	}
 
 	//use later to set the volume of the music using SETTINGS
-	snd->setVolume(SettingsManager::GetInstance()->EffectVolume());
+	voiceSound->setVolume(SettingsManager::GetInstance()->EffectVolume());
 
-	snd->play();
-
-	mPlaying.push_back(snd);
+	voiceSound->play(); 
 }
 
 void AudioManager::addMusic(const std::string& name)
@@ -144,4 +144,10 @@ void AudioManager::update()
 		else
 			++it;
 	} 
+}
+
+void AudioManager::ClearVoiceFile()
+{
+	mBuffers.erase("test");
+	delete voiceSound;
 }

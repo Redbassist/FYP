@@ -148,6 +148,21 @@ void InputManager::UpdateSinglePress() {
 				}
 			}
 			break;
+		case sf::Event::TextEntered:
+			if (takeTextInput) {
+				if (enteredText.size() < 40) {
+					if ((event.text.unicode > 64 && event.text.unicode < 91) ||
+						(event.text.unicode > 96 && event.text.unicode < 123))
+						enteredText.push_back(static_cast<char>(event.text.unicode));
+					else if (event.text.unicode == 32) {
+						enteredText.append(" ");
+					}
+					else if (event.text.unicode == 8 && enteredText.size()) {
+						enteredText = enteredText.substr(0, enteredText.size() - 1);
+					}
+				}
+			}
+			break;
 		}
 	}
 } 

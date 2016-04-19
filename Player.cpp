@@ -118,6 +118,19 @@ Player::Player(Vector2f pos, int hth, int hgr, int thst, vector<Item*> items)
 }
 
 void Player::LoadAssets() {
+	//stuff for drawing the text on the screen for messages!
+	font.loadFromFile("arial.ttf");
+	sendText.setFont(font);
+	sendText.setString("");
+	sendText.setCharacterSize(16);
+
+	textBoxTexture.loadFromFile("Sprites/textBox.png");
+	textBoxTexture.setSmooth(false);
+	textBoxSprite.setTexture(textBoxTexture);
+	textBoxSprite.setTextureRect(sf::IntRect(0, 0, textBoxTexture.getSize().x, textBoxTexture.getSize().y));
+	textBoxSprite.setColor(sf::Color(255, 255, 255, 0));
+	//textBoxSprite.setScale(0.3f, 0.3f);
+
 	//loading the animations for the player
 	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "legs", &legsIdle, 1, 1, 1, 32, 32, currentLegAnimation);
 	EasyLoadAssetsAnimation(&m_AnimationLegsTexture, "legs", &legsMoving, 12, 4, 3, 32, 32);
@@ -272,7 +285,7 @@ void Player::LoadBinds() {
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar4, Keyboard::Key::Num4);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.hotbar5, Keyboard::Key::Num5);
 	InputManager::GetInstance()->BindSingleKeyPress(&actions.reload, Keyboard::Key::R);
-	InputManager::GetInstance()->BindSingleKeyPress(&actions.testNet, Keyboard::Key::Return);
+	InputManager::GetInstance()->BindSingleKeyPress(&actions.enterText, Keyboard::Key::Return);
 }
 
 void Player::Draw() {
@@ -382,6 +395,9 @@ void Player::Draw() {
 		window->draw(animatedTopSprite);
 	}
 
+	window->draw(textBoxSprite);
+	window->draw(sendText);
+
 	/*View view1 = window->getView();
 	ltbl::LightSystem::GetInstance()->render();
 	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
@@ -426,6 +442,10 @@ void Player::Update() {
 	animatedSwingAxeLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedPunchRight.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
 	animatedPunchLeft.setPosition(body->GetPosition().x * SCALE, body->GetPosition().y * SCALE);
+
+	//setting the text position
+	textBoxSprite.setPosition(Vector2f(m_pos.x + 100, m_pos.y - 250));
+	sendText.setPosition(Vector2f(m_pos.x + 100, m_pos.y - 250));
 
 	//m_pos = animatedTopSprite.getPosition();
 
@@ -512,7 +532,32 @@ void Player::Interaction() {
 
 	if (multiplayer) {
 		SendPlayerData();
-	}
+
+		if (actions.enterText) {
+			if (InputManager::GetInstance()->takeTextInput == false) {
+				InputManager::GetInstance()->takeTextInput = true;
+				InputManager::GetInstance()->enteredText = "";
+				textBoxSprite.setColor(sf::Color(255, 255, 255, 255));
+			}
+			else {
+				InputManager::GetInstance()->takeTextInput = false;
+
+				NetworkPacket* np = new NetworkPacket();
+				np->type = "Text";
+				np->message = InputManager::GetInstance()->enteredText; 
+				Network::GetInstance()->SendPacket("192.168.1.18", np);
+				textBoxSprite.setColor(sf::Color(255, 255, 255, 0));
+			}
+
+			actions.enterText = false;
+		}
+
+		if (InputManager::GetInstance()->takeTextInput == true) {
+			sendText.setString(InputManager::GetInstance()->enteredText);
+		}
+		else
+			sendText.setString("");
+	} 
 
 	//opening and closing the inventory
 	if (actions.inventory && inventory->CheckOpen()) {

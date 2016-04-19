@@ -17,6 +17,9 @@ private:
 	std::vector<std::pair<bool*, Mouse::Button>> pressedSinglePressMouseBinds;
 	
 public:
+	bool takeTextInput = false;
+	std::string enteredText;
+
 	InputManager();
 	static InputManager* GetInstance();
 	void Bind(bool*, Keyboard::Key);
