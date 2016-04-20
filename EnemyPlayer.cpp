@@ -564,7 +564,7 @@ void EnemyPlayer::Interaction() {
 			actions.punch = false;
 		}
 	}
-	if (!reloading && (actions.fire || actions.autoFire) && !invOpen) {
+	if (!reloading && !invOpen) {
 		if (actions.autoFire && rifle) {
 			if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > rifleShootSpeed) {
 				if (ammoEmpty)
@@ -578,7 +578,7 @@ void EnemyPlayer::Interaction() {
 			}
 		}
 
-		else if (actions.fire && (pistol || shotgun)) {
+		if (actions.fire && (pistol || shotgun)) {
 
 			if (ammoEmpty) {
 				AudioManager::GetInstance()->playSound("enemyPistoldry", m_pos);
