@@ -31,3 +31,5 @@ The player can also build a base to defend against the invaders and store the ke
 The player must manage these supplies correctly as not to put themselves in an unwinnable situation.
 The only goal is to live for as long as possible, you lose everything once you die and there is only so much you can recover when that happens.
 The game demands some skill but is an easy game to pick up and play, but once that demands time to get oneself setup in the world they have chosen.
+
+The code for my server can be found on my other repo here: https://github.com/Redbassist/FYP-Server
