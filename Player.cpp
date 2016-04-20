@@ -402,12 +402,12 @@ void Player::Draw() {
 
 void Player::DrawUI()
 {
-	/*View view1 = window->getView();
+	View view1 = window->getView();
 	ltbl::LightSystem::GetInstance()->render();
 	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
 	sprite.setPosition(view1.getCenter());
 	sprite.setOrigin(640, 360);
-	window->draw(sprite, *lightRenderStates);*/
+	window->draw(sprite, *lightRenderStates);
 
 	//drawing text entering 
 	window->draw(textBoxSprite);
