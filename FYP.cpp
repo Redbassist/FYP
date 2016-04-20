@@ -16,7 +16,8 @@ int main()
 	int min = 0;
 	playerID = rand() % (max - min + 1) + min;
 
-	serverIP = "149.153.102.61";
+	//serverIP = "149.153.102.61";
+	serverIP = "192.168.1.8";
 
 	nr = 0;
 
@@ -104,7 +105,7 @@ int main()
 		InputManager::GetInstance()->Update();
 		AudioManager::GetInstance()->update();
 		VoiceReceiver::GetInstance()->ProcessVoiceQueue();
-		sceneManager->Update();
+		sceneManager->Update(); 
 		//Network::GetInstance()->ReceiveMessages();
 		//}  
 

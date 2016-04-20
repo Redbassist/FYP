@@ -183,6 +183,9 @@ private:
 	Text sendText;
 	Font font;
 
+	int sprintTime = 200;
+	bool sprintRecoup = false;
+
 public:
 	bool doingPunchDamage = false;
 	bool doingMeleeDamage = false;

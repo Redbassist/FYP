@@ -166,13 +166,13 @@ void Player::LoadAssets() {
 	animatedSwingAxeRight = AnimatedSprite(sf::seconds(0.055), true, true);
 	animatedSwingAxeRight.setOrigin(12, 28);
 	animatedSwingAxeRight.setPosition(m_pos);
-	animatedSwingAxeRight.setScale(1, 1); 
+	animatedSwingAxeRight.setScale(1, 1);
 	animatedSwingAxeRight.play(swingAxeRight);
 
 	animatedSwingAxeLeft = AnimatedSprite(sf::seconds(0.055), true, true);
 	animatedSwingAxeLeft.setOrigin(12, 28);
 	animatedSwingAxeLeft.setPosition(m_pos);
-	animatedSwingAxeLeft.setScale(1, 1); 
+	animatedSwingAxeLeft.setScale(1, 1);
 	animatedSwingAxeLeft.play(swingAxeLeft);
 
 	animatedPunchRight = AnimatedSprite(sf::seconds(0.04), true, true);
@@ -398,12 +398,12 @@ void Player::Draw() {
 
 void Player::DrawUI()
 {
-	View view1 = window->getView();
+	/*View view1 = window->getView();
 	ltbl::LightSystem::GetInstance()->render();
 	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
 	sprite.setPosition(view1.getCenter());
 	sprite.setOrigin(640, 360);
-	window->draw(sprite, *lightRenderStates);
+	window->draw(sprite, *lightRenderStates);*/
 
 	//drawing text entering 
 	window->draw(textBoxSprite);
@@ -476,7 +476,22 @@ void Player::Movement() {
 	b2Vec2 position = body->GetPosition();
 
 	float moveSpeed = speed;
-	if (actions.sprint) { moveSpeed *= 1.5; }
+	if (actions.sprint) {
+		if (!sprintRecoup) {
+			moveSpeed *= 1.5;
+			sprintTime--;
+
+			if (sprintTime <= 0) {
+				sprintRecoup = true;
+			}
+		}
+		else {
+			sprintTime++;
+			if (sprintTime >= 200) {
+				sprintRecoup = false;
+			}
+		}
+	}
 
 	if (actions.walkUp) {
 		position.y -= moveSpeed;
@@ -549,7 +564,7 @@ void Player::Interaction() {
 
 				NetworkPacket* np = new NetworkPacket();
 				np->type = "Text";
-				np->message = InputManager::GetInstance()->enteredText; 
+				np->message = InputManager::GetInstance()->enteredText;
 				Network::GetInstance()->SendPacket(serverIP, np);
 				textBoxSprite.setColor(sf::Color(255, 255, 255, 0));
 			}
@@ -562,7 +577,7 @@ void Player::Interaction() {
 		}
 		else
 			sendText.setString("");
-	} 
+	}
 
 	//opening and closing the inventory
 	if (actions.inventory && inventory->CheckOpen()) {
@@ -580,7 +595,7 @@ void Player::Interaction() {
 		//opening and closing a touched container
 		if (touchedContainer != NULL) {
 			if (!touchedContainer->CheckOpen()) {
-				if (!inventory->CheckOpen()) 
+				if (!inventory->CheckOpen())
 					inventory->Open();
 				touchedContainer->Open();
 				actions.interact = false;
@@ -1041,7 +1056,7 @@ void Player::SetStats() {
 	if (difftime(time(&timer), hungerTick) / 60 > hungerRate) {
 		hunger += 5;
 		hunger = (hunger > 100) ? 100 : hunger;
-		
+
 		if (hunger == 100) {
 			health -= 0.15;
 		}
@@ -1052,7 +1067,7 @@ void Player::SetStats() {
 	if (difftime(time(&timer), thirstTick) / 60 > thirstRate) {
 		thirst += 5;
 		thirst = (thirst > 100) ? 100 : thirst;
-		
+
 		if (thirst == 100) {
 			health -= 0.15;
 		}
@@ -1222,7 +1237,7 @@ void Player::SendDeathMessage()
 {
 	NetworkPacket* np = new NetworkPacket();
 	np->type = "Dead";
-	np->playerID = playerID; 
+	np->playerID = playerID;
 
 	Network::GetInstance()->SendPacket(serverIP, np);
 }
@@ -1232,7 +1247,7 @@ void Player::AddActionsToPacket(vector<float>& data)
 	data.push_back(actions.walkLeft);
 	data.push_back(actions.walkRight);
 	data.push_back(actions.walkUp);
-	data.push_back(actions.sprint);
+	data.push_back(actions.walkDown);
 	data.push_back(invOpen);
 	data.push_back(actions.swing);
 	data.push_back(actions.punch);

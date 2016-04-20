@@ -136,6 +136,7 @@ void SceneManager::Draw()
 
 void SceneManager::ChangeScene()
 {
+	b2Body* bodyList;
 	if (SceneChanger::GetInstance()->SceneChanging()) {
 		switch (SceneChanger::GetInstance()->CurrentScene()) {
 		case(GameState::SPLASHSCREEN) :
@@ -143,6 +144,11 @@ void SceneManager::ChangeScene()
 			currentMenu->UpdateTransform();
 			break;
 		case(GameState::MENU) : 
+			bodyList = world->GetBodyList();
+			for (; bodyList != NULL; bodyList = bodyList->GetNext()) {
+				bodyList->GetFixtureList()->SetUserData("Destroy"); 
+			}
+
 			if (gameWorld != NULL) {
 				delete gameWorld;
 				gameWorld = NULL;
