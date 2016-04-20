@@ -152,10 +152,17 @@ void World::Update() {
 		mutexR.unlock();
 
 		size = enemyPlayers.size();
+
+		int numberAlive = 1;
+
 		for (int i = 0; i < size; i++) {
-			if (!enemyPlayers[i]->Dead())
+			if (!enemyPlayers[i]->Dead()) {
 				enemyPlayers[i]->Update();
+				numberAlive++;
+			}
 		}
+
+		player->SetPlayersAlive(numberAlive);
 
 		if (Network::GetInstance()->winner) {
 			Network::GetInstance()->winner = false;

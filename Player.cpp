@@ -124,6 +124,10 @@ void Player::LoadAssets() {
 	sendText.setString("");
 	sendText.setCharacterSize(16);
 
+	playersAliveText.setFont(font);
+	playersAliveText.setString("");
+	playersAliveText.setCharacterSize(18);
+
 	textBoxTexture.loadFromFile("Sprites/textBox.png");
 	textBoxTexture.setSmooth(false);
 	textBoxSprite.setTexture(textBoxTexture);
@@ -409,6 +413,9 @@ void Player::DrawUI()
 	window->draw(textBoxSprite);
 	window->draw(sendText);
 
+	if (multiplayer) {
+		window->draw(playersAliveText);
+	}
 
 	//drawing the inventory and its contents
 	inventory->Draw();
@@ -451,6 +458,7 @@ void Player::Update() {
 	//setting the text position
 	textBoxSprite.setPosition(Vector2f(m_pos.x + 100, m_pos.y - 250));
 	sendText.setPosition(Vector2f(m_pos.x + 100, m_pos.y - 250));
+	playersAliveText.setPosition(Vector2f(m_pos.x - 50, m_pos.y - 250));
 
 	//m_pos = animatedTopSprite.getPosition();
 
@@ -1264,6 +1272,11 @@ void Player::AddActionsToPacket(vector<float>& data)
 	data.push_back(rifle);
 	data.push_back(reloading);
 	data.push_back(ammoEmpty);
+}
+
+void Player::SetPlayersAlive(int num)
+{
+	playersAliveText.setString("Players Left: " + to_string(num));
 }
 
 float Player::getRotationAngle() {

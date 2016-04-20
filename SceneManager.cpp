@@ -22,8 +22,14 @@ void SceneManager::CreateMenus()
 	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Continue"), GameState::CONTINUEGAME));
 	tempMenu->AddButton(new Button(Vector2f(1050, 400), 200, 80, string("New Game"), GameState::NEWGAME));
 	tempMenu->AddButton(new Button(Vector2f(1050, 520), 200, 80, string("Options"), GameState::OPTIONS));
+	tempMenu->AddButton(new Button(Vector2f(150, 150), 200, 80, string("CONTROLS"), GameState::CONTROLS));
 	tempMenu->AddButton(new Button(Vector2f(1050, 640), 200, 80, string("Exit"), GameState::EXIT));
 	menusMap[GameState::MENU] = tempMenu;
+
+	//creating the CONTROLS menu
+	tempMenu = new Menu(string("controlMenu")); 
+	tempMenu->AddButton(new Button(Vector2f(150, 660), 200, 80, string("Back"), GameState::MENU));
+	menusMap[GameState::CONTROLS] = tempMenu;
 
 	//creating the options menu
 	tempMenu = new Menu(string("normalMenu"));
@@ -35,8 +41,8 @@ void SceneManager::CreateMenus()
 
 	//creating the connect menu
 	tempMenu = new Menu(string("normalMenu"));
-	tempMenu->AddButton(new Button(Vector2f(1050, 280), 200, 80, string("Connect"), GameState::CONNECT));
-	tempMenu->AddButton(new Button(Vector2f(1050, 520), 200, 80, string("Back"), GameState::MENU));
+	tempMenu->AddButton(new Button(Vector2f(640, 280), 200, 80, string("Connect"), GameState::CONNECT));
+	tempMenu->AddButton(new Button(Vector2f(640, 520), 200, 80, string("Back"), GameState::MENU));
 	menusMap[GameState::MULTIPLAYERMENU] = tempMenu;
 
 	//creating the connect menu
@@ -177,6 +183,9 @@ void SceneManager::ChangeScene()
 				gameWorld = new World(false, false);
 				AudioManager::GetInstance()->startMusic("backgroundMusic");
 			}
+			break;
+		case(GameState::CONTROLS) :
+			currentMenu = menusMap[GameState::CONTROLS]; 
 			break;
 		case(GameState::OPTIONS) :
 			currentMenu = menusMap[GameState::OPTIONS];

@@ -181,6 +181,7 @@ private:
 
 	string sendString;
 	Text sendText;
+	Text playersAliveText;
 	Font font;
 
 	int sprintTime = 200;
@@ -232,6 +233,8 @@ public:
 	void SendPlayerData();
 	void SendDeathMessage();
 	void AddActionsToPacket(vector<float>&);
+
+	void SetPlayersAlive(int num);
 };
 
 #endif
