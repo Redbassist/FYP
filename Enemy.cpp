@@ -37,7 +37,7 @@ void Enemy::createBox2dBody()
 	fixtureDef.restitution = b2MixRestitution(0, 0);
 
 	fixtureDef.filter.categoryBits = ENEMY;
-	fixtureDef.filter.maskBits = PLAYER | ITEM | CONTAINER | WALL | DOOR | FILLER;
+	fixtureDef.filter.maskBits = ENEMY | PLAYER | ITEM | CONTAINER | WALL | DOOR | FILLER;
 
 	body->CreateFixture(&fixtureDef);
 	body->SetFixedRotation(false);

@@ -24,7 +24,11 @@ public:
 	void Draw();
 	void SpawnStalkers(Player*);
 	void DespawnStalker(Player*);
-	void AddStalker(Stalker*);
+	void AddStalker(Stalker*); 
+	float Distance(Vector2f v1, Vector2f v2)
+	{
+		return sqrt(pow((v2.x - v1.x), 2) + pow((v2.y - v1.y), 2));
+	}
 };
 
 #endif

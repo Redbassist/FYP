@@ -122,6 +122,12 @@ public:
 	void HittingPlayer();
 	bool HitPlayer();
 	float VectorToAngle(b2Vec2 vec);
+
+	void Destroy() {
+		body->GetFixtureList()->SetUserData("Destroy");
+		punchbody->GetFixtureList()->SetUserData("Destroy");
+		hitBody->GetFixtureList()->SetUserData("Destroy");
+	}
 };
 
 #endif

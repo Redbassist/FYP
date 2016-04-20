@@ -3,7 +3,7 @@
 EnemyManager::EnemyManager()
 {
 	spawnTimer = time(&timer);
-	spawnDelay = 0;
+	spawnDelay = 10;
 }
 
 EnemyManager::~EnemyManager()
@@ -64,13 +64,30 @@ void EnemyManager::SpawnStalkers(Player * player)
 			} 
 		}
 
-		spawnDelay = rand() % 20 + 10;
+
+		int max = 15;
+		int min = 7;
+
+		int randTime = rand() % (max - min + 1) + min;
+
+		spawnDelay = randTime;
 		spawnTimer = time(&timer);
 	}
 }
 
-void EnemyManager::DespawnStalker(Player *)
+void EnemyManager::DespawnStalker(Player * p)
 {
+	int despawnDist = 1500;
+
+	int size = stalkers.size();
+	for (int i = 0; i < size; i++) {
+		if (Distance(stalkers[i]->GetPosition(), p->GetPosition()) > despawnDist) {
+			stalkers[i]->Destroy();
+			delete stalkers[i];
+			stalkers.erase(stalkers.begin() + i);
+			break;
+		}
+	}
 }
 
 void EnemyManager::AddStalker(Stalker * s)

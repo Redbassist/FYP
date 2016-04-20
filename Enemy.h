@@ -43,6 +43,7 @@ public:
 	float GetRotationAngle();
 	Vector2f Normalize(Vector2f);
 	float Distance(Vector2f, Vector2f);
+	Vector2f GetPosition() { return m_pos; }
 };
 
 #endif

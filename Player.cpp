@@ -769,13 +769,15 @@ void Player::Interaction() {
 
 		else if (actions.fire) {
 			if (!reloading && (pistol || shotgun)) {
-				if (hotbarItem->RemoveAmmo(1).first) {
+				if (hotbarItem->GetAmmo() > 0) {
 					if (pistol) {
+						hotbarItem->RemoveAmmo(1).first;
 						AudioManager::GetInstance()->playSound("pistolshot", m_pos);
 						RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
 						shot = true;
 					}
 					else if (shotgun && std::chrono::duration_cast<milliseconds>(Clock::now() - lastShot).count() > shotgunShootSpeed) {
+						hotbarItem->RemoveAmmo(1).first;
 						AudioManager::GetInstance()->playSound("shotgunshot", m_pos);
 						RayCastManager::GetInstance()->CastBulletRay(gunRay.p1, gunRay.p2);
 						shot = true;

@@ -10,6 +10,12 @@ Hotbar::Hotbar()
 
 void Hotbar::LoadAssets()
 {
+
+	font.loadFromFile("arial.ttf");
+	ammoText.setFont(font);
+	ammoText.setString("");
+	ammoText.setCharacterSize(12);
+
 	m_texture.loadFromFile("Sprites/hotbarSlot.png");
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
@@ -42,7 +48,14 @@ void Hotbar::Draw()
 		spritePos.x = center.x - (size.x / 2.3) + (xOffset * i);
 		m_sprite.setPosition(spritePos);
 		m_spriteSelected.setPosition(spritePos);
-		if (slots[i].item != NULL) { slots[i].item->DrawInHotbar(spritePos); }
+		if (slots[i].item != NULL) { 
+			slots[i].item->DrawInHotbar(spritePos); 
+			if (slots[i].item->GetAmmo() > 0) {
+				ammoText.setString(to_string(slots[i].item->GetAmmo()));
+				ammoText.setPosition(Vector2f(spritePos.x + 18, spritePos.y + 18));
+				window->draw(ammoText);
+			}
+		}
 		if (slots[i].selected)
 			window->draw(m_spriteSelected);
 		else

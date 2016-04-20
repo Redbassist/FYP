@@ -19,7 +19,9 @@ private:
 	Sprite m_spriteSelected;
 	std::vector<HotbarSlot> slots;
 	int numberSlots; //number of slots on the hotbar
-	float xOffset; //Offset for the drawing of slots
+	float xOffset; //Offset for the drawing of slots	
+	Text ammoText;
+	Font font;
 public:
 	Hotbar();
 	void LoadAssets();
