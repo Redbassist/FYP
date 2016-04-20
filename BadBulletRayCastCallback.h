@@ -26,7 +26,6 @@ public:
 
 		if (distance > fraction &&
 			(userData != "MeleeWeapon" && userData != "Punch"
-				&& userData != "EnemyPunch" && userData != "Enemy"
 				&& userData != "BadMeleeWeapon" && userData != "BadPunch")) {
 			distance = fraction;
 			m_point = point;

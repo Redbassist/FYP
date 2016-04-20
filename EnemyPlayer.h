@@ -219,7 +219,7 @@ public:
 	Inventory* GetInventory() { return inventory; }
 	int PlayerID() { return playerID; };
 	bool Dead() { return dead; }
-	void SetDead();
+	void SetDead(); 
 };
 
 #endif

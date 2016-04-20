@@ -394,16 +394,21 @@ void Player::Draw() {
 		animatedTopSprite.update(frameTime);
 		window->draw(animatedTopSprite);
 	}
+}
 
-	window->draw(textBoxSprite);
-	window->draw(sendText);
-
-	/*View view1 = window->getView();
+void Player::DrawUI()
+{
+	View view1 = window->getView();
 	ltbl::LightSystem::GetInstance()->render();
 	sf::Sprite sprite(ltbl::LightSystem::GetInstance()->getLightingTexture());
 	sprite.setPosition(view1.getCenter());
 	sprite.setOrigin(640, 360);
-	window->draw(sprite, *lightRenderStates);*/
+	window->draw(sprite, *lightRenderStates);
+
+	//drawing text entering 
+	window->draw(textBoxSprite);
+	window->draw(sendText);
+
 
 	//drawing the inventory and its contents
 	inventory->Draw();
@@ -411,18 +416,18 @@ void Player::Draw() {
 	//drawing the hotbar and its contents
 	hotbar->Draw();
 
+	DrawWatch();
+
+	if (touchedContainer != NULL) {
+		touchedContainer->DrawUI();
+	}
+
 	//if there is an item being dragged, draw it here
 	if (dragInventoryItem != NULL) {
 		dragInventoryItem->DrawDragged();
 	}
 	if (dragContainerItem != NULL) {
 		dragContainerItem->DrawDragged();
-	}
-
-	DrawWatch();
-
-	if (touchedContainer != NULL) {
-		touchedContainer->DrawUI();
 	}
 
 	window->draw(bloodScreenSprite);
@@ -545,7 +550,7 @@ void Player::Interaction() {
 				NetworkPacket* np = new NetworkPacket();
 				np->type = "Text";
 				np->message = InputManager::GetInstance()->enteredText; 
-				Network::GetInstance()->SendPacket("192.168.1.18", np);
+				Network::GetInstance()->SendPacket(serverIP, np);
 				textBoxSprite.setColor(sf::Color(255, 255, 255, 0));
 			}
 
@@ -575,11 +580,14 @@ void Player::Interaction() {
 		//opening and closing a touched container
 		if (touchedContainer != NULL) {
 			if (!touchedContainer->CheckOpen()) {
+				if (!inventory->CheckOpen()) 
+					inventory->Open();
 				touchedContainer->Open();
 				actions.interact = false;
 			}
 			else {
 				touchedContainer->Close();
+				dragContainerItem = NULL;
 				actions.interact = false;
 			}
 		}
@@ -1033,13 +1041,24 @@ void Player::SetStats() {
 	if (difftime(time(&timer), hungerTick) / 60 > hungerRate) {
 		hunger += 5;
 		hunger = (hunger > 100) ? 100 : hunger;
+		
+		if (hunger == 100) {
+			health -= 0.15;
+		}
+
 		hungerTick = time(&timer);
 	}
 
 	if (difftime(time(&timer), thirstTick) / 60 > thirstRate) {
 		thirst += 5;
 		thirst = (thirst > 100) ? 100 : thirst;
+		
+		if (thirst == 100) {
+			health -= 0.15;
+		}
+
 		thirstTick = time(&timer);
+
 	}
 
 	float foodBarLength = (100 - hunger) / 100;
@@ -1131,11 +1150,12 @@ void Player::TakeDamage(int type)
 	//punched by enemy
 	if (type == 0) {
 		EffectManager::GetInstance()->PlayEffect(3, m_pos);
-		health -= 1.5f;
+		health -= 2.f;
 	}
 
 	//punched by enemy player
 	else if (type == 1) {
+		EffectManager::GetInstance()->PlayEffect(1, m_pos);
 		health -= 1;
 	}
 
@@ -1148,7 +1168,7 @@ void Player::TakeDamage(int type)
 	//hit by bullet
 	else if (type == 3) {
 		EffectManager::GetInstance()->PlayEffect(1, m_pos);
-		health -= 2;
+		health -= 3;
 	}
 
 	AudioManager::GetInstance()->playSound("groan", m_pos);
@@ -1195,7 +1215,7 @@ void Player::SendPlayerData()
 	AddActionsToPacket(np->data);
 	np->dataSize = np->data.size();
 
-	Network::GetInstance()->SendPacket("192.168.1.18", np);
+	Network::GetInstance()->SendPacket(serverIP, np);
 }
 
 void Player::SendDeathMessage()
@@ -1204,7 +1224,7 @@ void Player::SendDeathMessage()
 	np->type = "Dead";
 	np->playerID = playerID; 
 
-	Network::GetInstance()->SendPacket("192.168.1.18", np);
+	Network::GetInstance()->SendPacket(serverIP, np);
 }
 
 void Player::AddActionsToPacket(vector<float>& data)

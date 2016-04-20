@@ -50,7 +50,7 @@ void SceneManager::CreateMenus()
 
 	//creating the game menu
 	tempMenu = new Menu(string("ingameMenu"));
-	tempMenu->AddButton(new Button(Vector2f(430, 150), 180, 55, string("Resume"), GameState::GAME));
+	tempMenu->AddButton(new Button(Vector2f(430, 150), 180, 55, string("Resume"), GameState::CONTINUEGAME));
 	tempMenu->AddButton(new Button(Vector2f(430, 245), 180, 55, string("Options"), GameState::GAMEOPTIONS));
 	tempMenu->AddButton(new Button(Vector2f(430, 340), 180, 55, string("Exit"), GameState::SAVEEXIT));
 	menusMap[GameState::GAMEMENU] = tempMenu;
@@ -62,6 +62,21 @@ void SceneManager::CreateMenus()
 	tempMenu->AddSlider(new Slider(Vector2f(250, 340), 400, string("Effects Volume"), Setting::SHORT));
 	tempMenu->AddButton(new Button(Vector2f(330, 420), 180, 55, string("Back"), GameState::GAMEMENU));
 	menusMap[GameState::GAMEOPTIONS] = tempMenu;
+
+	//creating the MULTI game menu
+	tempMenu = new Menu(string("ingameMenu"));
+	tempMenu->AddButton(new Button(Vector2f(430, 150), 180, 55, string("Resume"), GameState::MULTIPLAYER));
+	tempMenu->AddButton(new Button(Vector2f(430, 245), 180, 55, string("Options"), GameState::MULTIGAMEOPTIONS));
+	tempMenu->AddButton(new Button(Vector2f(430, 340), 180, 55, string("Exit"), GameState::EXIT));
+	menusMap[GameState::MULTIGAMEMENU] = tempMenu;
+
+	//creating the MULTI game options menu
+	tempMenu = new Menu(string("ingameMenu"));
+	tempMenu->AddSlider(new Slider(Vector2f(250, 150), 400, string("Master Volume"), Setting::MASTER));
+	tempMenu->AddSlider(new Slider(Vector2f(250, 245), 400, string("Music Volume"), Setting::MUSIC));
+	tempMenu->AddSlider(new Slider(Vector2f(250, 340), 400, string("Effects Volume"), Setting::SHORT));
+	tempMenu->AddButton(new Button(Vector2f(330, 420), 180, 55, string("Back"), GameState::MULTIGAMEMENU));
+	menusMap[GameState::MULTIGAMEOPTIONS] = tempMenu;
 
 	//creating the dead menu
 	tempMenu = new Menu(string("deadMenu"));
@@ -86,7 +101,9 @@ void SceneManager::Update()
 	//updating the gameWorld
 	if ((SceneChanger::GetInstance()->CurrentScene() == GameState::NEWGAME
 		|| SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIPLAYER
-		|| SceneChanger::GetInstance()->CurrentScene() == GameState::CONTINUEGAME) 
+		|| SceneChanger::GetInstance()->CurrentScene() == GameState::CONTINUEGAME ||
+		SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIGAMEOPTIONS ||
+		SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIGAMEMENU)
 		&& gameWorld != NULL)
 		gameWorld->Update();
 
@@ -105,7 +122,9 @@ void SceneManager::Draw()
 		SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIPLAYER ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEOPTIONS ||
 		SceneChanger::GetInstance()->CurrentScene() == GameState::CONTINUEGAME ||
-		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEMENU
+		SceneChanger::GetInstance()->CurrentScene() == GameState::GAMEMENU ||
+		SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIGAMEOPTIONS || 
+		SceneChanger::GetInstance()->CurrentScene() == GameState::MULTIGAMEMENU
 		)
 		&& gameWorld != NULL) {
 		gameWorld->Draw();
@@ -132,7 +151,7 @@ void SceneManager::ChangeScene()
 				NetworkPacket* np = new NetworkPacket();
 				np->type = "Disconnect";
 				np->playerID = playerID;
-				Network::GetInstance()->SendPacket("192.168.1.18", np);
+				Network::GetInstance()->SendPacket(serverIP, np);
 				connect = true;
 				connect = false;
 			}
@@ -167,7 +186,7 @@ void SceneManager::ChangeScene()
 				NetworkPacket* np = new NetworkPacket();
 				np->type = "Connection";
 				np->playerID = playerID;
-				Network::GetInstance()->SendPacket("192.168.1.18", np);
+				Network::GetInstance()->SendPacket(serverIP, np);
 				connect = true;
 			}
 			break;
@@ -184,6 +203,14 @@ void SceneManager::ChangeScene()
 			break;
 		case(GameState::GAMEOPTIONS) :
 			currentMenu = menusMap[GameState::GAMEOPTIONS];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::MULTIGAMEMENU) :
+			currentMenu = menusMap[GameState::MULTIGAMEMENU];
+			currentMenu->UpdateTransform();
+			break;
+		case(GameState::MULTIGAMEOPTIONS) :
+			currentMenu = menusMap[GameState::MULTIGAMEOPTIONS];
 			currentMenu->UpdateTransform();
 			break;
 		case(GameState::DEAD) :

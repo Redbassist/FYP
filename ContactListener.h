@@ -190,6 +190,44 @@ public:
 				}
 			}
 		}
+		else if (fixAType == "EnemyPlayer" && fixBType == "MeleeWeapon"
+			|| fixAType == "MeleeWeapon" && fixBType == "EnemyPlayer") {
+			if (fixAType == "EnemyPlayer") {
+				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
+				if (static_cast<Player*>(bodyUserData2)->doingMeleeDamage) {
+					static_cast<Player*>(bodyUserData2)->doingMeleeDamage = false;
+					static_cast<EnemyPlayer*>(bodyUserData1)->TakeDamage(2);
+				}
+			}
+			else if (fixBType == "EnemyPlayer") {
+				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
+				if (static_cast<Player*>(bodyUserData2)->doingMeleeDamage) {
+					static_cast<Player*>(bodyUserData2)->doingMeleeDamage = false;
+					static_cast<EnemyPlayer*>(bodyUserData1)->TakeDamage(2);
+				}
+			}
+		}
+		else if (fixAType == "EnemyPlayer" && fixBType == "Punch"
+			|| fixAType == "Punch" && fixBType == "EnemyPlayer") {
+			if (fixAType == "EnemyHit") {
+				void* bodyUserData1 = contact->GetFixtureA()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
+				if (static_cast<Player*>(bodyUserData2)->doingPunchDamage) {
+					static_cast<Player*>(bodyUserData2)->doingPunchDamage = false;
+					static_cast<EnemyPlayer*>(bodyUserData1)->TakeDamage(1);
+				}
+			}
+			else if (fixBType == "EnemyHit") {
+				void* bodyUserData1 = contact->GetFixtureB()->GetBody()->GetUserData();
+				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
+				if (static_cast<Player*>(bodyUserData2)->doingMeleeDamage) {
+					static_cast<Player*>(bodyUserData2)->doingMeleeDamage = false;
+					static_cast<EnemyPlayer*>(bodyUserData1)->TakeDamage(1);
+				}
+			}
+		}
 	}
 
 	void EndContact(b2Contact* contact) {

@@ -10,10 +10,16 @@ using namespace sf;
 
 int main()
 {
-	playerID = 123456;
+	srand(time(NULL));
+
+	int max = 10000000;
+	int min = 0;
+	playerID = rand() % (max - min + 1) + min;
+
+	serverIP = "149.153.102.61";
+
 	nr = 0;
 
-	srand(time(NULL));
 	std::chrono::steady_clock myClock;
 	const auto timePerTick = std::chrono::milliseconds(16);
 	auto timeOfLastTick = myClock.now();

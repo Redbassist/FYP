@@ -157,7 +157,7 @@ void EnemyPlayer::LoadAssets() {
 	//setting the text inside the button
 	watchFont.loadFromFile("digital.ttf");
 
-	pointLightTexture.loadFromFile("assets/pointLightTexture.png");
+	/*pointLightTexture.loadFromFile("assets/pointLightTexture.png");
 	pointLightTexture.setSmooth(true);
 
 	light = std::make_shared<ltbl::LightPointEmission>();
@@ -167,7 +167,7 @@ void EnemyPlayer::LoadAssets() {
 	light->_emissionSprite.setScale(lightSize, lightSize);
 	light->_emissionSprite.setColor({ 255u, 255u, 255u });
 	light->_emissionSprite.setPosition(100.0f, 100.0f);
-	ltbl::LightSystem::GetInstance()->addLight(light);
+	ltbl::LightSystem::GetInstance()->addLight(light);*/
 
 	heartRateText.setFont(watchFont);
 	heartRateText.setCharacterSize(16);
@@ -387,7 +387,7 @@ void EnemyPlayer::Movement() {
 	tempRot = 90;
 	AudioManager::GetInstance()->setListener(m_pos, tempRot);
 
-	light->_emissionSprite.setPosition(m_pos);
+	//bvlight->_emissionSprite.setPosition(m_pos);
 }
 
 void EnemyPlayer::Interaction() {
@@ -940,12 +940,27 @@ void EnemyPlayer::DrawWatch() {
 
 void EnemyPlayer::TakeDamage(int type)
 {
-	//punched
+	//punched by enemy
 	if (type == 0) {
-		health -= 1.5f;
-		AudioManager::GetInstance()->playSound("groan", m_pos);
-		BloodMask();
+		EffectManager::GetInstance()->PlayEffect(3, m_pos); 
 	}
+
+	//punched by enemy player
+	else if (type == 1) {
+		EffectManager::GetInstance()->PlayEffect(1, m_pos); 
+	}
+
+	//melee hit by enemy player
+	else if (type == 2) {
+		EffectManager::GetInstance()->PlayEffect(5, m_pos); 
+	}
+
+	//hit by bullet
+	else if (type == 3) {
+		EffectManager::GetInstance()->PlayEffect(1, m_pos); 
+	}
+
+	AudioManager::GetInstance()->playSound("groan", m_pos);  
 }
 
 void EnemyPlayer::BloodMask()

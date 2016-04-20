@@ -24,7 +24,8 @@ public:
 		void* d = fixture->GetBody()->GetUserData();
 		void* userData = fixture->GetUserData();
 
-		if (distance > fraction && (userData != "MeleeWeapon" && userData != "Punch" && userData != "EnemyPunch" && userData != "Enemy")) {
+		if (distance > fraction && (userData != "MeleeWeapon" && userData != "Punch" && userData != "EnemyPunch" && userData != "Enemy"
+			&& userData != "BadPunch" && userData != "BadMeleeWeapon")) {
 			distance = fraction;
 			m_point = point;
 			m_normal = normal;

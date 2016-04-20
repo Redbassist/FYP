@@ -196,6 +196,7 @@ public:
 		Animation* current);
 	void LoadBinds();
 	void Draw();
+	void DrawUI();
 	void Update();
 	void Movement();
 	void Interaction();

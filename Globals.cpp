@@ -8,3 +8,4 @@ sf::Shader* normalsShader;
 tmx::MapLoader* ml;
 sf::RenderWindow* window; 
 int playerID;
+std::string serverIP;

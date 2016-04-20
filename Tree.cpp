@@ -85,11 +85,20 @@ void Tree::createBox2dBody()
 	m_pos.y -= 15;
 
 	lightBlocker = ltbl::LightSystem::GetInstance()->allocateShape();
-	lightBlocker->_shape.setPointCount(4u);
+	/*lightBlocker->_shape.setPointCount(4u);
 	lightBlocker->_shape.setPoint(0u, { 0.f, 0.f });
 	lightBlocker->_shape.setPoint(1u, { 0.f, 30 });
 	lightBlocker->_shape.setPoint(2u, { 30, 30 });
-	lightBlocker->_shape.setPoint(3u, { 30, 0.f });
+	lightBlocker->_shape.setPoint(3u, { 30, 0.f });*/
+	lightBlocker->_shape.setPointCount(8u);
+	lightBlocker->_shape.setPoint(0u, { 15.f, 0.f });
+	lightBlocker->_shape.setPoint(1u, { 4.f, 5 });
+	lightBlocker->_shape.setPoint(2u, { 0, 15 });
+	lightBlocker->_shape.setPoint(3u, { 4, 25.f });
+	lightBlocker->_shape.setPoint(4u, { 15.f, 30.f });
+	lightBlocker->_shape.setPoint(5u, { 25.f, 26 });
+	lightBlocker->_shape.setPoint(6u, { 29, 15 });
+	lightBlocker->_shape.setPoint(7u, { 25, 5.f });
 	lightBlocker->_shape.setPosition(Vector2f(m_pos.x, m_pos.y));
 	ltbl::LightSystem::GetInstance()->addShape(lightBlocker);
 }

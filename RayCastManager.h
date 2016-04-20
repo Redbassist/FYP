@@ -10,6 +10,7 @@
 
 class Stalker;
 class Player;
+class EnemyPlayer;
 
 class RayCastManager {
 private:
