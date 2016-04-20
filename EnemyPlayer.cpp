@@ -64,11 +64,11 @@ void EnemyPlayer::LoadAssets() {
 	EasyLoadAssetsAnimation(&m_AnimationTopTexture, "playerTop", &playerTopIdle, 1, 1, 1, 31, 27, currentTopAnimation);
 	EasyLoadAssetsAnimation(&m_AnimationTopTexture, "playerTop", &playerTopMoving, 12, 4, 3, 31, 27);
 
-	EasyLoadAssetsAnimation(&m_SwingAxeRightTexture, "swingAnimationAxeRight", &swingAxeRight, 5, 5, 1, 60, 60);
-	EasyLoadAssetsAnimation(&m_SwingAxeLeftTexture, "swingAnimationAxeLeft", &swingAxeLeft, 5, 5, 1, 60, 60);
+	EasyLoadAssetsAnimation(&m_SwingAxeRightTexture, "swingAnimationAxeRight2", &swingAxeRight, 4, 4, 1, 60, 60);
+	EasyLoadAssetsAnimation(&m_SwingAxeLeftTexture, "swingAnimationAxeLeft2", &swingAxeLeft, 4, 4, 1, 60, 60);
 
-	EasyLoadAssetsAnimation(&m_SwingBatRightTexture, "swingAnimationBatRight", &swingBatRight, 5, 5, 1, 60, 60);
-	EasyLoadAssetsAnimation(&m_SwingBatLeftTexture, "swingAnimationBatLeft", &swingBatLeft, 5, 5, 1, 60, 60);
+	EasyLoadAssetsAnimation(&m_SwingBatRightTexture, "swingAnimationBatRight2", &swingBatRight, 4, 4, 1, 60, 60);
+	EasyLoadAssetsAnimation(&m_SwingBatLeftTexture, "swingAnimationBatLeft2", &swingBatLeft, 4, 4, 1, 60, 60);
 
 	EasyLoadAssetsAnimation(&m_PunchRightTexture, "rightPunch", &punchRight, 4, 4, 1, 31, 27);
 	EasyLoadAssetsAnimation(&m_PunchLeftTexture, "leftPunch", &punchLeft, 4, 4, 1, 31, 27);
@@ -89,25 +89,25 @@ void EnemyPlayer::LoadAssets() {
 	animatedTopSprite.setPosition(m_pos);
 	animatedTopSprite.setScale(1, 1);
 
-	animatedSwingAxeRight = AnimatedSprite(sf::seconds(0.055), true, false);
+	animatedSwingAxeRight = AnimatedSprite(sf::seconds(0.055), true, true);
 	animatedSwingAxeRight.setOrigin(12, 28);
 	animatedSwingAxeRight.setPosition(m_pos);
 	animatedSwingAxeRight.setScale(1, 1);
 	animatedSwingAxeRight.play(swingAxeRight);
 
-	animatedSwingAxeLeft = AnimatedSprite(sf::seconds(0.055), true, false);
+	animatedSwingAxeLeft = AnimatedSprite(sf::seconds(0.055), true, true);
 	animatedSwingAxeLeft.setOrigin(12, 28);
 	animatedSwingAxeLeft.setPosition(m_pos);
 	animatedSwingAxeLeft.setScale(1, 1);
 	animatedSwingAxeLeft.play(swingAxeLeft);
 
-	animatedPunchRight = AnimatedSprite(sf::seconds(0.04), true, false);
+	animatedPunchRight = AnimatedSprite(sf::seconds(0.04), true, true);
 	animatedPunchRight.setOrigin(12, 13.5);
 	animatedPunchRight.setPosition(m_pos);
 	animatedPunchRight.setScale(1, 1);
 	animatedPunchRight.play(punchRight);
 
-	animatedPunchLeft = AnimatedSprite(sf::seconds(0.04), true, false);
+	animatedPunchLeft = AnimatedSprite(sf::seconds(0.04), true, true);
 	animatedPunchLeft.setOrigin(12, 13.5);
 	animatedPunchLeft.setPosition(m_pos);
 	animatedPunchLeft.setScale(1, 1);

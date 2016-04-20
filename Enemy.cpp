@@ -63,9 +63,27 @@ void Enemy::Movement()
 	body->SetTransform(position, orientation + DEGTORAD);
 }
 
-void Enemy::DropHealth(int amount)
+void Enemy::DropHealth(int type)
 {
-	health -= amount;
+	//shot
+	if (type == 0) {
+		health -= 20;
+		EffectManager::GetInstance()->PlayEffect(2, m_pos);
+
+	}
+	//punch
+	else if (type == 1) {
+		health -= 10;
+		EffectManager::GetInstance()->PlayEffect(2, m_pos);
+
+	}
+	//bat
+	else if (type == 2) {
+		health -= 25;
+		EffectManager::GetInstance()->PlayEffect(6, m_pos);
+
+	} 
+
 	if (health < 0) {
 		alive = false;
 		health = 0;
@@ -77,7 +95,7 @@ void Enemy::DropHealth(int amount)
 		}
 		else {
 			AudioManager::GetInstance()->playSound("alienHit2", m_pos);
-		}
+		} 
 	}
 }
   

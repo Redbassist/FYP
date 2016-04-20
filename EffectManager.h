@@ -21,6 +21,12 @@ public:
 private:
 	vector<Effect*> effects;
 	Texture* m_smokeEffectTexture;
+	Texture* m_bloodEffectTexture;
+	Texture* m_alienBloodEffectTexture;
+	Texture* m_BloodSlashTexture;
+	Texture* m_bloodHitTexture;
+	Texture* m_alienBloodHitTexture;
+
 	Clock frameClock;
 }; 
 

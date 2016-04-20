@@ -82,7 +82,7 @@ public:
 				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
 				if (static_cast<Player*>(bodyUserData2)->doingPunchDamage) {
 					static_cast<Player*>(bodyUserData2)->doingPunchDamage = false;
-					static_cast<Enemy*>(bodyUserData1)->DropHealth(10);
+					static_cast<Enemy*>(bodyUserData1)->DropHealth(1);
 				}
 			}
 			else if (fixBType == "EnemyHit") {
@@ -90,7 +90,7 @@ public:
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
 				if (static_cast<Player*>(bodyUserData2)->doingPunchDamage) {
 					static_cast<Player*>(bodyUserData2)->doingPunchDamage = false;
-					static_cast<Enemy*>(bodyUserData1)->DropHealth(10);
+					static_cast<Enemy*>(bodyUserData1)->DropHealth(1);
 				}
 			}
 		}
@@ -101,7 +101,7 @@ public:
 				void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
 				if (static_cast<Player*>(bodyUserData2)->doingMeleeDamage) {
 					static_cast<Player*>(bodyUserData2)->doingMeleeDamage = false;
-					static_cast<Enemy*>(bodyUserData1)->DropHealth(40);
+					static_cast<Enemy*>(bodyUserData1)->DropHealth(2);
 				}
 			}
 			else if (fixBType == "EnemyHit") {
@@ -109,7 +109,7 @@ public:
 				void* bodyUserData2 = contact->GetFixtureA()->GetBody()->GetUserData();
 				if (static_cast<Player*>(bodyUserData2)->doingMeleeDamage) {
 					static_cast<Player*>(bodyUserData2)->doingMeleeDamage = false;
-					static_cast<Enemy*>(bodyUserData1)->DropHealth(40);
+					static_cast<Enemy*>(bodyUserData1)->DropHealth(2);
 				}
 			}
 		}

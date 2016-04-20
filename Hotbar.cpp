@@ -79,6 +79,24 @@ bool Hotbar::AddItem(Vector2f dropPos, Item* item)
 	return false;
 }
 
+void Hotbar::AddWeapon(Item * item)
+{
+	if (item->GetType() == PISTOL || item->GetType() == SHOTGUN || item->GetType() == RIFLE
+		|| item->GetType() == BAT || item->GetType() == AXE) {
+
+		int size = numberSlots;
+
+		for (int i = 0; i < size; i++) {
+			if (slots[i].item == NULL) {
+				item->SetHotbarSlot(i);
+				slots[i].item = item;
+				item->inHotBar = true;
+				break;
+			}
+		}
+	}
+}
+
 int Hotbar::CheckSprite(Vector2f mousePos)
 {
 	//checking if the mouse position is inside the sprite

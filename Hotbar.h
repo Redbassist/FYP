@@ -26,6 +26,7 @@ public:
 	void CreateSlots();
 	void Draw();
 	bool AddItem(Vector2f, Item*);
+	void AddWeapon(Item*);
 	int CheckSprite(Vector2f);
 	void RemoveItem(int slot);
 	Item* SelectItem(int i);
