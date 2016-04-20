@@ -92,6 +92,10 @@ private:
 	time_t chatterTimer;
 	int chatterDelay;
 
+	typedef std::chrono::high_resolution_clock Clock;
+	typedef std::chrono::milliseconds milliseconds;
+	Clock::time_point lastStep;
+
 public:
 	Stalker(Vector2f);
 	Stalker(Vector2f, Player* );

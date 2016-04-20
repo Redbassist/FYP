@@ -53,6 +53,16 @@ void Item::LoadAssets()
 
 void Item::LoadSprites(std::string type)
 {
+	if (type == "RIFLE" || type == "SHOTGUN" || type == "BAT" || type == "AXE") {
+		m_hbTexture.loadFromFile("Sprites/hb" + type + ".png");
+		m_hbTexture.setSmooth(false);
+		m_hbSprite.setTexture(m_hbTexture);
+		m_hbSprite.setTextureRect(sf::IntRect(0, 0, m_hbTexture.getSize().x, m_hbTexture.getSize().y));
+		m_hbSprite.setOrigin(m_hbTexture.getSize().x / 2, m_hbTexture.getSize().y / 2);
+		m_hbSprite.setScale(Vector2f(0.2, 0.2));
+		m_hbSprite.setPosition(m_pos);
+	}
+
 	m_texture.loadFromFile("Sprites/" + type + ".png");
 	m_texture.setSmooth(false);
 	m_sprite.setTexture(m_texture);
@@ -152,11 +162,18 @@ void Item::DrawInHotbar(Vector2f pos)
 {
 	pos.x += 18;
 	pos.y += 18;
-	Vector2f tempPos = m_sprite.getPosition();
-	m_sprite.setScale(0.45, 0.45);
-	m_sprite.setPosition(pos);
-	window->draw(m_sprite);
-	m_sprite.setPosition(tempPos);
+	if (size == 2) { 
+		m_hbSprite.setScale(0.45, 0.45);
+		m_hbSprite.setPosition(pos);
+		window->draw(m_hbSprite);
+	}
+	else {
+		Vector2f tempPos = m_sprite.getPosition();
+		m_sprite.setScale(0.45, 0.45);
+		m_sprite.setPosition(pos);
+		window->draw(m_sprite);
+		m_sprite.setPosition(tempPos);
+	}
 }
 
 void Item::DrawDragged()

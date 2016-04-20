@@ -5,7 +5,7 @@
 World::World(bool load, bool m) {
 	multiplayer = m;
 	if (!multiplayer) {
-		ml->Load("myMap.tmx");
+		ml->Load("brMap.tmx");
 		loadedCharacrter = load;
 		CreateAssets();
 		if (loadedCharacrter) {
@@ -14,7 +14,7 @@ World::World(bool load, bool m) {
 		CreateLevel();
 	}
 	else {
-		ml->Load("brMap.tmx");
+		ml->Load("brMap2.tmx");
 		loadedCharacrter = false;
 		CreateAssets();
 		CreateLevel();
@@ -45,10 +45,19 @@ void World::CreateLevel() {
 			{
 				for (auto object = layer->objects.begin(); object != layer->objects.end(); ++object)
 				{
+
+					int maxX = ml->GetMapSize().x;
+					int maxY = ml->GetMapSize().y;
+					int min = 50;
+
+					int randNumX = rand() % (maxX - min + 1) + min;
+					int randNumY = rand() % (maxY - min + 1) + min;
+
 					if (multiplayer)
-						player = new Player(object._Ptr->GetPosition(), true);
+						player = new Player(sf::Vector2f(randNumX, randNumY), true);
 					else
-						player = new Player(object._Ptr->GetPosition(), false);
+						player = new Player(sf::Vector2f(randNumX, randNumY), true);
+						//player = new Player(object._Ptr->GetPosition(), false);
 					break;
 				}
 			}

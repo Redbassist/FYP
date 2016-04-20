@@ -30,6 +30,8 @@ static const std::string ItemTypeStrings[] =
 
 class Item {
 private:
+	Texture m_hbTexture;
+	Sprite m_hbSprite;
 	Texture m_texture;
 	Sprite m_sprite; 
 	b2Body* body; 

@@ -501,6 +501,11 @@ void EnemyPlayer::Interaction() {
 
 	if (actions.swing && (meleeAxe || meleeBat)) {
 		if (!doDamage) {
+			int sound = rand() % 2;
+			if (sound == 0)
+				AudioManager::GetInstance()->playSound("swing1", m_pos);
+			else if (sound == 1)
+				AudioManager::GetInstance()->playSound("swing2", m_pos);
 			doDamage = true;
 			doingMeleeDamage = true;
 		}

@@ -57,7 +57,7 @@ namespace ltbl
         bool _normalsEnabled = false;
 
         LightSystem()
-            : _directionEmissionRange(10000.0f), _directionEmissionRadiusMultiplier(1.1f), _ambientColor(sf::Color(16, 16, 16))
+            : _directionEmissionRange(10000.0f), _directionEmissionRadiusMultiplier(1.1f), _ambientColor(sf::Color(0, 0, 0))
         {}
 
         void create(const sf::FloatRect& rootRegion, const sf::Vector2u& imageSize,

@@ -23,6 +23,7 @@ Stalker::Stalker(Vector2f pos) : Enemy(pos)
 	collapse = false;
 	chatterTimer = time(&timer);
 	chatterDelay = 0;
+	lastStep = Clock::now();
 }
 
 Stalker::Stalker(Vector2f pos, Player* p) : Enemy(pos)
@@ -226,18 +227,19 @@ void Stalker::Update()
 			searchDoor = true;
 		}
 
-		//playing chatter noise of alien
-		if (difftime(time(&timer), chatterTimer) > chatterDelay) {
-			int sound = rand() % 4;
+		//playing step noise of alien
+		if (std::chrono::duration_cast<milliseconds>(Clock::now() - lastStep).count() > 500) {
+			int sound = rand() % 3;
 			if (sound == 0)
-				AudioManager::GetInstance()->playSound("stalkerChatter1", m_pos);
+				AudioManager::GetInstance()->playSound("alienStep1", m_pos);
 			else if (sound == 1)
-				AudioManager::GetInstance()->playSound("stalkerChatter2", m_pos);
+				AudioManager::GetInstance()->playSound("alienStep2", m_pos);
 			else if (sound == 2)
-				AudioManager::GetInstance()->playSound("stalkerChatter3", m_pos);
+				AudioManager::GetInstance()->playSound("alienStep3", m_pos);
 
-			chatterDelay = sound + 1;
+			chatterDelay = 1;
 			chatterTimer = time(&timer);
+			lastStep = Clock::now();
 		}
 
 		//turn into method
@@ -294,6 +296,7 @@ void Stalker::Draw()
 			currentLegAnimation = &legsMoving;
 		}
 		else {
+			lastStep = Clock::now();
 			if (punch) {
 				currentTopAnimation = (punchDirection == 0) ? &punchRight : &punchLeft;
 			}
@@ -326,8 +329,17 @@ void Stalker::Draw()
 		window->draw(headSprite);
 	}
 	else {
-		if (!collapse) { 
-			collapse = true; 
+		if (!collapse) {
+			collapse = true;
+
+			int sound = rand() % 4;
+			if (sound == 0)
+				AudioManager::GetInstance()->playSound("stalkerChatter1", m_pos);
+			else if (sound == 1)
+				AudioManager::GetInstance()->playSound("stalkerChatter2", m_pos);
+			else if (sound == 2)
+				AudioManager::GetInstance()->playSound("stalkerChatter3", m_pos);
+
 			body->GetFixtureList()->SetUserData("Destroy");
 			punchbody->GetFixtureList()->SetUserData("Destroy");
 			hitBody->GetFixtureList()->SetUserData("Destroy");
@@ -368,9 +380,9 @@ void Stalker::Movement()
 
 		for (int i = 0; i < numberRays; i++) {
 			if (i == 0) {
-				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
-					&& Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 60
-					&& Distance(m_pos, Vector2f(visionRays[i + 2].second.m_point.x * SCALE, visionRays[i + 2].second.m_point.y * SCALE)) > 60) {
+				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 70
+					&& Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 50
+					&& Distance(m_pos, Vector2f(visionRays[i + 2].second.m_point.x * SCALE, visionRays[i + 2].second.m_point.y * SCALE)) > 50) {
 					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
 					desiredOrientation = GetRotationAngle();
 					stop = false;
@@ -380,9 +392,9 @@ void Stalker::Movement()
 				}
 			}
 			else if (i == numberRays - 1) {
-				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
-					&& Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 60
-					&& Distance(m_pos, Vector2f(visionRays[i - 2].second.m_point.x * SCALE, visionRays[i - 2].second.m_point.y * SCALE)) > 60) {
+				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 70
+					&& Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 50
+					&& Distance(m_pos, Vector2f(visionRays[i - 2].second.m_point.x * SCALE, visionRays[i - 2].second.m_point.y * SCALE)) > 50) {
 					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
 					desiredOrientation = GetRotationAngle();
 					stop = false;
@@ -392,7 +404,7 @@ void Stalker::Movement()
 				}
 			}
 			else {
-				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 80
+				if (Distance(m_pos, Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE)) > 70
 					&& (Distance(m_pos, Vector2f(visionRays[i - 1].second.m_point.x * SCALE, visionRays[i - 1].second.m_point.y * SCALE)) > 50
 						|| Distance(m_pos, Vector2f(visionRays[i + 1].second.m_point.x * SCALE, visionRays[i + 1].second.m_point.y * SCALE)) > 50)) {
 					movementTarget = Vector2f(visionRays[i].second.m_point.x * SCALE, visionRays[i].second.m_point.y * SCALE);
@@ -455,7 +467,7 @@ void Stalker::RotateOrientation()
 {
 	float facingMinusTarget = orientation - desiredOrientation;
 	float angleDiff = facingMinusTarget;
-	
+
 	if (abs(facingMinusTarget) > 180)
 	{
 		if (orientation > desiredOrientation)
@@ -496,9 +508,9 @@ void Stalker::RotateOrientation()
 			orientation -= 0.5;
 	}
 
-	if (orientation < 0) 
+	if (orientation < 0)
 		orientation = 360 + orientation;
-	
+
 	else if (orientation > 360)
 		orientation = 0 + orientation;
 
@@ -523,7 +535,7 @@ void Stalker::AI()
 
 	else if (door) {
 		int d = Distance(m_pos, movementTarget);
-		if (d < 25 && !nearDoor) {
+		if (d < 20 && !nearDoor) {
 			nearDoor = true;
 		}
 		else if (d > 30 && nearDoor) {
@@ -807,6 +819,13 @@ void Stalker::SpottedAI()
 		nearDoor = false;
 		if (Distance(m_pos, Vector2f(spottedRay.first.p2.x * SCALE, spottedRay.first.p2.y * SCALE)) < pDistance) {
 			if (!punch && difftime(time(&timer), punchTimer) > 1) {
+
+				int sound = rand() % 2;
+				if (sound == 0)
+					AudioManager::GetInstance()->playSound("swing1", m_pos);
+				else if (sound == 1)
+					AudioManager::GetInstance()->playSound("swing2", m_pos);
+
 				punch = true;
 				cout << "Hitting Player" << endl;
 			}

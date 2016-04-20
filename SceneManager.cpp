@@ -72,7 +72,7 @@ void SceneManager::CreateMenus()
 	//creating the dead menu
 	tempMenu = new Menu(string("winMenu"));
 	tempMenu->AddButton(new Button(Vector2f(300, 600), 200, 80, string("Main Menu"), GameState::MENU));
-	tempMenu->AddButton(new Button(Vector2f(500, 600), 200, 80, string("Exit Game"), GameState::EXIT));
+	tempMenu->AddButton(new Button(Vector2f(600, 600), 200, 80, string("Exit Game"), GameState::EXIT));
 	menusMap[GameState::WIN] = tempMenu;
 }
 

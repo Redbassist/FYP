@@ -663,6 +663,11 @@ void Player::Interaction() {
 
 	if (actions.swing && (meleeAxe || meleeBat)) {
 		if (!doDamage) {
+			int sound = rand() % 2;
+			if (sound == 0)
+				AudioManager::GetInstance()->playSound("swing1", m_pos);
+			else if (sound == 1)
+				AudioManager::GetInstance()->playSound("swing2", m_pos);
 			doDamage = true;
 			doingMeleeDamage = true;
 		}
@@ -684,6 +689,8 @@ void Player::Interaction() {
 			actions.swing = false;
 		}
 		else if (meleeAngle <= 0) {
+			doDamage = false;
+			doingMeleeDamage = false;
 			swingDirection = 0;
 			animatedSwingAxeLeft.stop();
 			if (meleeAxe)
