@@ -118,6 +118,7 @@ public:
 	void LookAround();
 	void SearchDoor(bool onlyFind);
 	void SearchPlayer();
+	bool SearchPlayerTest();
 	void SpottedAI();
 	void HittingPlayer();
 	bool HitPlayer();

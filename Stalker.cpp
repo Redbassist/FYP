@@ -1,4 +1,5 @@
 #include "Stalker.h"
+#include <assert.h> 
 
 Stalker::Stalker(Vector2f pos) : Enemy(pos)
 {
@@ -207,13 +208,17 @@ void Stalker::CreateRays()
 	for (int i = 0; i < numberRays; i++) {
 		std::pair<b2RayCastInput, RayCastCallBack*> temp;
 		visionRays.push_back(temp);
-	}
+	} 
 }
 
 void Stalker::Update()
 {
 	if (alive) {
-		SearchPlayer();
+		#ifdef NDEBUG
+			SearchPlayer();
+		#else
+			SearchPlayerTest();
+		#endif
 		UpdateRays();
 		AI();
 		Movement();
@@ -782,6 +787,7 @@ void Stalker::SearchPlayer()
 	bool breakOut = false;
 
 	if (visionRays[centre].second.objectName == "Player") {
+
 		spottedPlayer = static_cast<Player*>(visionRays[centre].second.data);
 		breakOut = true;
 	}
@@ -808,6 +814,48 @@ void Stalker::SearchPlayer()
 		searchOrientation = 0;
 		breakOut = true;
 	}
+}
+
+bool Stalker::SearchPlayerTest()
+{
+	int centre = numberRays / 2;
+	int above = 1;
+	int below = 1;
+	bool breakOut = false;
+	string objectFound = "";
+
+
+	if (visionRays[centre].second.objectName == "Player") { // 1
+		assert(visionRays[centre].second.objectName != NULL);
+		spottedPlayer = static_cast<Player*>(visionRays[centre].second.data); // 2
+		breakOut = true; //3
+	}
+
+	while ((below <= centre && above <= centre) && !breakOut) { //4 
+		assert(below <= centre && above <= centre && !breakOut);
+		if (visionRays[centre + above].second.objectName == "Player") { //5
+			assert(visionRays[centre].second.objectName != NULL);
+			spottedPlayer = static_cast<Player*>(visionRays[centre + above].second.data);//6
+			breakOut = true;//7
+		}
+		else if (visionRays[centre - below].second.objectName == "Player") { //8
+			assert(visionRays[centre].second.objectName != NULL);
+			spottedPlayer = static_cast<Player*>(visionRays[centre - below].second.data); //9
+			breakOut = true; //10
+		}
+		else { //11
+			above++, below++; //12
+		}
+	} //14
+
+	if (breakOut) { //15
+		playerSpotted = true; //16
+		lookAround = false; //17
+		chasing = true; //18
+		searchOrientation = 0; //19
+		return true; //20
+	}
+	return false; //21
 }
 
 void Stalker::SpottedAI()
