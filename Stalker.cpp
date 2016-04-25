@@ -214,6 +214,7 @@ void Stalker::CreateRays()
 void Stalker::Update()
 {
 	if (alive) {
+		//checks if debug or not
 		#ifdef NDEBUG
 			SearchPlayer();
 		#else
@@ -818,6 +819,7 @@ void Stalker::SearchPlayer()
 
 bool Stalker::SearchPlayerTest()
 {
+	//test case method
 	int centre = numberRays / 2;
 	int above = 1;
 	int below = 1;
