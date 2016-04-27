@@ -16,8 +16,7 @@ int main()
 	int min = 0;
 	playerID = rand() % (max - min + 1) + min;
 
-	serverIP = "149.153.102.61";
-	//serverIP = "192.168.1.8";
+	serverIP = "192.168.1.2";
 
 	nr = 0;
 

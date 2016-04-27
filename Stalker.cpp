@@ -549,7 +549,7 @@ void Stalker::AI()
 	else {
 		if (visionRays[centre].second.objectName != NULL) {
 			int direction = rand() % 2;
-			AIFunction(false, direction);
+			movementTarget = Vector2f(visionRays[centre].first.p2.x * SCALE, visionRays[centre].first.p2.y * SCALE);
 		}
 
 		if (search && (Distance(m_pos, Vector2f(visionRays[centre].second.m_point.x * SCALE, visionRays[centre].second.m_point.y * SCALE)) < 50)
