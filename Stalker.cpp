@@ -897,3 +897,12 @@ float Stalker::VectorToAngle(b2Vec2 vec)
 {
 	return atan2(vec.x, vec.y) * RADTODEG;
 }
+
+void Stalker::Destroy()
+{
+	if (!collapse) {
+		body->GetFixtureList()->SetUserData("Destroy");
+		punchbody->GetFixtureList()->SetUserData("Destroy");
+		hitBody->GetFixtureList()->SetUserData("Destroy");
+	}
+}
